@@ -14,5 +14,12 @@
 // Route::get('/', );
 
 Auth::routes();
+// Authenticated routes
+Route::middleware(['auth'])->group (function() {
+    Route::get('/account', 'DashboardController@index')->name('account');
+    Route::get('/profile', 'DashboardController@profile')->name('profile');
+    Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
 
-Route::get('/account', 'HomeController@index')->name('account');
+    
+    
+});

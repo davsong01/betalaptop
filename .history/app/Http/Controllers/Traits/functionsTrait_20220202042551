@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Http\Traits;
+
+
+trait functionsTrait {
+    public function sendMail() {
+       
+    }
+
+    public function uploadImage(){
+        
+    }
+}

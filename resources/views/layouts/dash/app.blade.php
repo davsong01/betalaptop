@@ -11,14 +11,16 @@
     <meta name="description"
         content="Monster Lite is powerful and clean admin dashboard template, inpired from Bootstrap Framework">
     <meta name="robots" content="noindex,nofollow">
-    <title>Monster Lite Template by WrapPixel</title>
-    <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" />
+    <title>{{ \App\Setting::first()->value('company_name') }} - @yield('title', \App\Setting::first()->value('company_name'))</title>
+    {{-- <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" /> --}}
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon.png">
+    @component('components.favicon')@endcomponent
     <!-- Custom CSS -->
     <link href="{{ asset('board/assets/plugins/chartist/dist/chartist.min.css')}}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('board/css/style.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    @yield('extra-css')
 </head>
 
 <body>
@@ -45,19 +47,26 @@
                     <!-- ============================================================== -->
                     <!-- Logo -->
                     <!-- ============================================================== -->
-                    <a class="navbar-brand" href="index.html">
+                    <a class="navbar-brand" href="">
                         <!-- Logo icon -->
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="{{ ('board/assets/images/logo-icon.png')}}" alt="homepage" class="dark-logo" />
-
+                        <a class="navbar-brand" href="/">
+                        </a>
+                        @component('components.logo')
+                            @slot('width')
+                            148px
+                            @endslot
+                            @slot('height')
+                            20px
+                            @endslot
+                        @endcomponent
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
                         <span class="logo-text">
                             <!-- dark Logo text -->
-                            <img src="{{ ('board/assets/images/logo-text.png')}}" alt="homepage" class="dark-logo" />
 
                         </span>
                     </a>
@@ -83,12 +92,12 @@
                         <!-- Search -->
                         <!-- ============================================================== -->
 
-                        <li class="nav-item hidden-sm-down">
+                        {{-- <li class="nav-item hidden-sm-down">
                             <form class="app-search ps-3">
                                 <input type="text" class="form-control" placeholder="Search for..."> <a
                                     class="srh-btn"><i class="ti-search"></i></a>
                             </form>
-                        </li>
+                        </li> --}}
                     </ul>
 
                     <!-- ============================================================== -->
@@ -100,7 +109,10 @@
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{ ('board/assets/images/users/1.jpg')}}" alt="user" class="profile-pic me-2">Markarn Doe
+                                @component('components.avatar')
+                                    @slot('avatar'){{ auth()->user()->avatar }}@endslot
+                                @endcomponent
+                               {{ auth()->user()->name }}
                             </a>
                             <ul class="dropdown-menu show" aria-labelledby="navbarDropdown"></ul>
                         </li>
@@ -120,37 +132,15 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
+                        @include('layouts.sidenav')
                         <!-- User Profile-->
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="index.html" aria-expanded="false"><i class="me-3 far fa-clock fa-fw"
-                                    aria-hidden="true"></i><span class="hide-menu">Dashboard</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="pages-profile.html" aria-expanded="false">
-                                <i class="me-3 fa fa-user" aria-hidden="true"></i><span
-                                    class="hide-menu">Profile</span></a>
-                        </li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="table-basic.html" aria-expanded="false"><i class="me-3 fa fa-table"
-                                    aria-hidden="true"></i><span class="hide-menu">Table</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="icon-fontawesome.html" aria-expanded="false"><i class="me-3 fa fa-font"
-                                    aria-hidden="true"></i><span class="hide-menu">Icon</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="map-google.html" aria-expanded="false"><i class="me-3 fa fa-globe"
-                                    aria-hidden="true"></i><span class="hide-menu">Google Map</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="blank.html" aria-expanded="false"><i class="me-3 fa fa-columns"
-                                    aria-hidden="true"></i><span class="hide-menu">Blank</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="404.html" aria-expanded="false"><i class="me-3 fa fa-info-circle"
-                                    aria-hidden="true"></i><span class="hide-menu">Error 404</span></a></li>
-                        <li class="text-center p-20 upgrade-btn">
+                        
+                        {{-- <li class="text-center p-20 upgrade-btn">
                             <a href="https://www.wrappixel.com/templates/monsteradmin/"
                                 class="btn btn-danger text-white mt-4" target="_blank">Upgrade to
                                 Pro</a>
-                        </li>
+                        </li> --}}
                     </ul>
-
                 </nav>
                 <!-- End Sidebar navigation -->
             </div>
@@ -169,23 +159,23 @@
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-md-6 col-8 align-self-center">
-                        <h3 class="page-title mb-0 p-0">Dashboard</h3>
-                        <div class="d-flex align-items-center">
+                        <h4 class="page-title mb-0 p-0">@yield('page-title')</h4>
+                        {{-- <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                                 </ol>
                             </nav>
-                        </div>
+                        </div> --}}
                     </div>
-                    <div class="col-md-6 col-4 align-self-center">
+                    {{-- <div class="col-md-6 col-4 align-self-center">
                         <div class="text-end upgrade-btn">
-                            <a href="https://www.wrappixel.com/templates/monsteradmin/"
+                            <a href=""
                                 class="btn btn-success d-none d-md-inline-block text-white" target="_blank">Upgrade to
                                 Pro</a>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <!-- ============================================================== -->
@@ -198,46 +188,7 @@
                 <!-- ============================================================== -->
                 <!-- Sales chart -->
                 <!-- ============================================================== -->
-                <div class="row">
-                    <!-- Column -->
-                    <div class="col-sm-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Daily Sales</h4>
-                                <div class="text-end">
-                                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> $120</h2>
-                                    <span class="text-muted">Todays Income</span>
-                                </div>
-                                <span class="text-success">80%</span>
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                        style="width: 80%; height: 6px;" aria-valuenow="25" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                    <!-- Column -->
-                    <div class="col-sm-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Weekly Sales</h4>
-                                <div class="text-end">
-                                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-info"></i> $5,000</h2>
-                                    <span class="text-muted">Todays Income</span>
-                                </div>
-                                <span class="text-info">30%</span>
-                                <div class="progress">
-                                    <div class="progress-bar bg-info" role="progressbar"
-                                        style="width: 30%; height: 6px;" aria-valuenow="25" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                </div>
+                @yield('content')
                 <!-- ============================================================== -->
                 <!-- Sales chart -->
                 <!-- ============================================================== -->
@@ -403,7 +354,7 @@
             <!-- footer -->
             <!-- ============================================================== -->
             <footer class="footer text-center">
-                © 2021 Monster Admin by <a href="https://www.wrappixel.com/">wrappixel.com</a>
+                ©<a href="/">{{ \App\Setting::first()->value('company_name') }}</a> {{ date('Y') }}
             </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
@@ -434,6 +385,7 @@
     <script src="{{ asset('board/assets/plugins/flot/jquery.flot.js')}}"></script>
     <script src="{{ asset('board/assets/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js')}}"></script>
     <script src="{{ asset('board/js/pages/dashboards/dashboard1.js') }}"></script>
+    @yield('extra-script')
 </body>
 
 </html>

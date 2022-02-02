@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Http\Traits;
+
+
+trait functionsTrait {
+    public function sendMail() {
+        $items['allclients_count'] = Client::count();
+        $allLoans = Loan::get();
+        $status1 = $allLoans->where('status', '=', 1)->count();
+        $status3 = $allLoans->where('status', '=', 3)->count();
+
+        $items['clientintenure_count'] = $status1 + $status3;
+        
+        $items['clienttenurextended_count'] = $allLoans->where('status', '=', 3)->count();
+        $profit = $allLoans->count();
+        
+        $items['outstanding'] = Payment::where('payment_status',0)->get();
+
+        $savings = Payment::where('payment_purpose','=','savings')->get();
+        $items['allsavings'] = $savings->sum('outstanding_payment');
+   
+        $items['monthlyprofit'] = Loan::whereMonth('updated_at', date('m'))->sum('monthly_profit');
+        $items['yearlyprofit'] = Loan::whereYear('updated_at', date('Y'))->sum('yearly_profit');
+        $items['allprofits'] = $allLoans->sum('actual_profit');
+      
+        $items['companyvalue'] = $items['outstanding']->sum('outstanding_payment') + $items['allprofits'];
+     
+        $items['monthlyreports'] = Payment::whereMonth('next_due_date', date('m'))->with('client','loan')->where('payment_status',0)->take(3)->Orderby('next_due_date','ASC')->get();
+        $items['tenureextendeds'] = Loan::with('client','payment')->where('status','<>',2)->get();
+        
+        $items['tenureextendeds'] = $items['tenureextendeds']->filter(
+            function($items){
+                    if( Carbon::parse($items->disbursement_date)->addMonth($items->tenure)  <  Carbon::now() or $items->status == 3){
+                        return $items; 
+                    } 
+            })->take(5);
+
+        $items['tenureextended_count'] = $items['tenureextendeds']->count();
+        $items['monthreportcounter'] = $items['monthlyreports']->count();
+
+        return $items;
+    }
+}

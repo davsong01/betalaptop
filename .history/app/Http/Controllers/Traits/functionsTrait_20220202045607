@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Traits;
+
+use App\Emails;
+use Illuminate\Support\Facades\Mail;
+use Intervention\Image\Facades\Image;
+
+
+trait functionsTrait {
+    
+    public function uploadImage($image, $location, $width=null, $height=null){
+        $imgName = time() . '-' . $image->getClientOriginalName();
+        $image = Image::make($image)->resize($width, $height);
+
+        $image->save($location . '/' . $imgName);
+      
+        return $location . '/' . $imgName;
+    }  
+
+      //Files must be in public and folder name must be appended to the filename for this to work
+    public function deleteImage($image){
+        // dd($image);
+        if (file_exists($image))
+        unlink($image);
+        return;
+    }
+
+     public function sendEmail($name, $recipient, $subject, $content = null, $show_response = null){
+        //Prepare data
+        $data = [
+            'name' => $name,
+            'recipient' => $recipient,
+            'subject' => $subject,
+            'content' => $content,
+        ];
+        
+        try {
+            // Try to send email
+            Mail::to($recipient)->send(new NotificationEmail($data));
+            $response = 'success';
+        } catch(\Exception $e){
+            // Log error and store email in database for further processing
+            Log::error($e->getMessage());
+
+            Emails::create([
+                'subject' => $data['subject'],
+                'name' => $data['name'],
+                'recipient' => $data['recipient'],
+                'content' => $data['content'],
+                'errors' => $e->getMessage(),
+            ]);
+
+            $response = $e->getMessage();
+        }
+
+        if($show_response){
+            return $response;
+        }else return;
+       
+    }
+
+    // public function saveContactForm($type, $name, $email, $phone, $message ){ 
+    //     EmailContact::create([
+    //         'user_id' => $user_id,
+    //         'type' => $type,
+    //         'name' => $name,
+    //         'email' => $email,
+    //         'phone' => $phone,
+    //         'message' => $message
+    //     ]);        
+    // }
+}

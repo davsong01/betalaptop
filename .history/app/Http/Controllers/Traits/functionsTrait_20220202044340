@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Traits;
+
+use Intervention\Image\Facades\Image;
+
+
+trait functionsTrait {
+    
+    public function uploadImage($image, $location, $width=null, $height=null){
+        $imgName = time() . '-' . $image->getClientOriginalName();
+        $image = Image::make($image)->resize($width, $height);
+
+        $image->save($location . '/' . $imgName);
+      
+        return $location . '/' . $imgName;
+    }  
+
+      //Files must be in public and folder name must be appended to the filename for this to work
+    protected function deleteImage($image){
+        // dd($image);
+        if (file_exists($image))
+        unlink($image);
+        return;
+    }
+
+     protected function sendEmail($type, $recipient, $subject, $content = null, $cc = null, $show_response = null){
+        //Prepare data
+        $data = [
+            'type' => $type,
+            'subject' => $subject,
+            'name' => $name,
+            'content' => $content,
+        ];
+        
+        try {
+            // Try to send email
+            Mail::to($recipient)->send(new NotificationEmail($data));
+        } catch(\Exception $e){
+            // Log error and store email in database for further processing
+            Log::error($e);
+            Email::
+            if($show_response){
+                return 0;
+            }
+        }
+       
+    }
+
+    protected function saveContactForm($user_id, $type, $name, $email, $phone, $message ){ 
+        EmailContact::create([
+            'user_id' => $user_id,
+            'type' => $type,
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'message' => $message
+        ]);        
+    }
+}

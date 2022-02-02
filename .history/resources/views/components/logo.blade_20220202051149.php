@@ -1,0 +1,1 @@
+<img src="{{ asset('site/assests/general/logo.png') }}" alt="logo" style="width:{{ $width }}; height:{{ $height }}">
