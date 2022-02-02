@@ -18,7 +18,7 @@ class DashboardController extends Controller
 
     public function profile()
     {
-        return view('dash.profile');
+        return view('dash.profile')->with('user', auth()->user());
     }
 
     public function saveProfile()
