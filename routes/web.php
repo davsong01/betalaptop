@@ -12,6 +12,7 @@
 */
 
 // Route::get('/', );
+Route::get('/', 'HomeController@index')->name('shop');
 
 Auth::routes();
 // Authenticated routes

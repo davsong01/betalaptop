@@ -27,8 +27,9 @@ class LoginController extends Controller
      * @var string
      */
 
-    public const HOME = '/account';
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // public const HOME = '/account';
+    // protected $redirectTo = RouteServiceProvider::HOME;
+     protected $redirectTo = '/account';
 
     /**
      * Create a new controller instance.
