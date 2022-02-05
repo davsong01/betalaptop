@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -18,12 +19,24 @@ class DashboardController extends Controller
 
     public function profile()
     {
-        return view('dash.profile');
+        return view('dash.profile')->with('user', auth()->user());
     }
 
-    public function saveProfile()
+    public function saveProfile(Request $request)
     {
-        // return view('dash.profile');
+        $user = auth()->user();
+        $request->validate([
+            'name' => 'string|max:30|required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        $user = User::find($user->id);
+        if($user){
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->save();
+        }
+        return redirect()->back();
     }
     /**
      * Show the form for creating a new resource.
