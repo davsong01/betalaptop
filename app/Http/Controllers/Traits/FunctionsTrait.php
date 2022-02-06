@@ -68,6 +68,57 @@ trait FunctionsTrait {
      * @param int $amount
      * @return App/Wallet
      */
+    public function getWallet($user_id){
+        $wallet = Wallet::where('user_id', $user_id)->sum('amount');
+        return $wallet;
+    }
+
+    /**
+     * Top up user wallet
+     *
+     * @param int $user_id
+     * @param int $amount
+     * @return App/Wallet
+     */
+    public function topUpWallet($user_id, $amount){
+       $wallet = Wallet::create([
+           'user_id' => $user_id,
+           'type' => 'topup',
+           'amount' => +$amount,
+       ]);
+       return $wallet;
+    }
+
+    /**
+     * Withdraw from user wallet
+     *
+     * @param int $user_id
+     * @param int $amount
+     * @return App/Wallet
+     */
+    public function walletWithdraw($user_id, $amount){
+        // create wallet with - amount type is withdrawal
+        $wallet  = Wallet::create([
+            'user_id' => $user_id,
+            'type' => 'withdraw',
+            'amount' => -$amount
+        ]);
+        return $wallet;
+    }
+
+    /**
+     * Transfer from user wallet
+     *
+     * @param int $sender_id
+     * @param int $receiver_id
+     * @param int $amount
+     * @return void
+     */
+    public function walletTransfer($sender_id, $receiver_id, $amount){
+        $this->walletWithdraw($sender_id, $amount);
+        $this->topUpWallet($receiver_id, $amount);
+    }
+
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,
