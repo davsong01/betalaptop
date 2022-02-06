@@ -19,6 +19,7 @@ class CreateWalletsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')
                 ->references('id')->on('users')
                 ->onDelete('cascade');
+            $table->enum('type', ['withdraw', 'topup', 'transfer']);
             $table->float('amount')->default(0);
             $table->timestamps();
         });
