@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Traits;
+namespace App\Http\Controllers\Traits;
 
 use App\Emails;
+use App\Wallet;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
 
 
-trait functionsTrait {
-    
+trait FunctionsTrait {
+
     public function uploadImage($image, $location, $width=null, $height=null){
         $imgName = time() . '-' . $image->getClientOriginalName();
         $image = Image::make($image)->resize($width, $height);
 
         $image->save($location . '/' . $imgName);
-      
+
         return $location . '/' . $imgName;
-    }  
+    }
 
       //Files must be in public and folder name must be appended to the filename for this to work
     public function deleteImage($image){
@@ -34,7 +35,7 @@ trait functionsTrait {
             'subject' => $subject,
             'content' => $content,
         ];
-        
+
         try {
             // Try to send email
             Mail::to($recipient)->send(new NotificationEmail($data));
@@ -57,10 +58,17 @@ trait functionsTrait {
         if($show_response){
             return $response;
         }else return;
-       
+
     }
 
-    // public function saveContactForm($type, $name, $email, $phone, $message ){ 
+    /**
+     * Get user wallet
+     *
+     * @param int $user_id
+     * @param int $amount
+     * @return App/Wallet
+     */
+    // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,
     //         'type' => $type,
@@ -68,6 +76,6 @@ trait functionsTrait {
     //         'email' => $email,
     //         'phone' => $phone,
     //         'message' => $message
-    //     ]);        
+    //     ]);
     // }
 }
