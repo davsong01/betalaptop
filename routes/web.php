@@ -15,12 +15,17 @@
 Route::get('/', 'HomeController@index')->name('shop');
 
 Auth::routes();
-// Authenticated routes
+// Admin only routes
+
+Route::middleware(['auth'])->group (function() {
+    Route::resource('users', 'UserController');
+});
+
+// General Authenticated routes
 Route::middleware(['auth'])->group (function() {
     Route::get('/account', 'DashboardController@index')->name('account');
     Route::get('/profile', 'DashboardController@profile')->name('profile');
     Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
 
-    
     
 });

@@ -4,6 +4,13 @@
         aria-hidden="true"></i><span class="hide-menu">Dashboard</span>
     </a>
 </li>
+@if(auth()->user()->role == 'admin')
+<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+        href="{{ route('users.index') }}" aria-expanded="false">
+        <i class="me-3 fa fa-users" aria-hidden="true"></i><span
+            class="hide-menu">Manage Users</span></a>
+</li>
+@endif
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('profile') }}" aria-expanded="false">
         <i class="me-3 fa fa-user" aria-hidden="true"></i><span

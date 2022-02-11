@@ -1,5 +1,8 @@
 @extends('layouts.dash.app')
 @section('page-title', 'Dashboard')
+@section('active')
+<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+@endsection
 @section('content')
 <div class="row">
     <!-- Column -->

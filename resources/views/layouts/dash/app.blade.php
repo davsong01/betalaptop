@@ -7,9 +7,9 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords"
-        content="wrappixel, admin dashboard, html css dashboard, web dashboard, bootstrap 5 admin, bootstrap 5, css3 dashboard, bootstrap 5 dashboard, Monsterlite admin bootstrap 5 dashboard, frontend, responsive bootstrap 5 admin template, Monster admin lite design, Monster admin lite dashboard bootstrap 5 dashboard template">
+        content="">
     <meta name="description"
-        content="Monster Lite is powerful and clean admin dashboard template, inpired from Bootstrap Framework">
+        content="">
     <meta name="robots" content="noindex,nofollow">
     <title>{{ \App\Setting::first()->value('company_name') }} - @yield('title', \App\Setting::first()->value('company_name'))</title>
     {{-- <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" /> --}}
@@ -19,6 +19,21 @@
     <link href="{{ asset('board/assets/plugins/chartist/dist/chartist.min.css')}}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('board/css/style.min.css')}}" rel="stylesheet">
+    
+    
+    {{-- Datatables --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+
+
+  {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> --}}
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @yield('extra-css')
 </head>
@@ -160,14 +175,15 @@
                 <div class="row align-items-center">
                     <div class="col-md-6 col-8 align-self-center">
                         <h4 class="page-title mb-0 p-0">@yield('page-title')</h4>
-                        {{-- <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                    @yield('active')
+                                    
                                 </ol>
                             </nav>
-                        </div> --}}
+                        </div>
                     </div>
                     {{-- <div class="col-md-6 col-4 align-self-center">
                         <div class="text-end upgrade-btn">
@@ -189,168 +205,7 @@
                 <!-- Sales chart -->
                 <!-- ============================================================== -->
                 @yield('content')
-                <!-- ============================================================== -->
-                <!-- Sales chart -->
-                <!-- ============================================================== -->
-                <div class="row">
-                    <!-- column -->
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Revenue Statistics</h4>
-                                <div class="flot-chart">
-                                    <div class="flot-chart-content " id="flot-line-chart"
-                                        style="padding: 0px; position: relative;">
-                                        <canvas class="flot-base w-100" height="400"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- column -->
-                </div>
-                <!-- ============================================================== -->
-                <!-- Table -->
-                <!-- ============================================================== -->
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-md-flex">
-                                    <h4 class="card-title col-md-10 mb-md-0 mb-3 align-self-center">Projects of the Month</h4>
-                                    <div class="col-md-2 ms-auto">
-                                        <select class="form-select shadow-none col-md-2 ml-auto">
-                                            <option selected>January</option>
-                                            <option value="1">February</option>
-                                            <option value="2">March</option>
-                                            <option value="3">April</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="table-responsive mt-5">
-                                    <table class="table stylish-table no-wrap">
-                                        <thead>
-                                            <tr>
-                                                <th class="border-top-0" colspan="2">Assigned</th>
-                                                <th class="border-top-0">Name</th>
-                                                <th class="border-top-0">Budget</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td style="width:50px;"><span class="round">S</span></td>
-                                                <td class="align-middle">
-                                                    <h6>Sunil Joshi</h6><small class="text-muted">Web Designer</small>
-                                                </td>
-                                                <td class="align-middle">Elite Admin</td>
-                                                <td class="align-middle">$3.9K</td>
-                                            </tr>
-                                            <tr class="active">
-                                                <td><span class="round"><img src="{{ ('board/assets/images/users/2.jpg')}}"
-                                                            alt="user" width="50"></span></td>
-                                                <td class="align-middle">
-                                                    <h6>Andrew</h6><small class="text-muted">Project Manager</small>
-                                                </td>
-                                                <td class="align-middle">Real Homes</td>
-                                                <td class="align-middle">$23.9K</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="round round-success">B</span></td>
-                                                <td class="align-middle">
-                                                    <h6>Bhavesh patel</h6><small class="text-muted">Developer</small>
-                                                </td>
-                                                <td class="align-middle">MedicalPro Theme</td>
-                                                <td class="align-middle">$12.9K</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="round round-primary">N</span></td>
-                                                <td class="align-middle">
-                                                    <h6>Nirav Joshi</h6><small class="text-muted">Frontend Eng</small>
-                                                </td>
-                                                <td class="align-middle">Elite Admin</td>
-                                                <td class="align-middle">$10.9K</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="round round-warning">M</span></td>
-                                                <td class="align-middle">
-                                                    <h6>Micheal Doe</h6><small class="text-muted">Content Writer</small>
-                                                </td>
-                                                <td class="align-middle">Helping Hands</td>
-                                                <td class="align-middle">$12.9K</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span class="round round-danger">N</span></td>
-                                                <td class="align-middle">
-                                                    <h6>Johnathan</h6><small class="text-muted">Graphic</small>
-                                                </td>
-                                                <td class="align-middle">Digital Agency</td>
-                                                <td class="align-middle">$2.6K</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ============================================================== -->
-                <!-- Table -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- Recent blogss -->
-                <!-- ============================================================== -->
-                <div class="row justify-content-center">
-                    <!-- Column -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card">
-                            <img class="card-img-top img-responsive" src="{{ asset('board/assets/images/big/img1.jpg')}}" alt="Card">
-                            <div class="card-body">
-                                <ul class="list-inline d-flex align-items-center">
-                                    <li class="ps-0">20 May 2021</li>
-                                    <li class="ms-auto"><a href="javascript:void(0)" class="link">3 Comment</a></li>
-                                </ul>
-                                <h3 class="font-normal">Featured Hydroflora Pots Garden &amp; Outdoors</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                    <!-- Column -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card">
-                            <img class="card-img-top img-responsive" src="{{ asset('board/assets/images/big/img2.jpg')}}" alt="Card">
-                            <div class="card-body">
-                                <ul class="list-inline d-flex align-items-center">
-                                    <li class="ps-0">20 May 2021</li>
-                                    <li class="ms-auto"><a href="javascript:void(0)" class="link">3 Comment</a></li>
-                                </ul>
-                                <h3 class="font-normal">Featured Hydroflora Pots Garden &amp; Outdoors</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                    <!-- Column -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card">
-                            <img class="card-img-top img-responsive" src="{{ asset('assets/images/big/img4.jpg')}}" alt="Card">
-                            <div class="card-body">
-                                <ul class="list-inline d-flex align-items-center">
-                                    <li class="ps-0">20 May 2021</li>
-                                    <li class="ms-auto"><a href="javascript:void(0)" class="link">3 Comment</a></li>
-                                </ul>
-                                <h3 class="font-normal">Featured Hydroflora Pots Garden &amp; Outdoors</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
-                </div>
-                <!-- ============================================================== -->
-                <!-- Recent blogss -->
-                <!-- ============================================================== -->
-            </div>
-            <!-- ============================================================== -->
-            <!-- End Container fluid  -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
+               
             <!-- footer -->
             <!-- ============================================================== -->
             <footer class="footer text-center">
@@ -370,7 +225,7 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script src="{{ asset('board/assets/plugins/jquery/dist/jquery.min.js')}}"></script>
+    {{-- <script src="{{ asset('board/assets/plugins/jquery/dist/jquery.min.js')}}"></script> --}}
     <!-- Bootstrap tether Core JavaScript -->
     <script src="{{ asset('board/assets/plugins/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ asset('board/js/app-style-switcher.js')}}"></script>
@@ -385,6 +240,12 @@
     <script src="{{ asset('board/assets/plugins/flot/jquery.flot.js')}}"></script>
     <script src="{{ asset('board/assets/plugins/flot.tooltip/js/jquery.flot.tooltip.min.js')}}"></script>
     <script src="{{ asset('board/js/pages/dashboards/dashboard1.js') }}"></script>
+    <script>
+    // $(document).ready(function() {
+        $('#example').DataTable();
+    // } );
+    </script>
+    
     @yield('extra-script')
 </body>
 

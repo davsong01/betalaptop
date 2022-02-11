@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('username');
-            $table->string('role')->default('user'); //user, manager,admin,staff 
+            $table->integer('role')->default('2'); //user=2, manager=4,admin=1,staff=3
             $table->string('phone')->nullable();
             $table->integer('upline')->nullable();
             $table->integer('parent_id')->nullable();
