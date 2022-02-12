@@ -19,9 +19,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
+                                <th>Avatar</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Wallet</th>
+                                <th>Downlines</th>
                                 <td>Actions</td>
                             </tr>
                         </thead>
@@ -30,11 +32,19 @@
                                 <tr>
                                 
                                     <td>{{ $i++ }}</td>
-                                    <td>Deshmukh</td>
-                                    <td>Prohaska</td>
-                                    <td>@Genelia</td>
                                     <td>
-                                        
+                                        @if($user->avatar)
+                                            <img src="{{ asset($user->avatar)}}" alt="user" class="rounded-circle" width="40" >
+                                        @else
+                                            <img src="{{ asset('site/assets/images/avatars/d2.png') }}" class="rounded-circle" width="40">
+                                        @endif
+                                    </td>
+                                    <td>{{ $user->name }}  <br> <i><b>{{ $user->username }}</b></i></td>
+                                   
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->wallet() }} <br> <small><i><a href="">View history</a></i></small></td>
+                                    <td>{{ $user->downlines() }}</td>
+                                    <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a data-toggle="tooltip" title="Edit/View user" href="{{ route('users.edit', $user->id) }}" class="btn btn-primary"><span class="fa fa-edit"></span></a>
                                             <form id="delete" onsubmit="return confirm('Are you sure you want to delete forever?');" action="{{ route('users.destroy', $user->id) }}" method="POST">

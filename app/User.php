@@ -2,13 +2,14 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Controllers\Traits\FunctionsTrait;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, FunctionsTrait;
     // use HasFactory;
 
     /**
@@ -35,4 +36,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function wallet(){
+        return $this->getWallet($this->id);
+    }
+
+    public function downlines(){
+        return $this->hasmany(User::class, 'upline')->count();
+    }
 }

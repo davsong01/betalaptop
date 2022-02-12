@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Traits\FunctionsTrait;
+
 
 class UserController extends Controller
 {
+    use FunctionsTrait;
     /**
      * Display a listing of the resource.
      *
@@ -58,9 +62,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('dash.admin.users.edit', compact('user'));
     }
 
     /**
@@ -70,9 +74,36 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $data = $this->validation($request);
+        $data['email'] = $request->email;
+
+        // Special validation for user email
+        $this->validate($request, [
+           'email' => 'required|unique:users,email,'. $user->id,
+        ]);
+        
+        // Handle avatar upload
+        if(request()->has('avatar')){
+            //delete old one
+            if(isset($user->avatar)){
+                $this->deleteImage($user->avatar);
+            }
+            // Upload new
+            $avatar = $this->uploadImage($request->avatar, 'site/assets/images/avatars', '400', '400');
+            $data['avatar'] = $avatar;
+        }
+        
+        // Handle Password Change
+        if(request()->has('password')){
+            $data['password'] = Hash::make($request['password']);
+        }else $data['password'] = $user->password;
+
+        // Save
+        $user->update($data);
+
+        return back()->with('message', 'Operation successful');
     }
 
     /**
@@ -81,8 +112,26 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        if(isset($user->avatar)){
+            $this->deleteImage($user->avatar);
+        }
+        $user->delete();
+        
+        return back()->with('message', 'Delete successful');
+    }
+
+    private function validation($request){
+        $v = $this->validate($request, [
+            'name' => 'required',
+            'phone' => 'required',
+            'avatar' => 'nullable',
+            'enrolled_by' => 'nullable',
+            'sponsor_id' => 'nullable',
+            'upline' => 'nullable',
+        ]);
+
+        return $v;
     }
 }

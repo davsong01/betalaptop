@@ -19,6 +19,9 @@ Auth::routes();
 
 Route::middleware(['auth'])->group (function() {
     Route::resource('users', 'UserController');
+    Route::get('walletistory/{id}', 'UserController@getWalletHistory');
+    Route::resource('transactions', 'Transactions');
+
 });
 
 // General Authenticated routes
