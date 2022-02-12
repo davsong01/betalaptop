@@ -14,7 +14,10 @@ class WalletController extends Controller
      */
     public function index()
     {
-        //
+        $walletTrans = Wallet::with('user', 'transferRecipient')->get();
+      
+        $i = 1;
+        return view('dash.admin.users.wallet_transactions', compact('walletTrans', 'i'));
     }
 
     /**

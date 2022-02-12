@@ -12,7 +12,13 @@ trait FunctionsTrait {
 
     public function uploadImage($image, $location, $width=null, $height=null){
         $imgName = time() . '-' . $image->getClientOriginalName();
-        $image = Image::make($image)->resize($width, $height);
+
+        if(!is_null($width) && !is_null($height)){
+            $image = Image::make($image)->resize($width, $height);
+        }else{
+            $image = Image::make($image);
+        }
+        
         // Check if file exist before saving, to avoid duplicates
         $this->deleteImage($location . '/' . $imgName);
 

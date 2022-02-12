@@ -19,8 +19,10 @@ class CreateSettingsTable extends Migration
             $table->string('favicon')->default('site/assets/images/general/favicon.png');
             $table->string('company_name')->default('Betalaptops');
             $table->string('official_email')->default('info@betalaptops.com');
+            $table->string('official_bank')->default('GTB')->nullable();
+            $table->string('official_account_name')->default('Beta Laptop')->nullable();
+            $table->string('official_account_number')->default('09090909087')->nullable();
             $table->string('currency')->default('₦');
-
             $table->timestamps();
         });
     }

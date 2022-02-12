@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\User;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Controllers\Traits\FunctionsTrait;
@@ -44,4 +45,5 @@ class User extends Authenticatable
     public function downlines(){
         return $this->hasmany(User::class, 'upline')->count();
     }
+
 }

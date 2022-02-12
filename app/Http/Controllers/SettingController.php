@@ -14,7 +14,9 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $setting = Setting::first();
+    
+        return view('dash.admin.settings.update', compact('setting'));
     }
 
     /**
@@ -57,7 +59,7 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
-        //
+       
     }
 
     /**
@@ -69,7 +71,36 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        //
+
+        // Create validation
+        $data = $this->validate($request,[
+            'logo' => 'nullable',
+            'favicon' => 'nullable',
+            'company_name' => 'required',
+            'official_email' => 'required',
+            'official_phone' => 'required',
+            'official_bank' => 'required',
+            'official_account_name' => 'required',
+            'official_account_number' => 'required',
+            'currency' => 'required'
+        ]);
+
+       
+        // Handle logo
+        if(request()->has('logo')){
+            // Upload new
+             $data['logo'] = $this->uploadImage($request->logo, 'site/assets/images/general');
+        }
+
+        // Handle favicon
+        if(request()->has('favicon')){
+            // Upload new
+             $data['favicon'] = $this->uploadImage($request->favicon, 'site/assets/images/general');
+        }
+        
+        $setting->update($data);
+        
+        return back()->with('message', 'Update successful');
     }
 
     /**

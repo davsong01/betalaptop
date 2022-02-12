@@ -1,28 +1,33 @@
 @extends('layouts.dash.app')
 @section('page-title', 'Dashboard')
+@section('active')
+<li class="breadcrumb-item active" aria-current="page">My profile</li>
+@endsection
 @section('content')
+<form method="POST" action="{{route('saveprofile')}}" class="form-horizontal form-material mx-2" enctype="multipart/form-data">
+
 <div class="row">
     <!-- Column -->
+
     <div class="col-lg-4 col-xlg-3 col-md-5">
         <div class="card">
             <div class="card-body profile-card">
-                <center class="mt-4"> <img src="../assets/images/users/5.jpg" class="rounded-circle"
-                        width="150" />
+                <center class="mt-4"> 
+
+                     @if($user->avatar)
+                        <img src="{{ asset($user->avatar)}}" alt="user" class="rounded-circle" width="150" >
+                    @else
+                        <img src="{{ asset('site/assets/images/avatars/d2.png') }}" class="rounded-circle" width="150">
+                    @endif
+                   
                     <h4 class="card-title mt-2">{{$user->name}}</h4>
-                    <h6 class="card-subtitle">{{$user->role}}</h6>
-                    <div class="row justify-content-center">
+                   
+                    <div class="row">
                         <div class="col-4">
-                            <a href="javascript:void(0)" class="link">
-                                <i class="icon-people" aria-hidden="true"></i>
-                                <span class="font-normal">254</span>
-                            </a>
+                            <label for="" style="width:100%;display: block ruby;">Change Avatar</label>
+                            <input type="file" name="avatar" required value="{{ old('avatar') }}">
                         </div>
-                        <div class="col-4">
-                            <a href="javascript:void(0)" class="link">
-                                <i class="icon-picture" aria-hidden="true"></i>
-                                <span class="font-normal">54</span>
-                            </a>
-                        </div>
+                       
                     </div>
                 </center>
             </div>
@@ -33,7 +38,6 @@
     <div class="col-lg-8 col-xlg-9 col-md-7">
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="{{route('saveprofile')}}" class="form-horizontal form-material mx-2">
                    @csrf
                     <div class="form-group">
                         <label class="col-md-12 mb-0">Full Name</label>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Traits\FunctionsTrait;
@@ -10,7 +11,7 @@ use App\Http\Controllers\Traits\FunctionsTrait;
 
 class UserController extends Controller
 {
-    use FunctionsTrait;
+   
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +22,13 @@ class UserController extends Controller
         $users = User::whereRole(2)->orderBy('created_at', 'DESC')->get();
         $i = 1;
         return view('dash.admin.users.index', compact('users', 'i'));
+    }
 
+    public function getWalletHistory($id){
+        $walletTrans = Wallet::with('user', 'transferRecipient')->whereUserId($id)->orderBy('created_at', 'DESC')->get();
+      
+        $i = 1;
+        return view('dash.admin.users.wallet_transactions', compact('walletTrans', 'i'));
     }
 
     /**

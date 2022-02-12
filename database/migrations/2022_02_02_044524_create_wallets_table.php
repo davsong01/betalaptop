@@ -21,6 +21,8 @@ class CreateWalletsTable extends Migration
                 ->onDelete('cascade');
             $table->enum('type', ['withdraw', 'topup', 'transfer']);
             $table->float('amount')->default(0);
+            $table->integer('recipient_id')->nullable();
+           
             $table->timestamps();
         });
     }
