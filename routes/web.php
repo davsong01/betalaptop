@@ -20,7 +20,7 @@ Auth::routes();
 Route::middleware(['auth'])->group (function() {
     Route::resource('users', 'UserController');
     Route::get('walletistory/{id}', 'UserController@getWalletHistory');
-    Route::resource('transactions', 'Transactions');
+    Route::resource('transactions', 'TransactionsController');
 
 });
 
@@ -30,5 +30,5 @@ Route::middleware(['auth'])->group (function() {
     Route::get('/profile', 'DashboardController@profile')->name('profile');
     Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
 
-    
+
 });
