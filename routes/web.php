@@ -19,8 +19,11 @@ Auth::routes();
 
 Route::middleware(['auth'])->group (function() {
     Route::resource('users', 'UserController');
-    Route::get('walletistory/{id}', 'UserController@getWalletHistory');
+    Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
     Route::resource('transactions', 'Transactions');
+    Route::resource('wallettransactions', 'WalletController');
+    Route::resource('settings', 'SettingController');
+
 
 });
 

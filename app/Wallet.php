@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Wallet extends Model
@@ -14,4 +15,11 @@ class Wallet extends Model
     protected $fillable = [
        'user_id', 'type', 'amount'
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+    public function transferRecipient(){
+        return $this->belongsTo(User::class, 'recipient_id');
+    }
 }

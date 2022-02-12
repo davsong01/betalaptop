@@ -42,7 +42,7 @@
                                     <td>{{ $user->name }}  <br> <i><b>{{ $user->username }}</b></i></td>
                                    
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->wallet() }} <br> <small><i><a href="">View history</a></i></small></td>
+                                    <td>{{ \App\Setting::first()->value('currency') }}{{ $user->wallet() }} <br> <small><i><a href="{{ route('wallethistory', $user->id) }}">View history</a></i></small></td>
                                     <td>{{ $user->downlines() }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
