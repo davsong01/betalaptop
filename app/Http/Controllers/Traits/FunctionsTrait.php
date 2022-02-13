@@ -126,6 +126,12 @@ trait FunctionsTrait {
         $this->topUpWallet($receiver_id, $amount);
     }
 
+    public function isAdmin(){
+        if(auth()->user()->role == 1){
+            return 1;
+        }else return null;
+    }
+
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,
