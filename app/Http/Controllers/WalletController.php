@@ -23,7 +23,6 @@ class WalletController extends Controller
         }else{
             $walletTrans = Wallet::with('user', 'transferRecipient')->whereUserId(auth()->user()->id)->get();
             return view('dash.users.transactions.index', compact('walletTrans', 'i'));
-
         }
     }
 

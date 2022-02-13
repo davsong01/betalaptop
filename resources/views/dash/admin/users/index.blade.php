@@ -23,7 +23,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Wallet</th>
-                                <th>Downlines</th>
+                                <th>Level</th>
                                 <td>Actions</td>
                             </tr>
                         </thead>
@@ -43,7 +43,7 @@
                                    
                                     <td>{{ $user->email }}</td>
                                     <td>{{ \App\Setting::first()->value('currency') }}{{ $user->wallet() }} <br> <small><i><a href="{{ route('wallethistory', $user->id) }}">View history</a></i></small></td>
-                                    <td>{{ $user->downlines() }}  <br> <small><i><a href="{{ route('binarytree', $user->id) }}">View tree</a></i></small></td>
+                                    <td>{{ $user->level() }}  <br> <small><i><a href="{{ route('binarytree', $user->id) }}">View binary tree</a></i></small></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a data-toggle="tooltip" title="Edit/View user" href="{{ route('users.edit', $user->id) }}" class="btn btn-primary"><span class="fa fa-edit"></span></a>

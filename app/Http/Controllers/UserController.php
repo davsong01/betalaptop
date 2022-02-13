@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Matrix;
 use App\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +18,8 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    use FunctionsTrait;
+    
     public function index()
     {
         $users = User::whereRole(2)->orderBy('created_at', 'DESC')->get();
@@ -32,7 +35,17 @@ class UserController extends Controller
     }
 
     public function binaryTree($id){
-        dd($id);
+
+        if($this->isAdmin()){
+            $user = User::find($id);
+            $matrix = Matrix::whereId($id)->get();
+        }else{
+            $user = auth()->user();
+            $matrix = Matrix::whereId(auth()->user()->id)->get();
+        }
+        
+        return view('dash.users.tree.binary_tree', compact('matrix', 'user'));
+
     }
 
     /**
