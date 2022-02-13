@@ -34,5 +34,5 @@ Route::middleware(['auth'])->group (function() {
     Route::get('/profile', 'DashboardController@profile')->name('profile');
     Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
 
-    
+
 });

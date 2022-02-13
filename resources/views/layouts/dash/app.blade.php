@@ -21,22 +21,25 @@
     <link href="{{ asset('board/assets/plugins/chartist/dist/chartist.min.css')}}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('board/css/style.min.css')}}" rel="stylesheet">
-    
-    
+
+
     {{-- Datatables --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
 
 
   {{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script> --}}
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  {{-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script> --}}
   {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script> --}}
-  
+
     @yield('extra-css')
 </head>
 
@@ -100,7 +103,7 @@
                 <!-- End Logo -->
                 <!-- ============================================================== -->
                 <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
-                    
+
                     <!-- ============================================================== -->
                     <!-- toggle and nav items -->
                     <!-- ============================================================== -->
@@ -151,7 +154,7 @@
                     <ul id="sidebarnav">
                         @include('layouts.sidenav')
                         <!-- User Profile-->
-                        
+
                         {{-- <li class="text-center p-20 upgrade-btn">
                             <a href="https://www.wrappixel.com/templates/monsteradmin/"
                                 class="btn btn-danger text-white mt-4" target="_blank">Upgrade to
@@ -182,20 +185,20 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="/">Home</a></li>
                                     @yield('active')
-                                    
+
                                 </ol>
                             </nav>
                         </div>
-                       
+
                     </div>
-                   
+
                 </div>
                  <div class="row" style="padding:0 15px">
                     @include('includes.alerts')
 
                 </div>
             </div>
-           
+
             <!-- ============================================================== -->
             <!-- End Bread crumb and right sidebar toggle -->
             <!-- ============================================================== -->
@@ -207,7 +210,7 @@
                 <!-- Sales chart -->
                 <!-- ============================================================== -->
                 @yield('content')
-               
+
             <!-- footer -->
             <!-- ============================================================== -->
             <footer class="footer text-center">
@@ -229,7 +232,7 @@
     <!-- ============================================================== -->
     {{-- <script src="{{ asset('board/assets/plugins/jquery/dist/jquery.min.js')}}"></script> --}}
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="{{ asset('board/assets/plugins/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+    {{-- <script src="{{ asset('board/assets/plugins/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script> --}}
     <script src="{{ asset('board/js/app-style-switcher.js')}}"></script>
     <!--Wave Effects -->
     <script src="{{ asset('board/js/waves.js')}}"></script>
@@ -247,7 +250,7 @@
         $('#example').DataTable();
     // } );
     </script>
-    
+
     @yield('extra-script')
 </body>
 
