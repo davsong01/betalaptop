@@ -31,6 +31,10 @@ class UserController extends Controller
         return view('dash.admin.users.wallet_transactions', compact('walletTrans', 'i'));
     }
 
+    public function binaryTree($id){
+        dd($id);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

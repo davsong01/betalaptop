@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group (function() {
     Route::resource('transactions', 'Transactions');
     Route::resource('wallettransactions', 'WalletController');
     Route::resource('settings', 'SettingController');
+    Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
 
 });
