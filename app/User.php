@@ -42,8 +42,8 @@ class User extends Authenticatable
         return $this->getWallet($this->id);
     }
 
-    public function downlines(){
-        return $this->hasmany(User::class, 'upline')->count();
+    public function level(){
+        return $this->getLevel($this->id);
     }
 
 }

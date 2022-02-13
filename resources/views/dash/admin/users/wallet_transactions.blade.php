@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-body">
                 <!-- column -->
-                <h4 class="card-title">All Users</h4>
+                <h4 class="card-title">All Wallet Transactions</h4>
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
                         <thead>

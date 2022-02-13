@@ -14,7 +14,7 @@ class TransactionsController extends Controller
      */
     public function index()
     {
-        return view("dash.admin.transactions.index");
+        return view("dash.users.transactions.index");
     }
 
     /**

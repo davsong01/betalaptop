@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Traits;
 
 use App\Emails;
+use App\Matrix;
 use App\Wallet;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
@@ -126,6 +127,16 @@ trait FunctionsTrait {
         $this->topUpWallet($receiver_id, $amount);
     }
 
+    public function isAdmin(){
+        if(auth()->user()->role == 1){
+            return 1;
+        }else return null;
+    }
+
+    public function getLevel($id){
+        $level = Matrix::where('user_id', $id)->count();
+        return $level;
+    }
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,

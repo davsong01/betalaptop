@@ -20,9 +20,8 @@ Auth::routes();
 Route::middleware(['auth'])->group (function() {
     Route::resource('users', 'UserController');
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
-    Route::resource('transactions', 'Transactions');
-    Route::resource('wallettransactions', 'WalletController');
     Route::resource('settings', 'SettingController');
+    Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
 
 });
@@ -32,6 +31,9 @@ Route::middleware(['auth'])->group (function() {
     Route::get('/account', 'DashboardController@index')->name('account');
     Route::get('/profile', 'DashboardController@profile')->name('profile');
     Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
+    Route::resource('transactions', 'TransactionsController');
+    Route::resource('wallet', 'WalletController');
+    Route::get('payments', 'PaymentsController@allTransactions')->name('payments.index');
 
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
 });
