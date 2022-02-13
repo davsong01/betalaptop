@@ -33,5 +33,5 @@ Route::middleware(['auth'])->group (function() {
     Route::get('/profile', 'DashboardController@profile')->name('profile');
     Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
 
-
+    Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
 });
