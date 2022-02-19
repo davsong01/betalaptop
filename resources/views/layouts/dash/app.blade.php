@@ -244,6 +244,7 @@
     <!--Menu sidebar -->
     <script src="{{ asset('board/js/sidebarmenu.js')}}"></script>
     <!--Custom JavaScript -->
+    <script src="{{ asset('board/js/js-laravel.js')}}"></script>
     <script src="{{ asset('board/js/custom.js')}}"></script>
     <!--This page JavaScript -->
     <!--flot chart-->
