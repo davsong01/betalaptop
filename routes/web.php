@@ -33,7 +33,8 @@ Route::middleware(['auth'])->group (function() {
     Route::post('/profile', 'DashboardController@saveProfile')->name('saveprofile');
     Route::resource('transactions', 'TransactionsController');
     Route::resource('wallet', 'WalletController');
-    Route::get('payments', 'PaymentsController@allTransactions')->name('payments.index');
+    Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
 
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
+    Route::post('transfer/validate/username-or-email', 'DashboardController@validateUsernameOrEmail')->name('validate.usernameOrEmail');
 });
