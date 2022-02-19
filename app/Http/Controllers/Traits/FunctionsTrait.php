@@ -116,12 +116,13 @@ trait FunctionsTrait {
      * @param int $amount
      * @return App/Wallet
      */
-    public function walletWithdraw($user_id, $amount){
+    public function walletWithdraw($user_id, $amount, $receiver_id = null){
         // create wallet with - amount type is withdrawal
         $wallet  = Wallet::create([
             'user_id' => $user_id,
             'type' => 'withdraw',
-            'amount' => -$amount
+            'amount' => -$amount,
+            'recipient_id' => $receiver_id ? $receiver_id : null
         ]);
         return $wallet;
     }
@@ -135,7 +136,7 @@ trait FunctionsTrait {
      * @return void
      */
     public function walletTransfer($sender_id, $receiver_id, $amount){
-        $this->walletWithdraw($sender_id, $amount);
+        $this->walletWithdraw($sender_id, $amount, $receiver_id);
         $this->topUpWallet($receiver_id, $amount);
     }
 
