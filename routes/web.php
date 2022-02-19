@@ -36,5 +36,7 @@ Route::middleware(['auth'])->group (function() {
     Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
 
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
-    Route::post('transfer/validate/username-or-email', 'DashboardController@validateUsernameOrEmail')->name('validate.usernameOrEmail');
+    Route::post('transactions/validate/username-or-email', 'TransactionsController@validateUsernameOrEmail')
+    ->name('transactions.validate.usernameOrEmail');
+    Route::post('transactions/transfer-fund', 'TransactionsController@transferFund')->name('transactions.transferFund');
 });
