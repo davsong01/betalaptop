@@ -37,23 +37,38 @@ $(function() {
             const element = event.target;
             const parent = element.closest('form');
             const usernameOrEmail = parent.querySelector('input[name="usernameOrEmail"]');
+            const transferAmount = parent.querySelector('input[name="transferAmount"]');
+            const submitButton = parent.querySelector('[type="submit"]');
             if (!usernameOrEmail.value.trim()) {
                 usernameOrEmail.classList.add("is-invalid");
             } else {
                 jsLaravel(parent)
                     .then(res => res.json())
                     .then(res => {
-                        console.log(res);
-                        usernameOrEmail.classList.remove("is-invalid");
-                        usernameOrEmail.classList.add("is-valid");
+                        if (res.status === "success") {
+                            console.log(submitButton);
+                            usernameOrEmail.classList.remove("is-invalid");
+                            usernameOrEmail.classList.add("is-valid");
+                            usernameOrEmail.classList.add("disabled");
+                            $(usernameOrEmail).attr('readonly', true);
+
+                            $(transferAmount).parent().show();
+                            $(submitButton).parent().show();
+                            $(element).hide();
+                            res.message ? $(usernameOrEmail).siblings('.invalid-feedback')
+                                .removeClass("invalid-feedback").addClass("valid-feedback").text(res.message) : '';
+                            parent.action = "transactions/transfer-fund";
+                        } else {
+                            $(usernameOrEmail).removeClass("is-valid is-invalid disabled").addClass("is-invalid")
+                            $(usernameOrEmail).attr("readonly", false);
+                            res.message ? $(usernameOrEmail).siblings('.invalid-feedback').text(res.message) : '';
+                        }
                     }).catch(err => {
-                        console.log(err);
-                        usernameOrEmail.classList.remove("is-invalid");
-                        usernameOrEmail.classList.remove("is-valid");
-                        usernameOrEmail.classList.add("is-invalid");
+                        $(usernameOrEmail).removeClass("is-valid is-invalid disabled").addClass("is-invalid")
+                        $(usernameOrEmail).attr("readonly", false);
+                        res.message ? $(usernameOrEmail).siblings('.invalid-feedback').text(res.message) : '';
                     })
             }
-            console.log(parent.querySelector('input[name="usernameOrEmail"]'), element.closest('form'))
         })
     })
 

@@ -13,12 +13,19 @@ class Wallet extends Model
      * @var array
      */
     protected $fillable = [
-       'user_id', 'type', 'amount'
+       'user_id', 'type', 'amount', 'recipient_id'
     ];
 
+    /**
+     * Get the wallet owner
+     */
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    /**
+     *  Get the recipient of the wallet
+     */
     public function transferRecipient(){
         return $this->belongsTo(User::class, 'recipient_id');
     }

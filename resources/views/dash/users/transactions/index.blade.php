@@ -20,7 +20,7 @@
               data-target="#uploadPOPModal">Upload POP</button>
           </div>
 
-          <!-- Modal For Transfer Fund -->
+          <!-- Modal For Topup -->
           <div class="modal fade" id="topupModal" tabindex="-1" aria-labelledby="topupModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -89,6 +89,7 @@
             </div>
           </div>
 
+          <!-- Modal For Transfer Fund -->
           <div class="modal fade" id="transferFundModal" tabindex="-1" aria-labelledby="transferFundModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -100,23 +101,29 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form method="POST" action="{{ route('validate.usernameOrEmail') }}">
+                  <form method="POST" action="{{ route('transactions.validate.usernameOrEmail') }}">
                     @csrf
                     <div class="mb-3">
                       <label for="usernameOrEmail" class="form-label">Who would you like to pay to?</label>
-                      <input type="text" class="form-control" id="usernameOrEmail" name="usernameOrEmail" placeholder="Enter username or email"
-                        required>
+                      <input type="text" class="form-control" id="usernameOrEmail" name="usernameOrEmail"
+                        placeholder="Enter username or email" required>
+                      <div class="invalid-feedback">
+                        An error occurred
+                      </div>
                     </div>
                     <div class="mb-3 hide">
                       <label for="transferAmount" class="form-label">How much would you like to transfer?</label>
-                      <input type="text" class="form-control" id="transferAmount" name="transferAmount" placeholder="Enter tranfer amount"
-                        required>
+                      <input type="text" class="form-control" id="transferAmount" name="transferAmount"
+                        placeholder="Enter tranfer amount" required>
+                      <div class="invalid-feedback">
+                        An error occurred
+                      </div>
                     </div>
                     <div class="mb-3">
                       <button type="click" id="validateUser" class="btn btn-warning btn-sm btn-block">Validate</button>
                     </div>
                     <div class="mb-3 hide">
-                      <button type="submit" class="btn btn-warning btn-sm btn-block">Tranfer</button>
+                      <button type="submit" class="btn btn-success btn-sm btn-block">Transfer</button>
                     </div>
                   </form>
                 </div>
@@ -138,13 +145,12 @@
               <tbody>
                 @foreach ($walletTrans as $transaction)
                   <tr style="color:{{ $transaction->amount > 0 ? 'green' : 'red' }}">
-                    <td>{{ $i++ }}</td>
+                    <td>{{ $loop->index + 1 }}</td>
                     <td>{{ $transaction->created_at }}</td>
                     <td>{{ $transaction->type }}</td>
                     <td>{!! \App\Setting::first()->value('currency') !!}{{ $transaction->amount }}</td>
-                    <td>{{ $transaction->type == 'transfer' ? $transaction->transferRecipient()->username : 'N/A' }}
+                    <td>{{ $transaction->type != 'topup' ? $transaction->transferRecipient != null ? $transaction->transferRecipient->username: 'Nil' : 'N/A' }}
                     </td>
-
                   </tr>
                 @endforeach
               </tbody>
@@ -174,7 +180,8 @@
                 <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}" required>
                 @csrf
                 <label for="amount" class="form-label">How much would you like to pay?</label>
-                <input type="number" class="form-control" id="amount" name="amount" min="1000" placeholder="Enter amount" required>
+                <input type="number" class="form-control" id="amount" name="amount" min="1000"
+                  placeholder="Enter amount" required>
               </div>
               <div class="mb-3">
                 <button type="submit" class="btn btn-success btn-sm btn-block">Pay</button>
