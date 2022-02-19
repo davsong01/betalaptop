@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Transactions;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\Traits\FunctionsTrait;
 class TransactionsController extends Controller
 {
     /**
@@ -14,7 +14,8 @@ class TransactionsController extends Controller
      */
     public function index()
     {
-        return view("dash.users.transactions.index");
+        $walletTrans = $this->getWalletHistory(auth()->user()->id);
+        return view("dash.users.transactions.index", compact("walletTrans", ));
     }
 
     /**
