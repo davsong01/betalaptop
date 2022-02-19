@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Paystack;
+use App\Transactions;
+use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -23,7 +24,14 @@ class PaymentController extends Controller
      */
     public function allTransactions()
     {
-        //
+         $i = 1;
+        if($this->isAdmin()){
+            $trns = Transactions::with('user')->get();
+            return view('dash.admin.users.wallet_transactions', compact('trns', 'i'));
+        }else{
+            $walletTrans = Transactions::with('user')->whereUserId(auth()->user()->id)->get();
+            return view('dash.users.transactions.online', compact('walletTrans', 'i'));
+        }
     }
 
     /**
@@ -98,6 +106,8 @@ class PaymentController extends Controller
      */
     public function redirectToGateway()
     {
+        request()->amount *= 100;
+
         try {
            return Paystack::getAuthorizationUrl()->redirectNow();
         } catch (\Exception $e) {
@@ -113,5 +123,15 @@ class PaymentController extends Controller
     {
         $paymentDetails = Paystack::getPaymentData();
         dd($paymentDetails);
+
+        if($paymentDetails['status'] === 'true'){
+            // log payment into transaction table
+            // Update wallet
+            // Provide value : 
+            /**
+             * 1. Open level 1 if user has no downlines by creating a new matrix row with position 1
+             */
+        }
+       
     }
 }

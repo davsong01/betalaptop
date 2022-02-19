@@ -165,11 +165,12 @@
           <div class="modal-body">
             <form method="POST" action="{{ route('pay') }}">
               <div class="mb-3">
-                <input type="hidden" name="email" value="waacsp@gmail.co" required>
+                <input type="hidden" name="email" value="{{ auth()->user()->email }}" required>
                 <input type="hidden" name="quantity" value="1" required>
                 <input type="hidden" name="currency" value="NGN" required>
                 <input type="hidden" name="metadata" value="{{ json_encode($array = ['key_name' => 'value']) }}"
                   required>
+                  
                 <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}" required>
                 @csrf
                 <label for="amount" class="form-label">How much would you like to pay?</label>

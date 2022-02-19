@@ -1,7 +1,7 @@
 @extends('layouts.dash.app')
-@section('page-title', 'Wallet Transactions')
+@section('page-title', 'Online Transactions')
 @section('active')
-<li class="breadcrumb-item active" aria-current="page">Wallet Transactions</li>
+<li class="breadcrumb-item active" aria-current="page">Online Transactions</li>
 @endsection
 @section('content')
 <div class="row">
@@ -9,23 +9,25 @@
         <div class="card">
             <div class="card-body">
                 <!-- column -->
-                <h4 class="card-title">All Wallet Transactions</h4>
+                <h4 class="card-title">All Online Transactions</h4>
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Date</th>
                                 <th>Avatar</th>
                                 <th>Username</th>
-                                <th>Type</th>
                                 <th>Amount</th>
-                                <th>Recipient</th>
+                                <th>Trnx Id</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($walletTrans as $transaction)
-                                <tr style="color:{{ $transaction->amount > 0 ? 'green' : 'red'}}">
+                            @foreach($trns as $transaction)
+                                <tr>
                                     <td>{{ $i++ }}</td>
+                                    <td>{{ $transaction->created_at}}</td>
+
                                     <td>
                                         @if($transaction->user->avatar)
                                             <img src="{{ asset($transaction->user->avatar)}}" alt="user" class="rounded-circle" width="40" >
@@ -34,10 +36,9 @@
                                         @endif
                                     </td>
                                     <td>{{ $transaction->user->username }}</td>
-                                   
-                                    <td>{{ $transaction->type }}</td>
-                                    <td>{!! \App\Setting::first()->value('currency') !!}{{ $transaction->amount }}</td>
-                                    <td>{{ $transaction->type == 'transfer' ? $transaction->transferRecipient()->username : 'N/A'}}</td>
+                                    <td>{!! \App\Setting::first()->value('currency') !!}{{ $transaction->amount}}</td>
+                                    <td>{{ $transaction->transaction_id }}</td>
+                                    
                                    
                                 </tr>
                             @endforeach

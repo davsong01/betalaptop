@@ -2,114 +2,6 @@
 @section('page-title', 'Binary Tree')
 @section('extra-css')
 <style>
-    /*Now the CSS*/
-    * {
-        margin: 0;
-        padding: 0;
-    }
-
-    .tree ul {
-        padding-top: 20px;
-        position: relative;
-
-        transition: all 0.5s;
-        -webkit-transition: all 0.5s;
-        -moz-transition: all 0.5s;
-    }
-
-    .tree li {
-        float: left;
-        text-align: center;
-        list-style-type: none;
-        position: relative;
-        padding: 20px 5px 0 5px;
-
-        transition: all 0.5s;
-        -webkit-transition: all 0.5s;
-        -moz-transition: all 0.5s;
-    }
-
-    /*We will use ::before and ::after to draw the connectors*/
-
-    .tree li::before,
-    .tree li::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 50%;
-        border-top: 1px solid #ccc;
-        width: 50%;
-        height: 20px;
-    }
-
-    .tree li::after {
-        right: auto;
-        left: 50%;
-        border-left: 1px solid #ccc;
-    }
-
-    /*We need to remove left-right connectors from elements without 
-any siblings*/
-    .tree li:only-child::after,
-    .tree li:only-child::before {
-        display: none;
-    }
-
-    /*Remove space from the top of single children*/
-    .tree li:only-child {
-        padding-top: 0;
-    }
-
-    /*Remove left connector from first child and 
-right connector from last child*/
-    .tree li:first-child::before,
-    .tree li:last-child::after {
-        border: 0 none;
-    }
-
-    /*Adding back the vertical connector to the last nodes*/
-    .tree li:last-child::before {
-        border-right: 1px solid #ccc;
-        border-radius: 0 5px 0 0;
-        -webkit-border-radius: 0 5px 0 0;
-        -moz-border-radius: 0 5px 0 0;
-    }
-
-    .tree li:first-child::after {
-        border-radius: 5px 0 0 0;
-        -webkit-border-radius: 5px 0 0 0;
-        -moz-border-radius: 5px 0 0 0;
-    }
-
-    /*Time to add downward connectors from parents*/
-    .tree ul ul::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        border-left: 1px solid #ccc;
-        width: 0;
-        height: 20px;
-    }
-
-    .tree li a {
-        border: 1px solid #ccc;
-        padding: 5px 10px;
-        text-decoration: none;
-        color: #666;
-        font-family: arial, verdana, tahoma;
-        font-size: 11px;
-        display: inline-block;
-
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-
-        transition: all 0.5s;
-        -webkit-transition: all 0.5s;
-        -moz-transition: all 0.5s;
-    }
-
     /*Time for some hover effects*/
     /*We will apply the hover effect the the lineage of the element also*/
     .tree li a:hover,
@@ -126,6 +18,65 @@ right connector from last child*/
     .tree li a:hover+ul ul::before {
         border-color: #94a0b4;
     }
+
+    .indicator {
+        position: relative;
+        padding-bottom: 25px;
+    }
+
+    .indicator:before,
+    .indicator:after {
+        content: '';
+        position: absolute;
+        background: #f00;
+        height: 3px;
+        width: 20%;
+        bottom: -20%;
+    }
+
+    .indicator:before {
+        left: 30.75%;
+        transform: rotate(-20deg);
+    }
+
+    .indicator:after {
+        right: 30.75%;
+        transform: rotate(20deg);
+    }
+
+    tr:first-child .indicator:before,
+    tr:first-child .indicator:after {
+        bottom: -30%;
+    }
+
+    tr:first-child .indicator:before {
+        left: 30.4%;
+        transform: rotate(-15deg);
+    }
+
+    tr:first-child .indicator:after {
+        right: 30.4%;
+        transform: rotate(15deg);
+    }
+
+    tr:last-child .indicator {
+        padding: 0;
+    }
+
+    tr:last-child .indicator:before,
+    tr:last-child .indicator:after {
+        display: none;
+    }
+    .tree{
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .tree-image{
+        width: 40px;
+    }
+    
 </style>
 @endsection
 @section('active')
@@ -136,93 +87,349 @@ right connector from last child*/
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <!-- column -->
-                <h4 class="card-title">Binary Tree</h4>
-                <div style="margin: auto;">
-                    <div class="tree">
-                        <ul>
-                            <li>
-                                <a href="#">1</a>
-                                <ul>
-                                    <li>
-                                        <a href="#">2</a>
-                                        <ul>
-                                            <li>
-                                                <a href="#">2.1</a>
-                                                <ul>
-                                                    <li>
-                                                        <a href="#">2.1</a>
-                                                            
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">2.2</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">2.2</a>
-                                                <ul>
-                                                    <li>
-                                                        <a href="#">2.1</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">2.2</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">3</a>
+            <h4 class="card-title">Binary Tree</h4>
 
-                                        <ul>
-                                            <li>
-                                                <a href="#">3.1</a>
-                                                    <ul>
-                                                        <li>
-                                                            <a href="#">2.1</a>
-                                                                <ul>
-                                                                    <li>
-                                                                        <a href="#">2.1</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="#">2.2</a>
-                                                                    </li>
-                                                                </ul>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">2.2</a>
-                                                                <ul>
-                                                                    <li>
-                                                                        <a href="#">2.1</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="#">2.2</a>
-                                                                    </li>
-                                                                </ul>
-                                                        </li>
-                                                    </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">3.2</a>
-                                                    <ul>
-                                                    <li>
-                                                        <a href="#">2.1</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">2.2</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                </ul>
-                            </li>
-                        </ul>
-                        </li>
-                        </ul>
-                    </div>
-                </div>
-
+            </div>
+            <div class="tree">
+                <table border="0" width="100%" align="center" style="border-collapse: collapse" class="responsive">
+                    <tbody>
+                        {{-- Level 0 --}}
+                        <tr>
+                            <td valign="top" height="45" colspan="64" align="center">
+                                <img border="0" class="rounded-circle tree-image" src="{{ asset('site/assets/images/avatars/d2.png') }}"><br>
+                                <p class="indicator">BG00000000<br>1</p>
+                            </td>
+                        </tr>
+                        {{-- level 1 --}}
+                        <tr>
+                            <td valign="top" align="center" width="400" height="45" colspan="32">
+                                <img class="rounded-circle tree-image" border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1a</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="32">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                        </tr>
+                        {{-- level 2 --}}
+                        <tr>
+                            <td valign="top" align="center" width="200" height="40" colspan="16">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1a1</p>
+                            </td>
+                            <td valign="top" width="200" align="center" height="40" colspan="16">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-128x128.png"><br>
+                                <p class="indicator">1a2OPEN</p>
+                            </td>
+                            <td valign="top" width="200" align="center" height="40" colspan="16">
+                                <img class="rounded-circle tree-image" border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-128x128.png"><br>
+                                <p class="indicator">1b1</p>
+                            </td>
+                            <td valign="top" width="200" height="40" align="center" colspan="16">
+                                <img class="rounded-circle tree-image" border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b2</p>
+                            </td>
+                        </tr>
+                        {{-- level 3 --}}
+                        <tr>
+                            <td valign="top" align="center" width="400" height="45" colspan="8">
+                                <img class="rounded-circle tree-image" border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1a</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="8">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                        </tr>
+                        {{-- level 4 --}}
+                        <tr>
+                            <td valign="top" align="center" width="400" height="45" colspan="4">
+                                <img class="rounded-circle tree-image" border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1a</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="4">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                           
+                        </tr>
+                        {{-- level 5 --}}
+                        <tr>
+                            <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                             <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                            <td valign="top" width="400" align="center" height="45" colspan="2">
+                                <img class="rounded-circle tree-image"  border="0"
+                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
+                                <p class="indicator">BG00000000<br>1b</p>
+                            </td>
+                        </tr>
+                        {{-- level 6 --}}
+                      
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
