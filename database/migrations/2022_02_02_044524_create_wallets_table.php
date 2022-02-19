@@ -17,12 +17,11 @@ class CreateWalletsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
+            ->references('id')->on('users')
+            ->onDelete('cascade');
             $table->enum('type', ['withdraw', 'topup', 'transfer']);
             $table->float('amount')->default(0);
-            $table->integer('recipient_id')->nullable();
-           
+            $table->bigInteger('recipient_id')->nullable();
             $table->timestamps();
         });
     }
