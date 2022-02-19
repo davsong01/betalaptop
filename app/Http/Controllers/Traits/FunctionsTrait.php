@@ -19,7 +19,7 @@ trait FunctionsTrait {
         }else{
             $image = Image::make($image);
         }
-        
+
         // Check if file exist before saving, to avoid duplicates
         $this->deleteImage($location . '/' . $imgName);
 
@@ -79,6 +79,18 @@ trait FunctionsTrait {
     public function getWallet($user_id){
         $wallet = Wallet::where('user_id', $user_id)->sum('amount');
         return $wallet;
+    }
+
+    /**
+     * Get user wallet
+     *
+     * @param int $user_id
+     * @param int $amount
+     * @return App/Wallet
+     */
+    public function getWalletHistory($user_id){
+        $wallets = Wallet::where('user_id', $user_id)->get();
+        return $wallets;
     }
 
     /**
