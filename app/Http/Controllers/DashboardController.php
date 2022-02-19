@@ -103,4 +103,14 @@ class DashboardController extends Controller
     {
         //
     }
+
+    public function validateUsernameOrEmail(Request $request)
+    {
+        return response()->json($request);
+        $user = auth()->user();
+        $request->validate([
+            'usernameOrEmail' => 'string|max:30|required',
+        ]);
+        return redirect()->back();
+    }
 }
