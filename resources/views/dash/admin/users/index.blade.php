@@ -11,8 +11,7 @@
                 <!-- column -->
                
                 <h4 class="card-title">All Users</h4>
-                <a href="" class="btn btn-success mb-10" >Download Here</a>
-                <a href="" class="btn btn-success mb-10" >Download Here</a>
+                <a href="" class="btn btn-success mb-10" >Register new user</a>
 
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -24,13 +23,13 @@
                                 <th>Email</th>
                                 <th>Wallet</th>
                                 <th>Level</th>
-                                <td>Actions</td>
+                                <th>Position</th>
+                                {{-- <td>Actions</td> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($users as $user)
+                            @foreach($users->sortBy('position') as $user)
                                 <tr>
-                                
                                     <td>{{ $i++ }}</td>
                                     <td>
                                         @if($user->avatar)
@@ -44,7 +43,8 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ \App\Setting::first()->value('currency') }}{{ $user->wallet() }} <br> <small><i><a href="{{ route('wallethistory', $user->id) }}">View history</a></i></small></td>
                                     <td>{{ $user->level() }}  <br> <small><i><a href="{{ route('binarytree', $user->id) }}">View binary tree</a></i></small></td>
-                                    <td>
+                                    <td>{{ $user->position }}</td>
+                                    {{-- <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a data-toggle="tooltip" title="Edit/View user" href="{{ route('users.edit', $user->id) }}" class="btn btn-primary"><span class="fa fa-edit"></span></a>
                                             <form id="delete" onsubmit="return confirm('Are you sure you want to delete forever?');" action="{{ route('users.destroy', $user->id) }}" method="POST">
@@ -54,7 +54,7 @@
                                             </form>  
                                         </div>
                                                    
-                                    </td>
+                                    </td> --}}
                                 
                                 </tr>
                             @endforeach

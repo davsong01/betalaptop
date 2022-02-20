@@ -93,12 +93,7 @@ class TransactionsController extends Controller
     public function validateUsernameOrEmail(Request $request)
     {
         $request->request->add(['type' =>  filter_var($request->usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'email' : 'username']);
-        $user = User::where($request->type, $request->usernameOrEmail)->first();
-
-        if($user->id === auth()->user()->id){
-            return response()->json(['status' => 'error', 'message' => 'Invalid username or email'], 404);
-        }
-
+        
         $validator = Validator::make($request->all(), [
             'type' => 'string|max:40|required|in:email,username',
             'usernameOrEmail' => 'required|string|max:40',
@@ -108,6 +103,14 @@ class TransactionsController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => 'Invalid username or email'], 404);
         }
+
+        $user = User::where($request->type, $request->usernameOrEmail)->first();
+
+        if($user->id === auth()->user()->id){
+            
+            return response()->json(['status' => 'error', 'message' => 'Invalid username or email'], 404);
+        }
+        
         return response()->json(['status' => 'success', 'message' => 'user ' . $request->usernameOrEmail . ' found']);
     }
 

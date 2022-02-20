@@ -150,6 +150,45 @@ trait FunctionsTrait {
         $level = Matrix::where('user_id', $id)->count();
         return $level;
     }
+
+    /***
+     * Function to get the position of any user in relation to its parent
+     * 
+     * @param child id, parent id
+     * @response position in matrix of parent
+     */
+    public function getPosition($child, $parent){
+        $position = NULL;
+        // Search through all matrices for the parent
+        $parentMatrix = Matrix::whereUserId($parent)->get();
+        if($parentMatrix){
+             // Search through all left matrices for parent
+            foreach($parentMatrix as $matrix){
+                $left = json_decode($matrix->left, true);
+                $search = array_search($child, $left);
+                if($search){
+                $position = 'Level '.$matrix->position. ', left '.$search;
+                }
+            }
+
+            foreach($parentMatrix as $matrix){
+                $right = json_decode($matrix->right, true);
+                $search = array_search($child, $right);
+                if($search){
+                $position = 'Level '.$matrix->position. ', right '.$search;
+                }
+            }
+
+            return $position;
+        }
+       
+
+
+        // Search through all Right matrices for parent
+        //  dd($parentMatrix, $parent);
+    }
+
+    
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,

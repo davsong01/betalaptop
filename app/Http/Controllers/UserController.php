@@ -38,13 +38,26 @@ class UserController extends Controller
 
         if($this->isAdmin()){
             $user = User::find($id);
-            $matrix = Matrix::whereId($id)->get();
+            $matrix = Matrix::whereUserId($id)->get();
+            // dd(json_encode($data = [
+            //     1 => 505,
+            //     2 => 504,
+            //     3 => 503
+            // ]));
+            foreach($matrix as $mat){
+                $mat['left'] = json_decode($mat->left, true);
+                $mat['right'] = json_decode($mat->right, true);
+            }
+           
+            $level = $matrix->count();
+           
         }else{
             $user = auth()->user();
-            $matrix = Matrix::whereId(auth()->user()->id)->get();
+            $level = NULL;
+            $matrix = Matrix::whereUserId(auth()->user()->id)->get();
         }
         
-        return view('dash.users.tree.binary_tree', compact('matrix', 'user'));
+        return view('dash.users.tree.binary_tree', compact('matrix', 'user', 'level'));
 
     }
 

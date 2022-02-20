@@ -14,7 +14,7 @@
             <div class="card-body profile-card">
                 <center class="mt-4"> 
 
-                     @if($user->avatar)
+                    @if($user->avatar)
                         <img src="{{ asset($user->avatar)}}" alt="user" class="rounded-circle" width="150" >
                     @else
                         <img src="{{ asset('site/assets/images/avatars/d2.png') }}" class="rounded-circle" width="150">

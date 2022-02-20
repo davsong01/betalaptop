@@ -96,24 +96,106 @@
                         {{-- Level 0 --}}
                         <tr>
                             <td valign="top" height="45" colspan="64" align="center">
-                                <img border="0" class="rounded-circle tree-image" src="{{ asset('site/assets/images/avatars/d2.png') }}"><br>
-                                <p class="indicator">BG00000000<br>1</p>
+                                <img border="0" class="rounded-circle tree-image"
+                                    @if($user->avatar)
+                                        src="{{ asset($user->avatar)}}"
+                                    @else
+                                        src="{{ asset('site/assets/images/avatars/d2.png') }}"
+                                    @endif
+                                >
+                                <p class="indicator">{{ $user->username }}</p>
                             </td>
                         </tr>
                         {{-- level 1 --}}
+                        @if($level > 0)
                         <tr>
                             <td valign="top" align="center" width="400" height="45" colspan="32">
-                                <img class="rounded-circle tree-image" border="0"
-                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled-128x128.png"><br>
-                                <p class="indicator">BG00000000<br>1a</p>
+                                @foreach($matrix->where('position', 1) as $mat)
+                                    @foreach($mat['left'] as $value=>$user)
+                                        @if($user != 0)
+                                        @php
+                                            $downline = \App\User::downline($user);
+                                        @endphp
+                                            <img border="0" class="rounded-circle tree-image"
+                                                @if($downline->avatar)
+                                                    src="{{ asset($downline->avatar)}}"
+                                                @else
+                                                    src="{{ asset('site/assets/images/avatars/d2.png') }}"
+                                                @endif
+                                            >
+                                            <br>
+                                            <p class="indicator">{{ $downline->username }}</p>
+                                        @else
+                                            <img class="rounded-circle tree-image"  border="0" src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-128x128.png">
+                                            <br>
+                                            <div class="icon-wrapper" data-bs-toggle="tooltip" title="Fill position">
+                                            <a href="#myModal" data-toggle="modal"><i class="fas fa-edit text-mute"></i></a>  
+                                            @include('includes.addUserModal')
+                                
+                                            <p class="indicator">OPEN</p>
+                                        @endif
+                                       
+                                    @endforeach
+                                @endforeach
                             </td>
                             <td valign="top" width="400" align="center" height="45" colspan="32">
-                                <img class="rounded-circle tree-image"  border="0"
-                                    src="https://freeiconshop.com/wp-content/uploads/edd/person-girl-outline-filled-128x128.png"><br>
-                                <p class="indicator">BG00000000<br>1b</p>
+                                @foreach($matrix->where('position', 1) as $mat)
+                                    @foreach($mat['right'] as $value=>$user)
+                                        @if($user != 0)
+                                        @php
+                                            $downline = \App\User::downline($user);
+                                        @endphp
+                                            <img border="0" class="rounded-circle tree-image"
+                                                @if($downline->avatar)
+                                                    src="{{ asset($downline->avatar)}}"
+                                                @else
+                                                    src="{{ asset('site/assets/images/avatars/d2.png') }}"
+                                                @endif
+                                            >
+                                            <br>
+                                            <p class="indicator">{{ $downline->username }}</p>
+                                        @else
+                                            <img class="rounded-circle tree-image"  border="0" src="https://freeiconshop.com/wp-content/uploads/edd/person-outline-128x128.png">
+                                            <br>
+                                            
+                                             <div class="icon-wrapper" data-bs-toggle="tooltip" title="Fill position">
+                                           
+                                            <a href="#" data-toggle="modal" data-target="#modal-{{ $mat->id.'r'.$value}}"><i class="fas fa-edit text-mute"></i></a> 
+                                            </div>
+                                            <div id="modal-{{ $mat->id.'r'.$value}}" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                   
+                                                </div>
+                                                <div class="modal-body" style="text-align:left">
+                                                     <h6 class="modal-title"><b>Fill Position for Level {{ $mat['position'] }}, Right {{ $value }}</b></h6>
+                                                    <p>Some text in the modal.</p>
+                                                    <form action="">
+                                                    <input type="hidden" name="position" value="{{ $mat->id }}">
+                                                    <input type="hidden" name="side" value="{{ 'right' }}">
+                                                    <input type="hidden" name="inner" value="{{ $value }}">
+                                                </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                </div>
+                                                </div>
+
+                                            </div>
+                                            </div>
+                                            <p class="indicator">OPEN</p>
+                                        @endif
+                                       
+                                    @endforeach
+                                @endforeach
                             </td>
                         </tr>
+                        @endif
                         {{-- level 2 --}}
+                        @if($level > 1)
                         <tr>
                             <td valign="top" align="center" width="200" height="40" colspan="16">
                                 <img class="rounded-circle tree-image"  border="0"
@@ -136,7 +218,9 @@
                                 <p class="indicator">BG00000000<br>1b2</p>
                             </td>
                         </tr>
+                        @endif
                         {{-- level 3 --}}
+                        @if($level > 2)
                         <tr>
                             <td valign="top" align="center" width="400" height="45" colspan="8">
                                 <img class="rounded-circle tree-image" border="0"
@@ -179,7 +263,9 @@
                                 <p class="indicator">BG00000000<br>1b</p>
                             </td>
                         </tr>
+                        @endif
                         {{-- level 4 --}}
+                        @if($level > 3)
                         <tr>
                             <td valign="top" align="center" width="400" height="45" colspan="4">
                                 <img class="rounded-circle tree-image" border="0"
@@ -263,7 +349,9 @@
                             </td>
                            
                         </tr>
+                        @endif
                         {{-- level 5 --}}
+                        @if($level > 5)
                         <tr>
                             <td valign="top" width="400" align="center" height="45" colspan="2">
                                 <img class="rounded-circle tree-image"  border="0"
@@ -426,6 +514,7 @@
                                 <p class="indicator">BG00000000<br>1b</p>
                             </td>
                         </tr>
+                        @endif
                         {{-- level 6 --}}
                       
                     </tbody>

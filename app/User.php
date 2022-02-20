@@ -46,4 +46,9 @@ class User extends Authenticatable
         return $this->getLevel($this->id);
     }
 
+    public static function downline($id){
+        $user = User::find($id);
+        return $user;
+    }
+
 }
