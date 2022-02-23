@@ -39,24 +39,29 @@ class UserController extends Controller
         if($this->isAdmin()){
             $user = User::find($id);
             $matrix = Matrix::whereUserId($id)->get();
-            // dd(json_encode($data = [
-            //     1 => 505,
-            //     2 => 504,
-            //     3 => 503
-            // ]));
-            foreach($matrix as $mat){
-                $mat['left'] = json_decode($mat->left, true);
-                $mat['right'] = json_decode($mat->right, true);
-            }
+            
+            $matrix->map(function($matrix){
+                $matrix['left'] = json_decode($matrix->left, true);
+                $matrix['right'] = json_decode($matrix->right, true);
+
+                return $matrix;
+            });
            
-            $level = $matrix->count();
-           
+
         }else{
             $user = auth()->user();
             $level = NULL;
             $matrix = Matrix::whereUserId(auth()->user()->id)->get();
+           
+            $matrix->map(function($matrix){
+                $matrix['left'] = json_decode($matrix->left, true);
+                $matrix['right'] = json_decode($matrix->right, true);
+
+                return $matrix;
+            });
         }
-        
+
+        $level = $matrix->count();
         return view('dash.users.tree.binary_tree', compact('matrix', 'user', 'level'));
 
     }

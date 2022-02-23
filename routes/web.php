@@ -21,7 +21,6 @@ Route::middleware(['auth'])->group (function() {
     Route::resource('users', 'UserController');
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
     Route::resource('settings', 'SettingController');
-    Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
 
 });
@@ -35,6 +34,7 @@ Route::middleware(['auth'])->group (function() {
     Route::resource('wallet', 'WalletController');
     Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
     Route::resource('downline', 'DownlineController');
+    Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
     Route::get('/getpayment', 'PaymentController@handleGatewayCallback')->name('handle');

@@ -188,6 +188,13 @@ trait FunctionsTrait {
         //  dd($parentMatrix, $parent);
     }
 
+    public function getOpenPositions($id){
+
+    }
+
+    public function getFixedPositions($id){
+        
+    }
     
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
