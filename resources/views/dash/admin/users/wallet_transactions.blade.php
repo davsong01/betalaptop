@@ -23,9 +23,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($trns as $transaction)
+                            @foreach($walletTrans as $transaction)
                                 <tr>
-                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $loop->index +1 }}</td>
                                     <td>{{ $transaction->created_at}}</td>
 
                                     <td>
@@ -38,8 +38,6 @@
                                     <td>{{ $transaction->user->username }}</td>
                                     <td>{!! \App\Setting::first()->value('currency') !!}{{ $transaction->amount}}</td>
                                     <td>{{ $transaction->transaction_id }}</td>
-                                    
-                                   
                                 </tr>
                             @endforeach
                         </tbody>
