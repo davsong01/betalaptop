@@ -17,7 +17,8 @@ class TransactionsController extends Controller
     public function index()
     {
         $walletTrans = $this->getWalletHistory(auth()->user()->id);
-        return view("dash.users.transactions.index", compact("walletTrans", ));
+        $current_balance = $this->getWallet(auth()->user()->id);
+        return view("dash.users.transactions.index", compact("walletTrans", 'current_balance'));
     }
 
     /**
@@ -93,7 +94,7 @@ class TransactionsController extends Controller
     public function validateUsernameOrEmail(Request $request)
     {
         $request->request->add(['type' =>  filter_var($request->usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'email' : 'username']);
-        
+
         $validator = Validator::make($request->all(), [
             'type' => 'string|max:40|required|in:email,username',
             'usernameOrEmail' => 'required|string|max:40',
@@ -107,10 +108,10 @@ class TransactionsController extends Controller
         $user = User::where($request->type, $request->usernameOrEmail)->first();
 
         if($user->id === auth()->user()->id){
-            
+
             return response()->json(['status' => 'error', 'message' => 'Invalid username or email'], 404);
         }
-        
+
         return response()->json(['status' => 'success', 'message' => 'user ' . $request->usernameOrEmail . ' found']);
     }
 
@@ -126,10 +127,9 @@ class TransactionsController extends Controller
                'transferAmount' => 'numeric|required'
            ]);
            $receiver = User::where('email', $request->usernameOrEmail)->orWhere('username', $request->usernameOrEmail)->first();
-           $this->walletTransfer(auth()->user()->id, $receiver->id, $request->transferAmount);
-        //    dd($receiver->id, $request);
-            return redirect()->back()->with(['msg' => 'Transfer successful']);
+          if( $this->walletTransfer(auth()->user()->id, $receiver->id, $request->transferAmount))
+            return redirect()->back()->with(['message' => 'Transfer successful']);
        }
-       return redirect()->back()->withErrors(['msg' =>'An error occurred with your transfer']);
+       return redirect()->back()->withErrors(['message' =>'Invalid fund, or an error occurred with your transfer, try again.']);
     }
 }
