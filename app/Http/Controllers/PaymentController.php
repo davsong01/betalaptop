@@ -122,6 +122,9 @@ class PaymentController extends Controller
      */
     public function handleGatewayCallback()
     {
+        /**
+         * TODO: Remember to fix replay payload attack/hack
+         */
         $paymentDetails = Paystack::getPaymentData();
         if($paymentDetails['status'] === true){
             $this->topUpWallet(auth()->user()->id, $paymentDetails['data']['amount'] /= 100);
