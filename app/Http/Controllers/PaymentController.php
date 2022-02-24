@@ -25,10 +25,9 @@ class PaymentController extends Controller
      */
     public function allTransactions()
     {
-         $i = 1;
         if($this->isAdmin()){
-            $trns = Transactions::with('user')->get();
-            return view('dash.admin.users.wallet_transactions', compact('trns', 'i'));
+           $walletTrans = Transactions::with('user')->get();
+            return view('dash.admin.users.wallet_transactions', compact('walletTrans'));
         }else{
             $walletTrans = Transactions::with('user')->whereUserId(auth()->user()->id)->get();
             return view('dash.users.transactions.online', compact('walletTrans', 'i'));
