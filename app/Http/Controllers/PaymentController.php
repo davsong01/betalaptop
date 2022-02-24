@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Paystack;
 use App\Transactions;
+use App\Wallet;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -111,7 +112,8 @@ class PaymentController extends Controller
         try {
            return Paystack::getAuthorizationUrl()->redirectNow();
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['msg' => $e->getMessage()]);
+            $res = explode("{", $e->getMessage());
+            return redirect()->back()->withErrors(['message' => preg_replace('/[^A-Za-z0-9 \:]/', '', $res[array_key_last($res)])]);
         }
     }
 
@@ -122,16 +124,21 @@ class PaymentController extends Controller
     public function handleGatewayCallback()
     {
         $paymentDetails = Paystack::getPaymentData();
-        dd($paymentDetails);
-
-        if($paymentDetails['status'] === 'true'){
+        if($paymentDetails['status'] === true){
+            $this->topUpWallet(auth()->user()->id, $paymentDetails['data']['amount'] /= 100);
+            Transactions::create([
+                'user_id' => auth()->user()->id,
+                'amount' => $paymentDetails['data']['amount'] /= 100,
+                'transaction_id' => $paymentDetails['data']['reference']
+            ]);
             // log payment into transaction table
             // Update wallet
-            // Provide value : 
+            // Provide value :
             /**
              * 1. Open level 1 if user has no downlines by creating a new matrix row with position 1
              */
+            return redirect()->back()->with(['message' => 'Top up successful']);
         }
-       
+        return redirect()->back()->withErrors(['message' => 'An error occurred with your transaction']);
     }
 }
