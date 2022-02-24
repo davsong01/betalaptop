@@ -74,7 +74,7 @@ trait FunctionsTrait {
      *
      * @param int $user_id
      * @param int $amount
-     * @return App/Wallet
+     * @return int
      */
     public function getWallet($user_id){
         $wallet = Wallet::where('user_id', $user_id)->sum('amount');
@@ -86,10 +86,10 @@ trait FunctionsTrait {
      *
      * @param int $user_id
      * @param int $amount
-     * @return App/Wallet
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function getWalletHistory($user_id){
-        $wallets = Wallet::where('user_id', $user_id)->get();
+        $wallets = Wallet::where('user_id', $user_id)->orderBy('id', 'DESC')->get();
         return $wallets;
     }
 
@@ -114,17 +114,20 @@ trait FunctionsTrait {
      *
      * @param int $user_id
      * @param int $amount
-     * @return App/Wallet
+     * @return boolean|App/Wallet
      */
     public function walletWithdraw($user_id, $amount, $receiver_id = null){
-        // create wallet with - amount type is withdrawal
-        $wallet  = Wallet::create([
-            'user_id' => $user_id,
-            'type' => 'withdraw',
-            'amount' => -$amount,
-            'recipient_id' => $receiver_id ? $receiver_id : null
-        ]);
-        return $wallet;
+        if($this->getWallet($user_id) - $amount >= 0 ){
+            // create wallet with - amount type is withdrawal
+            $wallet  = Wallet::create([
+                'user_id' => $user_id,
+                'type' => 'withdraw',
+                'amount' => -$amount,
+                'recipient_id' => $receiver_id ? $receiver_id : null
+            ]);
+            return $wallet;
+        }
+        return false;
     }
 
     /**
@@ -133,11 +136,14 @@ trait FunctionsTrait {
      * @param int $sender_id
      * @param int $receiver_id
      * @param int $amount
-     * @return void
+     * @return boolean true on success otherwise false
      */
     public function walletTransfer($sender_id, $receiver_id, $amount){
-        $this->walletWithdraw($sender_id, $amount, $receiver_id);
-        $this->topUpWallet($receiver_id, $amount);
+        if($this->walletWithdraw($sender_id, $amount, $receiver_id)){
+            $this->topUpWallet($receiver_id, $amount);
+            return true;
+        }
+        return false;
     }
 
     public function isAdmin(){
@@ -153,7 +159,7 @@ trait FunctionsTrait {
 
     /***
      * Function to get the position of any user in relation to its parent
-     * 
+     *
      * @param child id, parent id
      * @response position in matrix of parent
      */
@@ -181,7 +187,7 @@ trait FunctionsTrait {
 
             return $position;
         }
-       
+
 
 
         // Search through all Right matrices for parent
@@ -193,9 +199,9 @@ trait FunctionsTrait {
     }
 
     public function getFixedPositions($id){
-        
+
     }
-    
+
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,
