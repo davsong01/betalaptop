@@ -22,6 +22,7 @@ class CreateSettingsTable extends Migration
             $table->string('official_bank')->default('GTB')->nullable();
             $table->string('official_account_name')->default('Beta Laptop')->nullable();
             $table->string('official_account_number')->default('09090909087')->nullable();
+            $table->string('official_phone')->default('09090909087')->nullable();
             $table->string('currency')->default('₦');
             $table->timestamps();
         });
