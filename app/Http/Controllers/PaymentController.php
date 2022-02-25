@@ -126,7 +126,9 @@ class PaymentController extends Controller
          * TODO: Remember to fix replay payload attack/hack
          */
         $paymentDetails = Paystack::getPaymentData();
-        if($paymentDetails['status'] === true){
+        $replay_payload = Transactions::where('transaction_id', $paymentDetails['data']['reference'])->first();
+
+        if($paymentDetails['status'] === true && !$replay_payload){
             $this->topUpWallet(auth()->user()->id, $paymentDetails['data']['amount'] /= 100);
             Transactions::create([
                 'user_id' => auth()->user()->id,
