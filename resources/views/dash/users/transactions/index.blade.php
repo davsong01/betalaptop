@@ -206,5 +206,32 @@
         </div>
       </div>
     </div>
+
+    {{-- Moal for POP --}}
+    <div class="modal fade" id="uploadPOPModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body pb-5">
+            <form method="POST" action="{{ route('transactions.proofOfPayment') }}">
+              @csrf
+              <small>Upload proof of payment</small>
+              <div class="input-group">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="pop" required>
+                  <label class="custom-file-label" for="pop">Select POP
+                    file...</label>
+                </div>
+              </div>
+          <button type="submit" class="btn btn-primary btn-sm btn-block my-2"
+            title="Continue by uploading POP (Proof of Payment)">Upload <abbr title="Proof of Payment">POP</abbr></button>
+        </div>
+        </form>
+      </div>
+    </div>
   </div>
 @endsection
