@@ -6,6 +6,8 @@ use App\User;
 use App\Transactions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\FunctionsTrait;
+use App\ProofOfPayment;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 class TransactionsController extends Controller
 {
@@ -131,5 +133,46 @@ class TransactionsController extends Controller
             return redirect()->back()->with(['message' => 'Transfer successful']);
        }
        return redirect()->back()->withErrors(['message' =>'Invalid fund, or an error occurred with your transfer, try again.']);
+    }
+
+    /**
+     * Upload proof of payment
+     * @param Request @request
+     * @return Redirect
+     */
+    public function uploadPOP(Request $request){
+        $request->validate([
+            'proofOfPayment' => 'required|mimetypes:image/*,application/pdf|max:4096'
+        ]);
+        $file = $request->proofOfPayment;
+        $path = $file->store('public/proof-of-payment');
+        ProofOfPayment::create([
+            'user_id' => auth()->user()->id,
+            'path' => $path,
+            'name' =>  basename($path)
+        ]);
+        return redirect()->back()->with(['message' => 'uploaded successfully']);
+    }
+
+    //admin method
+    public function allProofOfPayment(){
+        $files = Storage::disk()->files('public/proof-of-payment');
+        return view('dash.admin.users.pop', compact('files'));
+    }
+
+    //user method
+    public function meProofOfPayment(){
+        $proofs = ProofOfPayment::where('user_id', auth()->user()->id)->get();
+        return view('dash.users.pops.index', compact('proofs'));
+    }
+
+    public function deleteProofOfPayment(string $id){
+        $id = 'public/proof-of-payment/'.$id;
+        if(Storage::disk()->exists($id)){
+            // remember to delete from database, maybe use soft delete
+            Storage::delete($id);
+            return redirect()->back()->with(['message' => 'Deleted successfully']);
+        }
+        return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits']);
     }
 }
