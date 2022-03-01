@@ -78,13 +78,13 @@
                             <div class="col-12">Bank: {{ \App\Setting::first()->value('official_bank') }}</div>
                           </div>
                         </div>
-                        <form class="" method="POST" action="{{ route('transactions.proofOfPayment')}}">
+                        <form class="" method="POST" action="{{ route('transactions.proofOfPayment')}}" enctype="multipart/form-data">
                           <div class="my-3">
 
                             <div class="input-group">
                               <div class="custom-file">
                                 <small>Upload proof of payment</small>
-                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" accept="image/*,application/pdf" name="proofOfPayment" required>
                                 <label class="custom-file-label" for="validatedInputGroupCustomFile">Select POP
                                   file...</label>
                               </div>
@@ -217,12 +217,12 @@
             </button>
           </div>
           <div class="modal-body pb-5">
-            <form method="POST" action="{{ route('transactions.proofOfPayment') }}">
+            <form method="POST" action="{{ route('transactions.proofOfPayment') }}" enctype="multipart/form-data">
               @csrf
               <small>Upload proof of payment</small>
               <div class="input-group">
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="pop" required>
+                  <input type="file" name="proofOfPayment" accept="image/*,application/pdf" class="custom-file-input" id="pop" required>
                   <label class="custom-file-label" for="pop">Select POP
                     file...</label>
                 </div>
