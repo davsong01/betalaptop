@@ -195,7 +195,136 @@ trait FunctionsTrait {
     public function getFixedPositions($id){
         
     }
+
+    public function getUpline($node, $parent){
+
+        $levelPosition = explode (",", $node);
+     
+        $level = (int) substr($levelPosition[0], -1);
+        $side = (int) substr($levelPosition[1], -1);
+     
+        $upperLevel = $level - 1;
+        $upperLevelDetails = Matrix::whereUserId($parent)->wherePosition($upperLevel)->first();
+        
+        // If right
+        if (str_contains($levelPosition[1], 'right')) {
+               // Check through
+            $upline = $this->getUplineIndex($upperLevelDetails->right, $upperLevel, $level, $side, 'right');
+        }
+
+        // If left
+        if (str_contains($levelPosition[1], 'left')) {
+            $upline = $this->getUplineIndex($upperLevelDetails->left, $upperLevel, $level, $side, 'left');
+
+        }
+
+        return $upline;
+    }
     
+    public function getIndex($details, $needle){
+        foreach($details as $index=>$value){
+             dd($value, $index, $needle);
+            if($value === $needle){
+               
+                return $index;
+            }
+        }
+    }
+
+    public function getUplineIndex($potential, $upperLevel,$level, $side, $hand){
+        $potential = json_decode($potential, true);
+        $index = 0;
+        $realIndex = [];
+        switch ($upperLevel) {
+            case 2:
+                if($this->nBetween($side, 2, 1)){
+                    $index = 1;
+                }
+
+                if($this->nBetween($side, 4, 3)){
+                    $index = 2;
+                }
+              
+                break;
+
+            case 3:
+                if($this->nBetween($side, 2, 1)){
+                    $index = 1;
+                }
+
+                if($this->nBetween($side, 4, 3)){
+                    $index = 2;
+                }
+
+                if($this->nBetween($side, 6, 5)){
+                    $index = 3;
+                }
+
+                if($this->nBetween($side, 8, 7)){
+                    $index = 4;
+                }
+
+                break;
+
+            case 4:
+                if($this->nBetween($side, 2, 1)){
+                    $index = 1;
+                }
+
+                if($this->nBetween($side, 4, 3)){
+                    $index = 2;
+                }
+
+                if($this->nBetween($side, 6, 5)){
+                    $index = 3;
+                }
+
+                if($this->nBetween($side, 8, 7)){
+                    $index = 4;
+                }
+
+                if($this->nBetween($side, 10, 9)){
+                    $index = 5;
+                }
+
+                if($this->nBetween($side, 12, 11)){
+                    $index = 6;
+                }
+
+                if($this->nBetween($side, 14, 13)){
+                    $index = 7;
+                }
+
+                if($this->nBetween($side, 16, 15)){
+                    $index = 8;
+                }
+
+                break;
+                
+            default:
+
+                break;
+        }
+
+        foreach($potential as $key=>$value){
+            if($key === $index){
+                // dd($key, $value);
+                $realIndex['level'] = $upperLevel;
+                $realIndex['side'] = $hand;
+                $realIndex['index'] = $key;
+                $realIndex['id'] = $value;
+            }
+        }
+        
+        return $realIndex;
+        // Get index and value from potential
+    }
+
+    public function nBetween($varToCheck, $high, $low) {
+        if($varToCheck < $low) return false;
+        if($varToCheck > $high) return false;
+        return true;
+    }
     // public function saveContactForm($type, $name, $email, $phone, $message ){
     //     EmailContact::create([
     //         'user_id' => $user_id,
