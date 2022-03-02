@@ -6,6 +6,19 @@
 @section('content')
   <div class="row">
     <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Current Balance</h4>
+                <div class="text-end">
+                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> {!!\App\Setting::first()->value('currency') !!} {{number_format($current_balance)}}</h2>
+                    <span class="text-muted">current wallet</span>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-body">
           <!-- column -->
@@ -49,10 +62,9 @@
                     <div id="collapseOnlineTransfer" class="collapse show" aria-labelledby="onlineTransfer"
                       data-parent="#accordionExample">
                       <div class="card-body">
-                        You will be redirected to paystack payment gateway
                         <button type="button" class="btn btn-primary btn-sm btn-block my-2" data-toggle="modal"
-                          data-target="#continueToPaystackModal" title="continue to paystack">Continue to
-                          paystack</button>
+                          data-target="#continueToPaystackModal" title="continue to paystack">Continue with online
+                          transfer</button>
                       </div>
                     </div>
                     <div id="collapseOfflineTransfer" class="collapse" aria-labelledby="headingTwo"
@@ -61,17 +73,18 @@
                         <h4>Make payment in to: </h4>
                         <div class="container-fluid">
                           <div class="row">
-                            <div class="col">Acount name</div>
-                            <div class="col">Acount number</div>
-                            <div class="col">Bank</div>
+                            <div class="col-md-12">Acount name: {{ \App\Setting::first()->value('official_account_name') }}</div>
+                            <div class="col-md-12">Acount number: {{ \App\Setting::first()->value('official_account_number') }}</div>
+                            <div class="col-12">Bank: {{ \App\Setting::first()->value('official_bank') }}</div>
                           </div>
                         </div>
-                        <form class="">
+                        <form class="" method="POST" action="{{ route('transactions.proofOfPayment')}}" enctype="multipart/form-data">
                           <div class="my-3">
 
                             <div class="input-group">
                               <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+                                <small>Upload proof of payment</small>
+                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" accept="image/*,application/pdf" name="proofOfPayment" required>
                                 <label class="custom-file-label" for="validatedInputGroupCustomFile">Select POP
                                   file...</label>
                               </div>
@@ -146,10 +159,11 @@
                 @foreach ($walletTrans as $transaction)
                   <tr style="color:{{ $transaction->amount > 0 ? 'green' : 'red' }}">
                     <td>{{ $loop->index + 1 }}</td>
-                    <td>{{ $transaction->created_at }}</td>
+                    <td title="{{$transaction->created_at}}">{{ ($transaction->created_at->diffForHumans()) }}</td>
                     <td>{{ $transaction->type }}</td>
-                    <td>{!! \App\Setting::first()->value('currency') !!}{{ $transaction->amount }}</td>
-                    <td>{{ $transaction->type != 'topup' ? $transaction->transferRecipient != null ? $transaction->transferRecipient->username: 'Nil' : 'N/A' }}
+                    <td>{!! \App\Setting::first()->value('currency') !!}{{ number_format($transaction->amount) }}</td>
+                    <td>
+                      {{ $transaction->type != 'topup'? ($transaction->transferRecipient != null? $transaction->transferRecipient->username: 'Nil'): 'N/A' }}
                     </td>
                   </tr>
                 @endforeach
@@ -161,14 +175,14 @@
     </div>
     <!-- Modal For Topup -->
     <div class="modal fade" id="continueToPaystackModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
-      <div class="modal-dialog py-5">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body pb-5">
             <form method="POST" action="{{ route('pay') }}">
               <div class="mb-3">
                 <input type="hidden" name="email" value="{{ auth()->user()->email }}" required>
@@ -176,7 +190,7 @@
                 <input type="hidden" name="currency" value="NGN" required>
                 <input type="hidden" name="metadata" value="{{ json_encode($array = ['key_name' => 'value']) }}"
                   required>
-                  
+
                 <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}" required>
                 @csrf
                 <label for="amount" class="form-label">How much would you like to pay?</label>
@@ -184,11 +198,39 @@
                   placeholder="Enter amount" required>
               </div>
               <div class="mb-3">
+                <small>You will be redirected to paystack payment gateway</small>
                 <button type="submit" class="btn btn-success btn-sm btn-block">Pay</button>
               </div>
             </form>
           </div>
         </div>
+      </div>
+    </div>
+
+    {{-- Moal for POP --}}
+    <div class="modal fade" id="uploadPOPModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body pb-5">
+            <form method="POST" action="{{ route('transactions.proofOfPayment') }}" enctype="multipart/form-data">
+              @csrf
+              <small>Upload proof of payment</small>
+              <div class="input-group">
+                <div class="custom-file">
+                  <input type="file" name="proofOfPayment" accept="image/*,application/pdf" class="custom-file-input" id="pop" required>
+                  <label class="custom-file-label" for="pop">Select POP
+                    file...</label>
+                </div>
+              </div>
+          <button type="submit" class="btn btn-primary btn-sm btn-block my-2"
+            title="Continue by uploading POP (Proof of Payment)">Upload <abbr title="Proof of Payment">POP</abbr></button>
+        </div>
+        </form>
       </div>
     </div>
   </div>

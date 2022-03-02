@@ -6,6 +6,8 @@ use App\User;
 use App\Transactions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\FunctionsTrait;
+use App\ProofOfPayment;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 class TransactionsController extends Controller
 {
@@ -17,7 +19,8 @@ class TransactionsController extends Controller
     public function index()
     {
         $walletTrans = $this->getWalletHistory(auth()->user()->id);
-        return view("dash.users.transactions.index", compact("walletTrans", ));
+        $current_balance = $this->getWallet(auth()->user()->id);
+        return view("dash.users.transactions.index", compact("walletTrans", 'current_balance'));
     }
 
     /**
@@ -93,7 +96,7 @@ class TransactionsController extends Controller
     public function validateUsernameOrEmail(Request $request)
     {
         $request->request->add(['type' =>  filter_var($request->usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'email' : 'username']);
-        
+
         $validator = Validator::make($request->all(), [
             'type' => 'string|max:40|required|in:email,username',
             'usernameOrEmail' => 'required|string|max:40',
@@ -107,10 +110,10 @@ class TransactionsController extends Controller
         $user = User::where($request->type, $request->usernameOrEmail)->first();
 
         if($user->id === auth()->user()->id){
-            
+
             return response()->json(['status' => 'error', 'message' => 'Invalid username or email'], 404);
         }
-        
+
         return response()->json(['status' => 'success', 'message' => 'user ' . $request->usernameOrEmail . ' found']);
     }
 
@@ -126,10 +129,50 @@ class TransactionsController extends Controller
                'transferAmount' => 'numeric|required'
            ]);
            $receiver = User::where('email', $request->usernameOrEmail)->orWhere('username', $request->usernameOrEmail)->first();
-           $this->walletTransfer(auth()->user()->id, $receiver->id, $request->transferAmount);
-        //    dd($receiver->id, $request);
-            return redirect()->back()->with(['msg' => 'Transfer successful']);
+          if( $this->walletTransfer(auth()->user()->id, $receiver->id, $request->transferAmount))
+            return redirect()->back()->with(['message' => 'Transfer successful']);
        }
-       return redirect()->back()->withErrors(['msg' =>'An error occurred with your transfer']);
+       return redirect()->back()->withErrors(['message' =>'Invalid fund, or an error occurred with your transfer, try again.']);
+    }
+
+    /**
+     * Upload proof of payment
+     * @param Request @request
+     * @return Redirect
+     */
+    public function uploadPOP(Request $request){
+        $request->validate([
+            'proofOfPayment' => 'required|mimetypes:image/*,application/pdf|max:4096'
+        ]);
+        $file = $request->proofOfPayment;
+        $path = $file->store('public/proof-of-payment');
+        ProofOfPayment::create([
+            'user_id' => auth()->user()->id,
+            'path' => $path,
+            'name' =>  basename($path)
+        ]);
+        return redirect()->back()->with(['message' => 'uploaded successfully']);
+    }
+
+    //admin method
+    public function allProofOfPayment(){
+        $files = Storage::disk()->files('public/proof-of-payment');
+        return view('dash.admin.users.pop', compact('files'));
+    }
+
+    //user method
+    public function meProofOfPayment(){
+        $proofs = ProofOfPayment::where('user_id', auth()->user()->id)->get();
+        return view('dash.users.pops.index', compact('proofs'));
+    }
+
+    public function deleteProofOfPayment(string $id){
+        $id = 'public/proof-of-payment/'.$id;
+        if(Storage::disk()->exists($id)){
+            // remember to delete from database, maybe use soft delete
+            Storage::delete($id);
+            return redirect()->back()->with(['message' => 'Deleted successfully']);
+        }
+        return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits']);
     }
 }

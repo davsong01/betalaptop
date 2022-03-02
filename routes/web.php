@@ -35,8 +35,12 @@ Route::middleware(['auth'])->group (function() {
     Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
-    Route::get('/getpayment', 'PaymentController@handleGatewayCallback')->name('handle');
+    Route::get('/payment/callback', 'PaymentController@handleGatewayCallback')->name('handle');
     Route::post('transactions/validate/username-or-email', 'TransactionsController@validateUsernameOrEmail')
         ->name('transactions.validate.usernameOrEmail');
     Route::post('transactions/transfer-fund', 'TransactionsController@transferFund')->name('transactions.transferFund');
+    Route::post('transactions/proof-of-payment', 'TransactionsController@uploadPOP')->name('transactions.proofOfPayment');
+    Route::get('transactions/proof-of-payment/all', 'TransactionsController@allProofOfPayment')->name('transactions.all.proofOfPayment');
+    Route::get('transactions/proof-of-payment/me', 'TransactionsController@meProofOfPayment')->name('transactions.me.proofOfPayment');
+    Route::delete('transactions/proof-of-payment/{id}/delete', 'TransactionsController@deleteProofOfPayment')->name('transaction.delete.proofOfPayment');
 });

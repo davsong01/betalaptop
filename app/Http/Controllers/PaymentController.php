@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Paystack;
 use App\Transactions;
+use App\Wallet;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -24,10 +25,9 @@ class PaymentController extends Controller
      */
     public function allTransactions()
     {
-         $i = 1;
         if($this->isAdmin()){
-            $trns = Transactions::with('user')->get();
-            return view('dash.admin.users.wallet_transactions', compact('trns', 'i'));
+           $walletTrans = Transactions::with('user')->get();
+            return view('dash.admin.users.wallet_transactions', compact('walletTrans'));
         }else{
             $walletTrans = Transactions::with('user')->whereUserId(auth()->user()->id)->get();
             return view('dash.users.transactions.online', compact('walletTrans', 'i'));
@@ -111,7 +111,8 @@ class PaymentController extends Controller
         try {
            return Paystack::getAuthorizationUrl()->redirectNow();
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['msg' => $e->getMessage()]);
+            $res = explode("{", $e->getMessage());
+            return redirect()->back()->withErrors(['message' => preg_replace('/[^A-Za-z0-9 \:]/', '', $res[array_key_last($res)])]);
         }
     }
 
@@ -121,17 +122,27 @@ class PaymentController extends Controller
      */
     public function handleGatewayCallback()
     {
+        /**
+         * TODO: Remember to fix replay payload attack/hack
+         */
         $paymentDetails = Paystack::getPaymentData();
-        dd($paymentDetails);
+        $replay_payload = Transactions::where('transaction_id', $paymentDetails['data']['reference'])->first();
 
-        if($paymentDetails['status'] === 'true'){
+        if($paymentDetails['status'] === true && !$replay_payload){
+            $this->topUpWallet(auth()->user()->id, $paymentDetails['data']['amount'] /= 100);
+            Transactions::create([
+                'user_id' => auth()->user()->id,
+                'amount' => $paymentDetails['data']['amount'] /= 100,
+                'transaction_id' => $paymentDetails['data']['reference']
+            ]);
             // log payment into transaction table
             // Update wallet
-            // Provide value : 
+            // Provide value :
             /**
              * 1. Open level 1 if user has no downlines by creating a new matrix row with position 1
              */
+            return redirect()->back()->with(['message' => 'Top up successful']);
         }
-       
+        return redirect()->back()->withErrors(['message' => 'An error occurred with your transaction']);
     }
 }

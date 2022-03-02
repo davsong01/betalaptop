@@ -16,27 +16,21 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $i = 1;
         if($this->isAdmin()){
             $walletTrans = Wallet::with('user', 'transferRecipient')->get();
-            return view('dash.admin.users.wallet_transactions', compact('walletTrans', 'i'));
+            return view('dash.admin.users.wallet_transactions', compact('walletTrans'));
         }else{
             $walletTrans = Wallet::with('user', 'transferRecipient')->whereUserId(auth()->user()->id)->get();
-            return view('dash.users.transactions.index', compact('walletTrans', 'i'));
+            return view('dash.users.transactions.index', compact('walletTrans'));
         }
     }
 
     public function allTransactions()
     {
-        
-        
-        
-      
         $i = 1;
         return view('dash.admin.users.wallet_transactions', compact('walletTrans', 'i'));
     }
 
-    
 
     /**
      * Show the form for creating a new resource.
