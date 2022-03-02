@@ -167,11 +167,12 @@ class TransactionsController extends Controller
     }
 
     public function deleteProofOfPayment(string $id){
-        $id = 'public/proof-of-payment/'.$id;
-        if(Storage::disk()->exists($id)){
-            // remember to delete from database, maybe use soft delete
-            Storage::delete($id);
-            return redirect()->back()->with(['message' => 'Deleted successfully']);
+        //check if auth user is admin or can access resource
+        $proof = ProofOfPayment::where('name', $id)->first();
+        if(auth()->user()->role === 1 || $proof && Storage::disk()->exists($proof->path) ){
+            Storage::delete($proof->path);
+            $proof->delete();
+            return redirect()->back()->with(['message' => 'deleted successfully']);
         }
         return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits']);
     }
