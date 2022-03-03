@@ -12,7 +12,7 @@
             <div class="card-body">
                 <h4 class="card-title">Current Balance</h4>
                 <div class="text-end">
-                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> {!!\App\Setting::first()->value('currency') !!} {{number_format($current_balance)}}</h2>
+                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> {!!\App\Setting::first()->value('currency') !!} {{number_format($current_balance ?? 0)}}</h2>
                     <span class="text-muted">current wallet</span>
                 </div>
             </div>
