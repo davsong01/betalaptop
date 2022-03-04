@@ -24,10 +24,14 @@
                     <td>
                       <a href="{{\Storage::url($file) }}" title="{{$file}}"><img src="{{\Storage::url($file) }}" class="img" style="width: 100px; hieght: 100px;"/></a></td>
                     <td>
-                      <button type="button" class="btn btn-sm btn-warning" title="Accept proof of payment">Accept</button>
-                      <form method="POST" action="{{route('transaction.delete.proofOfPayment', ['id' => basename($file)])}}" class="inline-form d-inline">
+                       <form method="POST" action="{{route('transaction.accept.proofOfPayment', ['id' => basename($file)])}}" class="inline-form d-inline">
                         @csrf
-                        @method('DELETE')
+                        @method('PUT')
+                        <button type="submit" class="btn btn-sm btn-warning" title="Accept proof of payment">Accept</button>
+                      </form>
+                      <form method="POST" action="{{route('transaction.reject.proofOfPayment', ['id' => basename($file)])}}" class="inline-form d-inline">
+                        @csrf
+                        @method('PUT')
                         <button type="submit" class="btn btn-sm btn-danger" title="Reject proof of payment">Reject</button>
                       </form>
                     </td>
