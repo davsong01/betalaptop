@@ -44,5 +44,6 @@ Route::middleware(['auth'])->group (function() {
     Route::post('transactions/proof-of-payment', 'TransactionsController@uploadPOP')->name('transactions.proofOfPayment');
     Route::get('transactions/proof-of-payment/all', 'TransactionsController@allProofOfPayment')->name('transactions.all.proofOfPayment');
     Route::get('transactions/proof-of-payment/me', 'TransactionsController@meProofOfPayment')->name('transactions.me.proofOfPayment');
-    Route::delete('transactions/proof-of-payment/{id}/delete', 'TransactionsController@deleteProofOfPayment')->name('transaction.delete.proofOfPayment');
+    Route::put('transactions/proof-of-payment/{id}/reject', 'TransactionsController@rejectProofOfPayment')->name('transaction.reject.proofOfPayment');
+    Route::put('transactions/proof-of-payment/{id}/accept', 'TransactionsController@acceptProofOfPayment')->name('transaction.accept.proofOfPayment');
 });
