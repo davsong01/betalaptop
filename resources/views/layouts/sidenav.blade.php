@@ -27,7 +27,7 @@
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('transactions.all.proofOfPayment') }}" aria-expanded="false">
         <i class="me-3 fa fa-file-text" aria-hidden="true"></i><span
-            class="hide-menu">All Proof of Payments</span></a>
+            class="hide-menu">Pending Proof of Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('settings.index') }}" aria-expanded="false">
@@ -45,7 +45,7 @@
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('transactions.me.proofOfPayment') }}" aria-expanded="false">
         <i class="me-3 fa fa-file-text" aria-hidden="true"></i><span
-            class="hide-menu">All Proof of Payments</span></a>
+            class="hide-menu">Pending Proof of Payments</span></a>
 </li>
 @endif
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
