@@ -8,6 +8,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-body">
+          <small>Once you proof of payment is accepted, the amount paid would reflect in your wallet</small>
           <div class="table-responsive my-3">
             <table id="example" class="table table-striped table-bordered">
               <thead>
@@ -15,7 +16,6 @@
                   <th>#</th>
                   <th>preview</th>
                   <th>Status</th>
-                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -26,18 +26,7 @@
                       <a href="{{\Storage::url($file->path) }}" title="{{$file->name}}"><img src="{{\Storage::url($file->path) }}" class="img" style="width: 100px; hieght: 100px;"/></a>
                     </td>
                     <td>
-                      <span class="badge d-block badge-{{ ($file->state === 'pending') ? 'warning' : ($file->state === 'accepted' ? 'success' : 'danger')}}">{{  $file->state }}</span>
-                    </td>
-                    <td>
-                      @if ($file->state === 'pending')
-                         <form method="POST" action="{{route('transaction.delete.proofOfPayment', ['id' => $file->name])}}" class="inline-form d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-block btn-danger btn-sm" title="Cancel submitted file">Cancel</button>
-                      </form>
-                      @else
-                        <button class="btn d-block btn-secondary btn-block" type="button">Not Available</button>
-                      @endif
+                      <span class="badge d-block badge-{{ ($file->status === 'pending') ? 'warning' : ($file->status === 'accepted' ? 'success' : 'danger')}}">{{  $file->status }}</span>
                     </td>
                   </tr>
                 @endforeach
