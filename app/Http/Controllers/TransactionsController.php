@@ -7,6 +7,7 @@ use App\Transactions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Traits\FunctionsTrait;
 use App\ProofOfPayment;
+use App\Wallet;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 class TransactionsController extends Controller
@@ -142,15 +143,19 @@ class TransactionsController extends Controller
      */
     public function uploadPOP(Request $request){
         $request->validate([
-            'proofOfPayment' => 'required|mimetypes:image/*,application/pdf|max:4096'
+            'proofOfPayment' => 'required|mimetypes:image/*,application/pdf|max:4096',
+            'amount' => 'required|numeric'
         ]);
+
         $file = $request->proofOfPayment;
         $path = $file->store('public/proof-of-payment');
         ProofOfPayment::create([
             'user_id' => auth()->user()->id,
             'path' => $path,
-            'name' =>  basename($path)
+            'name' =>  basename($path),
+            'amount' => $request->amount
         ]);
+        //TODO: send a mail, to the admin
         return redirect()->back()->with(['message' => 'uploaded successfully']);
     }
 
@@ -166,14 +171,41 @@ class TransactionsController extends Controller
         return view('dash.users.pops.index', compact('proofs'));
     }
 
-    public function deleteProofOfPayment(string $id){
-        //check if auth user is admin or can access resource
+    public function rejectProofOfPayment(string $id){
         $proof = ProofOfPayment::where('name', $id)->first();
-        if(auth()->user()->role === 1 || $proof && Storage::disk()->exists($proof->path) ){
+        if($this->isAdmin() && $proof && Storage::disk()->exists($proof->path)){
+            $proof->status = 'rejected';
+            $proof->save();
             Storage::delete($proof->path);
             $proof->delete();
-            return redirect()->back()->with(['message' => 'deleted successfully']);
+
+            //TODO: send a mail, to the user
+            return redirect()->back()->with(['message' => 'rejected successfully']);
         }
-        return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits']);
+        return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits or unauthorized to perform this action']);
+    }
+
+    public function acceptProofOfPayment(string $id){
+        $proof = ProofOfPayment::where('name', $id)->first();
+        if($this->isAdmin() && $proof && Storage::disk()->exists($proof->path)){
+            $proof->status = 'accepted';
+            $proof->save();
+            Storage::delete($proof->path);
+
+            Transactions::create([
+                'user_id' => $proof->id,
+                'amount' => $proof->amount,
+                'transaction_id' => $proof->name
+            ]);
+            Wallet::create([
+                'user_id' => $proof->user_id,
+                'type' => 'topup',
+                'amount' => +$proof->amount,
+            ]);
+            $proof->delete();
+            //TODO: send a mail, to the user
+            return redirect()->back()->with(['message' => 'accepted successfully']);
+        }
+        return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits or unauthorized to perform this action']);
     }
 }
