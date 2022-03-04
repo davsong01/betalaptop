@@ -19,13 +19,16 @@ class DownlineController extends Controller
     
     public function index()
     {
+
         $users = User::whereUpline(auth()->user()->id)->orderBy('created_at', 'DESC')->get();
 
         $users->map(function ($users){
             $users['position'] = $this->getPosition($users->id, auth()->user()->id);
             return $users;
         });
-      
+       
+        $this->getUpline("Level 5, left 3", 1);
+        dd($users);
         $i = 1;
         return view('dash.admin.users.index', compact('users', 'i'));
     }
