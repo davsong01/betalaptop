@@ -10,13 +10,14 @@
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Current Balance</h4>
-                <div class="text-end">
-                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> {!!\App\Setting::first()->value('currency') !!} {{number_format($current_balance)}}</h2>
-                    <span class="text-muted">current wallet</span>
-                </div>
+              <h4 class="card-title">Current Balance</h4>
+              <div class="text-end">
+                <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> {!! \App\Setting::first()->value('currency') !!}
+                  {{ number_format($current_balance) }}</h2>
+                <span class="text-muted">current wallet</span>
+              </div>
             </div>
-        </div>
+          </div>
         </div>
       </div>
       <div class="card">
@@ -73,21 +74,29 @@
                         <h4>Make payment in to: </h4>
                         <div class="container-fluid">
                           <div class="row">
-                            <div class="col-md-12">Acount name: {{ \App\Setting::first()->value('official_account_name') }}</div>
-                            <div class="col-md-12">Acount number: {{ \App\Setting::first()->value('official_account_number') }}</div>
+                            <div class="col-md-12">Acount name:
+                              {{ \App\Setting::first()->value('official_account_name') }}</div>
+                            <div class="col-md-12">Acount number:
+                              {{ \App\Setting::first()->value('official_account_number') }}</div>
                             <div class="col-12">Bank: {{ \App\Setting::first()->value('official_bank') }}</div>
                           </div>
                         </div>
-                        <form class="" method="POST" action="{{ route('transactions.proofOfPayment')}}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('transactions.proofOfPayment') }}" enctype="multipart/form-data">
                           <div class="my-3">
 
                             <div class="input-group">
                               <div class="custom-file">
                                 <small>Upload proof of payment</small>
-                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" accept="image/*,application/pdf" name="proofOfPayment" required>
+                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile"
+                                  accept="image/*,application/pdf" name="proofOfPayment" required>
                                 <label class="custom-file-label" for="validatedInputGroupCustomFile">Select POP
                                   file...</label>
                               </div>
+                            </div>
+                            <div class="input-group">
+                              <label for="amount" class="form-label">How much did you pay?</label>
+                              <input type="number" class="form-control" id="amount" name="amount"
+                                placeholder="Enter amount" required>
                             </div>
                           </div>
                           <button type="submit" class="btn btn-primary btn-sm btn-block my-2"
@@ -159,7 +168,7 @@
                 @foreach ($walletTrans as $transaction)
                   <tr style="color:{{ $transaction->amount > 0 ? 'green' : 'red' }}">
                     <td>{{ $loop->index + 1 }}</td>
-                    <td title="{{$transaction->created_at}}">{{ ($transaction->created_at->diffForHumans()) }}</td>
+                    <td title="{{ $transaction->created_at }}">{{ $transaction->created_at->diffForHumans() }}</td>
                     <td>{{ $transaction->type }}</td>
                     <td>{!! \App\Setting::first()->value('currency') !!}{{ number_format($transaction->amount) }}</td>
                     <td>
@@ -222,16 +231,22 @@
               <small>Upload proof of payment</small>
               <div class="input-group">
                 <div class="custom-file">
-                  <input type="file" name="proofOfPayment" accept="image/*,application/pdf" class="custom-file-input" id="pop" required>
+                  <input type="file" name="proofOfPayment" accept="image/*,application/pdf" class="custom-file-input"
+                    id="pop" required>
                   <label class="custom-file-label" for="pop">Select POP
                     file...</label>
                 </div>
               </div>
-          <button type="submit" class="btn btn-primary btn-sm btn-block my-2"
-            title="Continue by uploading POP (Proof of Payment)">Upload <abbr title="Proof of Payment">POP</abbr></button>
+              <div class="input-group">
+                <label for="amount" class="form-label">How much did you pay?</label>
+                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm btn-block my-2"
+                title="Continue by uploading POP (Proof of Payment)">Upload <abbr
+                  title="Proof of Payment">POP</abbr></button>
+          </div>
+          </form>
         </div>
-        </form>
       </div>
     </div>
-  </div>
-@endsection
+  @endsection
