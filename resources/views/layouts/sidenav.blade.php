@@ -20,14 +20,9 @@
             class="hide-menu">Online Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-        href="{{ route('transactions.index') }}" aria-expanded="false">
+        href="{{ route('transactions.me.proofOfPayment') }}" aria-expanded="false">
         <i class="me-3 fa fa-file-text" aria-hidden="true"></i><span
-            class="hide-menu">Proof of Payments</span></a>
-</li>
-<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-        href="{{ route('transactions.all.proofOfPayment') }}" aria-expanded="false">
-        <i class="me-3 fa fa-file-text" aria-hidden="true"></i><span
-            class="hide-menu">Pending Proof of Payments</span></a>
+            class="hide-menu">Pending Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('settings.index') }}" aria-expanded="false">
@@ -36,22 +31,16 @@
 </li>
 @endif
 @if(auth()->user()->role == 2)
-
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('wallet.index') }}" aria-expanded="false">
         <i class="me-3 fa fa-money" aria-hidden="true"></i><span
             class="hide-menu">Wallet history</span></a>
 </li>
+
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('transactions.me.proofOfPayment') }}" aria-expanded="false">
         <i class="me-3 fa fa-file-text" aria-hidden="true"></i><span
-            class="hide-menu">Pending Proof of Payments</span></a>
-</li>
-@endif
-<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-        href="{{ route('profile') }}" aria-expanded="false">
-        <i class="me-3 fa fa-user" aria-hidden="true"></i><span
-            class="hide-menu">Profile</span></a>
+            class="hide-menu">Pending Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('downline.index') }}" aria-expanded="false">
@@ -63,6 +52,13 @@
         <i class="me-3 fa fa-tree" aria-hidden="true"></i><span
             class="hide-menu">Binary Tree</span></a>
 </li>
+@endif
+<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+        href="{{ route('profile') }}" aria-expanded="false">
+        <i class="me-3 fa fa-user" aria-hidden="true"></i><span
+            class="hide-menu">Profile</span></a>
+</li>
+
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ route('logout') }}" aria-expanded="false"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="me-3 fa fa-sign-out" aria-hidden="true"></i><span class="hide-menu">Logout</span></a>
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf

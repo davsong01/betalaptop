@@ -126,23 +126,27 @@ class PaymentController extends Controller
          * TODO: Remember to fix replay payload attack/hack
          */
         $paymentDetails = Paystack::getPaymentData();
+       
         $replay_payload = Transactions::where('transaction_id', $paymentDetails['data']['reference'])->first();
-
+        
         if($paymentDetails['status'] === true && !$replay_payload){
-            $this->topUpWallet(auth()->user()->id, $paymentDetails['data']['amount'] /= 100);
-            Transactions::create([
-                'user_id' => auth()->user()->id,
-                'amount' => $paymentDetails['data']['amount'] /= 100,
-                'transaction_id' => $paymentDetails['data']['reference']
-            ]);
+            $amount = $paymentDetails['data']['amount'] /= 100;
+            
             // log payment into transaction table
+            Transactions::updateOrCreate( // updateorcreate method ensures no duplicate trans id
+                [
+                    'transaction_id' => $paymentDetails['data']['reference']
+                ],
+                [ 'user_id' => auth()->user()->id,
+                'amount' => $amount,
+                ]
+            );
+           
             // Update wallet
-            // Provide value :
-            /**
-             * 1. Open level 1 if user has no downlines by creating a new matrix row with position 1
-             */
-            return redirect()->back()->with(['message' => 'Top up successful']);
+            $this->topUpWallet(auth()->user()->id, $amount);
+            // Log email
+            return redirect(route('wallet.index'))->with(['message' => 'Top up successful']);
         }
-        return redirect()->back()->withErrors(['message' => 'An error occurred with your transaction']);
+        return redirect(route('wallet.index'))->withErrors(['message' => 'An error occurred with your transaction']);
     }
 }

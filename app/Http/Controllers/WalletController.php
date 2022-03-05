@@ -18,10 +18,12 @@ class WalletController extends Controller
     {
         if($this->isAdmin()){
             $walletTrans = Wallet::with('user', 'transferRecipient')->get();
+
             return view('dash.admin.users.wallet_transactions', compact('walletTrans'));
         }else{
             $walletTrans = Wallet::with('user', 'transferRecipient')->whereUserId(auth()->user()->id)->get();
-            return view('dash.users.transactions.index', compact('walletTrans'));
+            $current_balance = $this->getWallet(auth()->user()->id);
+            return view('dash.users.transactions.index', compact('walletTrans', 'current_balance'));
         }
     }
 

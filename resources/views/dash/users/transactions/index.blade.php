@@ -7,12 +7,13 @@
   <div class="row">
     <div class="col-sm-12">
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-12">
           <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Current Balance</h4>
                 <div class="text-end">
-                    <h2 class="font-light mb-0"><i class="ti-arrow-up text-success"></i> {!!\App\Setting::first()->value('currency') !!} {{number_format($current_balance ?? 0)}}</h2>
+                    <h2 class="font-light mb-0">
+                      <i class="{{ $current_balance > 0 ? 'ti-arrow-up text-success' : 'ti-arrow-down text-danger' }}"></i> {!!\App\Setting::first()->value('currency') !!} {{number_format($current_balance ?? 0)}}</h2>
                     <span class="text-muted">current wallet</span>
                 </div>
             </div>
@@ -23,14 +24,14 @@
         <div class="card-body">
           <!-- column -->
           <h4 class="card-title"></h4>
-          <div class="d-flex flex-wrap justify-content-around" style="max-width: 430px;">
+          <div class="d-flex flex-wrap justify-content-around">
             <button type="button" class="btn btn-sm btn-success my-2 mx-3" data-toggle="modal"
               data-target="#topupModal">Top Up
               wallet</button>
             <button type="button" class="btn btn-sm btn-danger my-2 mx-3" data-toggle="modal"
               data-target="#transferFundModal">Transfer Fund</button>
             <button type="button" class="btn btn-sm btn-primary my-2 mx-3" data-toggle="modal"
-              data-target="#uploadPOPModal">Upload POP</button>
+              data-target="#uploadPOPModal">Upload offline payment</button>
           </div>
 
           <!-- Modal For Topup -->
@@ -80,19 +81,22 @@
                             <div class="col-12">Bank: {{ \App\Setting::first()->value('official_bank') }}</div>
                           </div>
                         </div>
-                        <form method="POST" action="{{ route('transactions.proofOfPayment') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('transactions.proofOfPayment') }}" 
+                        enctype="multipart/form-data">
+                        @csrf
                           <div class="my-3">
 
-                            <div class="input-group">
+                            <div class="form-group">
+                              <label for="proofOfPayment" class="form-label">Upload proof of payment</label> <br>
                               <div class="custom-file">
-                                <small>Upload proof of payment</small>
-                                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile"
+                                
+                                <input type="file" class="form-control custom-file-input" id="validatedInputGroupCustomFile"
                                   accept="image/*,application/pdf" name="proofOfPayment" required>
                                 <label class="custom-file-label" for="validatedInputGroupCustomFile">Select POP
                                   file...</label>
                               </div>
                             </div>
-                            <div class="input-group">
+                            <div class="form-group">
                               <label for="amount" class="form-label">How much did you pay?</label>
                               <input type="number" class="form-control" id="amount" name="amount"
                                 placeholder="Enter amount" required>
@@ -227,16 +231,16 @@
           <div class="modal-body pb-5">
             <form method="POST" action="{{ route('transactions.proofOfPayment') }}" enctype="multipart/form-data">
               @csrf
-              <small>Upload proof of payment</small>
-              <div class="input-group">
+              <label for="proofOfPayment" class="form-label">Upload proof of payment</label>
+              <div class="form-group">
                 <div class="custom-file">
-                  <input type="file" name="proofOfPayment" accept="image/*,application/pdf" class="custom-file-input"
+                  <input type="file" class="form-control" name="proofOfPayment" accept="image/*,application/pdf" class="custom-file-input"
                     id="pop" required>
                   <label class="custom-file-label" for="pop">Select POP
                     file...</label>
                 </div>
               </div>
-              <div class="input-group">
+              <div class="form-group">
                 <label for="amount" class="form-label">How much did you pay?</label>
                 <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" required>
               </div>

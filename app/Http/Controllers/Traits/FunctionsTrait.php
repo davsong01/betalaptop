@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Traits;
 use App\Emails;
 use App\Matrix;
 use App\Wallet;
+use App\Mail\NotificationEmail;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
 

@@ -27,8 +27,8 @@ class DownlineController extends Controller
             return $users;
         });
        
-        $this->getUpline("Level 5, left 3", 1);
-        dd($users);
+        // $this->getUpline("Level 5, left 3", 1);
+        // dd($users);
         $i = 1;
         return view('dash.admin.users.index', compact('users', 'i'));
     }
@@ -40,7 +40,7 @@ class DownlineController extends Controller
      */
     public function create()
     {
-        //
+        dd('here');
     }
 
     /**

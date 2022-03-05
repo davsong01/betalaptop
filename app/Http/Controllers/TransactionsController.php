@@ -156,7 +156,7 @@ class TransactionsController extends Controller
             'amount' => $request->amount
         ]);
         //TODO: send a mail, to the admin
-        return redirect()->back()->with(['message' => 'uploaded successfully']);
+        return redirect(route('transactions.me.proofOfPayment'))->with(['message' => 'uploaded successfully']);
     }
 
     //admin method
@@ -168,6 +168,7 @@ class TransactionsController extends Controller
     //user method
     public function meProofOfPayment(){
         $proofs = ProofOfPayment::where('user_id', auth()->user()->id)->get();
+
         return view('dash.users.pops.index', compact('proofs'));
     }
 
