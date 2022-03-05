@@ -189,13 +189,12 @@ trait FunctionsTrait {
             return $position;
         }
 
-
-
         // Search through all Right matrices for parent
         //  dd($parentMatrix, $parent);
     }
 
     public function getOpenPositions($id){
+        // Get level
 
     }
 

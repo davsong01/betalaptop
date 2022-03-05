@@ -11,7 +11,7 @@
                 <!-- column -->
                
                 <h4 class="card-title">All Users</h4>
-                <a href="" class="btn btn-success mb-10" >Register new user</a>
+                <a href="{{ route('downline.create') }}" class="btn btn-success mb-10" >Register new user</a>
 
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">

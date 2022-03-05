@@ -40,7 +40,17 @@ class DownlineController extends Controller
      */
     public function create()
     {
-        dd('here');
+        $matrix = Matrix::whereUserId(auth()->user()->id)->get();
+           
+            $matrix->map(function($matrix){
+                $matrix['left'] = json_decode($matrix->left, true);
+                $matrix['right'] = json_decode($matrix->right, true);
+
+                return $matrix;
+            });
+        $level = $matrix->count();
+        return view('dash.users.downlines.register', compact('matrix', 'level'));
+
     }
 
     /**

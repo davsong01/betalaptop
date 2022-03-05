@@ -1,0 +1,143 @@
+@extends('layouts.dash.app')
+@section('page-title', 'Register new user')
+@section('active')
+<li class="breadcrumb-item active" aria-current="page">Register new downline</li>
+@endsection
+@section('content')
+<form method="POST" action="{{route('downline.store')}}" class="form-horizontal form-material mx-2" enctype="multipart/form-data">
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                   @csrf
+                    <div class="input-group mb-3">
+                        <div class="col-md-12">
+                            <label for"name">Full Name</label>
+                            <input type="text" placeholder="Enter name" class="form-control" name="name" required value="{{ old('name') }}">
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="col-md-12">
+                            <label for="email">Email</label>
+                            <input type="email" placeholder="Enter email" class="form-control" required name="email" id="email" value="{{ old('email') }}">
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="col-md-12">
+                            <label for="phone">Phone</label>
+                            <input type="text" placeholder="Enter phone number" class="form-control" required name="phone" id="phone" value="{{ old('phone') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for"username">Username</label>
+                        <div class="input-group mb-3">
+                            <input type="text" placeholder="Enter username" class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-times" style="color:red"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-12">
+                        <label for"username">Password</label>
+                        <div class="input-group mb-3">
+                            <input type="password" value="password" class="form-control">
+                        </div>
+                    </div>
+                                      
+                    <div class="input-group mb-3">
+                        <label class="col-sm-12">Select Position for this user | <small><i><a href="{{ route('binarytree', auth()->user()->id) }}" target="_blank">View your binary tree</a></i></small></label>
+                        <div class="col-sm-12">
+                            <select class="form-control">
+                                <option value="">...Select...</option>
+                                @if($level > 0)
+                                    @foreach($matrix->where('position', 1) as $mat)
+                                        @foreach($mat['left'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Left {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                   
+                                        @foreach($mat['right'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Right {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                                @if($level > 1)
+                                    @foreach($matrix->where('position', 2) as $mat)
+                                        @foreach($mat['left'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Left {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                   
+                                        @foreach($mat['right'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Right {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                                @if($level > 2)
+                                    @foreach($matrix->where('position', 3) as $mat)
+                                        @foreach($mat['left'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Left {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                   
+                                        @foreach($mat['right'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Right {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                                @if($level > 3)
+                                    @foreach($matrix->where('position', 4) as $mat)
+                                        @foreach($mat['left'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Left {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                   
+                                        @foreach($mat['right'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Right {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                                @if($level > 4)
+                                    @foreach($matrix->where('position', 5) as $mat)
+                                        @foreach($mat['left'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Left {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                   
+                                        @foreach($mat['right'] as $value=>$user) 
+                                        @if($user == 0)
+                                            <option value="">Level {{ $mat['position'] }}, Right {{  $value }}</option>
+                                        @endif
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12 d-flex">
+                            <button class="btn btn-success mx-auto mx-md-0 text-white" style="width:100%">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+</div>
+@endsection
