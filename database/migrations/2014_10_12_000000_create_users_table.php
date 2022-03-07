@@ -21,14 +21,14 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->integer('upline')->nullable();
             $table->integer('parent_id')->nullable();
-            $table->integer('sponsor_id')->nullable();
+            // $table->integer('sponsor_id')->nullable();
             $table->integer('direct_downlines')->nullable();
-            $table->integer('level')->nullable();
-            $table->integer('two')->nullable();
-            $table->integer('three')->nullable();
-            $table->integer('four')->nullable();
-            $table->integer('five')->nullable();
-            $table->integer('six')->nullable();
+            // $table->integer('level')->nullable();
+            // $table->integer('two')->nullable();
+            // $table->integer('three')->nullable();
+            // $table->integer('four')->nullable();
+            // $table->integer('five')->nullable();
+            // $table->integer('six')->nullable();
             $table->string('avatar')->nullable();
         
             $table->string('email')->unique();

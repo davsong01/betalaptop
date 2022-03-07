@@ -36,38 +36,21 @@ trait FunctionsTrait {
         return;
     }
 
-     public function sendEmail($name, $recipient, $subject, $content = null, $show_response = null){
-        //Prepare data
-        $data = [
-            'name' => $name,
-            'recipient' => $recipient,
-            'subject' => $subject,
-            'content' => $content,
-        ];
-
+     public function sendEmail($name, $recipient, $subject, $content){
+        
         try {
             // Try to send email
-            Mail::to($recipient)->send(new NotificationEmail($data));
-            $response = 'success';
+            Emails::create([
+                'subject' => $subject,
+                'name' => $name,
+                'recipient' => $recipient,
+                'content' => $content,
+                'status' => 'Pending',
+            ]);
         } catch(\Exception $e){
             // Log error and store email in database for further processing
             Log::error($e->getMessage());
-
-            Emails::create([
-                'subject' => $data['subject'],
-                'name' => $data['name'],
-                'recipient' => $data['recipient'],
-                'content' => $data['content'],
-                'errors' => $e->getMessage(),
-            ]);
-
-            $response = $e->getMessage();
         }
-
-        if($show_response){
-            return $response;
-        }else return;
-
     }
 
     /**
@@ -193,9 +176,25 @@ trait FunctionsTrait {
         //  dd($parentMatrix, $parent);
     }
 
-    public function getOpenPositions($id){
+    public function getOpenPositions($id, $level){
         // Get level
+        $matrices = Matrix::whereUserId($id)->wherePosition($level)->first();
+        $availablePos = [];
+        if(!is_null($matrices)){
+            // Loop through level to see open positions
+            foreach(json_decode($matrices->left, true) as $key=>$matrix){
+                if($matrix == 0){
+                    $availablePos[] = 'Level ' . $level . ', Left ' . $key;
+                }
+            }
 
+            foreach(json_decode($matrices->right, true) as $key=>$matrix){
+                if($matrix == 0){
+                    $availablePos[] = 'Level ' . $level . ', Right ' . $key;
+                }
+            }
+        }
+        return $availablePos;
     }
 
     public function getFixedPositions($id){
@@ -203,35 +202,42 @@ trait FunctionsTrait {
     }
 
     public function getUpline($node, $parent){
-
         $levelPosition = explode (",", $node);
      
         $level = (int) substr($levelPosition[0], -1);
         $side = (int) substr($levelPosition[1], -1);
-     
-        $upperLevel = $level - 1;
-        $upperLevelDetails = Matrix::whereUserId($parent)->wherePosition($upperLevel)->first();
         
+        $upperLevel = $level - 1;
+
+        $upperLevelDetails = Matrix::whereUserId($parent)->wherePosition($upperLevel)->first();
+        if(is_null($upperLevelDetails)){
+            $upline = [
+                "level" => 1,
+                "side" => "right",
+                "index" => 1,
+                "id" => auth()->user()->id,
+            ];
+            
+            return $upline;
+        }
         // If right
-        if (str_contains($levelPosition[1], 'right')) {
-               // Check through
+        if (str_contains($levelPosition[1], 'right') || str_contains($levelPosition[1], 'Right')) {
+            // Check through
             $upline = $this->getUplineIndex($upperLevelDetails->right, $upperLevel, $level, $side, 'right');
         }
 
         // If left
-        if (str_contains($levelPosition[1], 'left')) {
+        if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
             $upline = $this->getUplineIndex($upperLevelDetails->left, $upperLevel, $level, $side, 'left');
-
+            
         }
-
+        
         return $upline;
     }
     
     public function getIndex($details, $needle){
         foreach($details as $index=>$value){
-             dd($value, $index, $needle);
             if($value === $needle){
-               
                 return $index;
             }
         }
@@ -241,7 +247,12 @@ trait FunctionsTrait {
         $potential = json_decode($potential, true);
         $index = 0;
         $realIndex = [];
+        
         switch ($upperLevel) {
+             case 1:
+                    $index = 1;
+                break;
+
             case 2:
                 if($this->nBetween($side, 2, 1)){
                     $index = 1;
@@ -331,14 +342,14 @@ trait FunctionsTrait {
         if($varToCheck > $high) return false;
         return true;
     }
-    // public function saveContactForm($type, $name, $email, $phone, $message ){
-    //     EmailContact::create([
-    //         'user_id' => $user_id,
-    //         'type' => $type,
-    //         'name' => $name,
-    //         'email' => $email,
-    //         'phone' => $phone,
-    //         'message' => $message
-    //     ]);
-    // }
+    public function saveContactForm($type, $name, $email, $phone, $message ){
+        EmailContact::create([
+            'user_id' => $user_id,
+            'type' => $type,
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'message' => $message
+        ]);
+    }
 }
