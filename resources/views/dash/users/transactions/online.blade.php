@@ -100,7 +100,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form method="POST" action="{{ route('validate.usernameOrEmail') }}">
+                  <form method="POST" action="{{ route('transactions.validate.usernameOrEmail') }}">
                     @csrf
                     <div class="mb-3">
                       <label for="usernameOrEmail" class="form-label">Who would you like to pay to?</label>
