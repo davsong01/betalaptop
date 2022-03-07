@@ -30,7 +30,7 @@ class DownlineController extends Controller
         // $this->getUpline("Level 5, left 3", 1);
         // dd($users);
         $i = 1;
-        return view('dash.admin.users.index', compact('users', 'i'));
+        return view('dash.users.downlines.index', compact('users', 'i'));
     }
 
     /**
@@ -40,6 +40,9 @@ class DownlineController extends Controller
      */
     public function create()
     {
+        if(auth()->user()->wallet() < \App\Setting::first()->value('amount_per_slot')){
+            return back()->with('error', 'Insufficient funds in wallet');
+        }
         $matrix = Matrix::whereUserId(auth()->user()->id)->get();
            
             $matrix->map(function($matrix){
@@ -61,7 +64,21 @@ class DownlineController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate($request, [
+            "name" => "required|string|min:3|max:30",
+            "email" => 'required|unique:users,email',
+            "phone" => "required|string",
+            "username" => "required|unique:users,username",
+            "password" => "nullable",
+            "position" => "required"
+        ]);
+
+        dd($data);
+        // Validate
+        // Log email
+        // Add Parent
+        // Add dirent upline
+
     }
 
     /**
