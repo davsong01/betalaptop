@@ -16,13 +16,13 @@ class UsersTableSeeder extends Seeder
     {
         $password = Hash::make('123456');
         
-        Setting::create([
-            'logo' => 'site/assets/images/general/logo.png',
-            'favicon' => 'site/assets/images/general/favicon.png',
-            'company_name' => 'Betalaptops',
-            'official_email' => 'info@betalaptops.com',
-            'currency' => '₦',
-        ]); 
+        // Setting::create([
+        //     'logo' => 'site/assets/images/general/logo.png',
+        //     'favicon' => 'site/assets/images/general/favicon.png',
+        //     'company_name' => 'Betalaptops',
+        //     'official_email' => 'info@betalaptops.com',
+        //     'currency' => '₦',
+        // ]); 
 
         //Create default admin
         User::create([
