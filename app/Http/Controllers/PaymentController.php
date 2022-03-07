@@ -25,11 +25,13 @@ class PaymentController extends Controller
      */
     public function allTransactions()
     {
+        $i = 1;
         if($this->isAdmin()){
-           $walletTrans = Transactions::with('user')->get();
+           $walletTrans = Transactions::orderBy('created_at', 'DESC')->with('user')->get();
             return view('dash.admin.users.wallet_transactions', compact('walletTrans'));
         }else{
-            $walletTrans = Transactions::with('user')->whereUserId(auth()->user()->id)->get();
+            $walletTrans = Transactions::with('user')->whereUserId(auth()->user()->id)
+            ->orderBy('created_at', 'DESC')->get();
             return view('dash.users.transactions.online', compact('walletTrans', 'i'));
         }
     }
@@ -126,12 +128,12 @@ class PaymentController extends Controller
          * TODO: Remember to fix replay payload attack/hack
          */
         $paymentDetails = Paystack::getPaymentData();
-       
+
         $replay_payload = Transactions::where('transaction_id', $paymentDetails['data']['reference'])->first();
-        
+
         if($paymentDetails['status'] === true && !$replay_payload){
             $amount = $paymentDetails['data']['amount'] /= 100;
-            
+
             // log payment into transaction table
             Transactions::updateOrCreate( // updateorcreate method ensures no duplicate trans id
                 [
@@ -141,7 +143,7 @@ class PaymentController extends Controller
                 'amount' => $amount,
                 ]
             );
-           
+
             // Update wallet
             $this->topUpWallet(auth()->user()->id, $amount);
             // Log email
