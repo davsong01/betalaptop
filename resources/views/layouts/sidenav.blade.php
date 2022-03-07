@@ -20,7 +20,7 @@
             class="hide-menu">Online Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-        href="{{ route('transactions.me.proofOfPayment') }}" aria-expanded="false">
+        href="{{ route('transactions.all.proofOfPayment') }}" aria-expanded="false">
         <i class="me-3 fa fa-file-text" aria-hidden="true"></i><span
             class="hide-menu">Pending Payments</span></a>
 </li>

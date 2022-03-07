@@ -22,6 +22,8 @@ Route::middleware(['auth', 'isAdmin'])->group (function() {
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
     Route::resource('settings', 'SettingController');
     Route::get('transactions/proof-of-payment/all', 'TransactionsController@allProofOfPayment')->name('transactions.all.proofOfPayment');
+    Route::put('transactions/proof-of-payment/{id}/reject', 'TransactionsController@rejectProofOfPayment')->name('transaction.reject.proofOfPayment');
+    Route::put('transactions/proof-of-payment/{id}/accept', 'TransactionsController@acceptProofOfPayment')->name('transaction.accept.proofOfPayment');
 
 });
 
@@ -43,6 +45,4 @@ Route::middleware(['auth'])->group (function() {
     Route::post('transactions/transfer-fund', 'TransactionsController@transferFund')->name('transactions.transferFund');
     Route::post('transactions/proof-of-payment', 'TransactionsController@uploadPOP')->name('transactions.proofOfPayment');
     Route::get('transactions/proof-of-payment/me', 'TransactionsController@meProofOfPayment')->name('transactions.me.proofOfPayment');
-    Route::put('transactions/proof-of-payment/{id}/reject', 'TransactionsController@rejectProofOfPayment')->name('transaction.reject.proofOfPayment');
-    Route::put('transactions/proof-of-payment/{id}/accept', 'TransactionsController@acceptProofOfPayment')->name('transaction.accept.proofOfPayment');
 });
