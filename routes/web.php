@@ -17,7 +17,7 @@ Route::get('/', 'HomeController@index')->name('shop');
 Auth::routes();
 // Admin only routes
 
-Route::middleware(['auth'])->group (function() {
+Route::middleware(['auth', 'isAdmin'])->group (function() {
     Route::resource('users', 'UserController');
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
     Route::resource('settings', 'SettingController');
@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group (function() {
     Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
     Route::resource('downline', 'DownlineController');
     Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
-    
+
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
     Route::get('/payment/callback', 'PaymentController@handleGatewayCallback')->name('handle');
     Route::post('transactions/validate/username-or-email', 'TransactionsController@validateUsernameOrEmail')
