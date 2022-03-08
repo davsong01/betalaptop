@@ -164,6 +164,7 @@
                   <th>Date</th>
                   <th>Type</th>
                   <th>Amount</th>
+                  <th>Trnx Id</th>
                   <th>Recipient</th>
                 </tr>
               </thead>
@@ -174,6 +175,7 @@
                     <td title="{{ $transaction->created_at }}">{{ $transaction->created_at->diffForHumans() }}</td>
                     <td>{{ $transaction->type }}</td>
                     <td>{!! \App\Setting::first()->value('currency') !!}{{ number_format($transaction->amount) }}</td>
+                    <td>{{ $transaction->transaction_id }}</td>
                     <td>
                       {{ $transaction->type != 'topup'? ($transaction->transferRecipient != null? $transaction->transferRecipient->username: 'Nil'): 'N/A' }}
                     </td>

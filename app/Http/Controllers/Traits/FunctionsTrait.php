@@ -49,7 +49,8 @@ trait FunctionsTrait {
             ]);
         } catch(\Exception $e){
             // Log error and store email in database for further processing
-            Log::error($e->getMessage());
+            // dd($e->getMessage());
+            \Log::error($e->getMessage());
         }
     }
 
@@ -84,11 +85,13 @@ trait FunctionsTrait {
      * @param int $amount
      * @return App/Wallet
      */
-    public function topUpWallet($user_id, $amount){
+    public function topUpWallet($user_id, $amount, $transaction_id = null){
+    $transaction_id = !is_null($transaction_id) ? $transaction_id : substr(sha1(time()), 0, 25); 
        $wallet = Wallet::create([
            'user_id' => $user_id,
            'type' => 'topup',
            'amount' => +$amount,
+           'transaction_id' => $transaction_id
        ]);
        return $wallet;
     }
@@ -100,14 +103,16 @@ trait FunctionsTrait {
      * @param int $amount
      * @return boolean|App/Wallet
      */
-    public function walletWithdraw($user_id, $amount, $receiver_id = null){
+    public function walletWithdraw($user_id, $amount, $receiver_id = null, $transaction_id = null){
+        $transaction_id = !is_null($transaction_id) ? $transaction_id : substr(sha1(time()), 0, 25); 
         if($this->getWallet($user_id) - $amount >= 0 ){
             // create wallet with - amount type is withdrawal
             $wallet  = Wallet::create([
                 'user_id' => $user_id,
                 'type' => 'withdraw',
                 'amount' => -$amount,
-                'recipient_id' => $receiver_id ? $receiver_id : null
+                'recipient_id' => $receiver_id ? $receiver_id : null,
+                'transaction_id' => $transaction_id
             ]);
             return $wallet;
         }
@@ -123,8 +128,9 @@ trait FunctionsTrait {
      * @return boolean true on success otherwise false
      */
     public function walletTransfer($sender_id, $receiver_id, $amount){
-        if($this->walletWithdraw($sender_id, $amount, $receiver_id)){
-            $this->topUpWallet($receiver_id, $amount);
+        $transaction_id = substr(sha1(time()), 0, 25); 
+        if($this->walletWithdraw($sender_id, $amount, $receiver_id, $transaction_id)){
+            $this->topUpWallet($receiver_id, $amount, $transaction_id);
             return true;
         }
         return false;
@@ -342,6 +348,7 @@ trait FunctionsTrait {
         if($varToCheck > $high) return false;
         return true;
     }
+
     public function saveContactForm($type, $name, $email, $phone, $message ){
         EmailContact::create([
             'user_id' => $user_id,
@@ -351,5 +358,83 @@ trait FunctionsTrait {
             'phone' => $phone,
             'message' => $message
         ]);
+    }
+
+    public function createNextLevel($user){
+       
+        $level = $user->level();
+         // Check if current level is filled before creating another level
+        $open = $this->getOpenPositions($user->id, $level);
+        if(isset($open) && !empty($open)){
+            return;
+        }
+        
+        $nextLevel = $level + 1;
+        $length = 0;
+
+        switch($nextLevel){
+            case 1: $length = 1;
+                break;
+            case 2: $length = 2;
+                break;
+            case 3: $length = 4;
+                break;
+            case 4: $length = 8;
+                break;
+            case 5: $length = 16;
+                break;
+
+        }
+    
+        $array = [1 => 0];
+
+        for($i = 2; $i <= $length; $i++){
+            array_push($array, 0);
+        }
+        
+        // dd(json_encode($array));
+        $matrix = Matrix::create([
+            'user_id' => $user->id,
+            'position' => $nextLevel,
+            'left' => json_encode($array),
+            'right' => json_encode($array),
+        ]);
+        
+    }
+
+    public function updateMatrix($user, $index, $downline){
+        $userMatrix = Matrix::whereUserId($user->id)->wherePosition($user->level())->first();
+
+        $levelPosition = explode (",", $index);
+     
+        $level = (int) substr($levelPosition[0], -1);
+        $side = (int) substr($levelPosition[1], -1);
+       
+        // If right
+        if (str_contains($levelPosition[1], 'right') || str_contains($levelPosition[1], 'Right')) {
+            // Check through
+            $right = json_decode($userMatrix->right, true);
+            foreach($right as $pos=>$value){
+                if($pos == $level){
+                    $right[$pos] = $downline;
+                }
+            }
+            $userMatrix->right = json_encode($right);
+            $userMatrix->save();
+        }
+
+        // If left
+        if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
+            // Check through
+            $left = json_decode($userMatrix->left, true);
+            foreach($left as $pos=>$value){
+                if($pos == $level){
+                    $left[$pos] = $downline;
+                }
+            }
+            $userMatrix->left = json_encode($left);
+            $userMatrix->save();
+        }
+        
     }
 }
