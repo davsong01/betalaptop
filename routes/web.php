@@ -17,11 +17,13 @@ Route::get('/', 'HomeController@index')->name('shop');
 Auth::routes();
 // Admin only routes
 
-Route::middleware(['auth'])->group (function() {
+Route::middleware(['auth', 'isAdmin'])->group (function() {
     Route::resource('users', 'UserController');
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
     Route::resource('settings', 'SettingController');
     Route::get('transactions/proof-of-payment/all', 'TransactionsController@allProofOfPayment')->name('transactions.all.proofOfPayment');
+    Route::put('transactions/proof-of-payment/{id}/reject', 'TransactionsController@rejectProofOfPayment')->name('transaction.reject.proofOfPayment');
+    Route::put('transactions/proof-of-payment/{id}/accept', 'TransactionsController@acceptProofOfPayment')->name('transaction.accept.proofOfPayment');
 
 });
 
@@ -35,7 +37,7 @@ Route::middleware(['auth'])->group (function() {
     Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
     Route::resource('downline', 'DownlineController');
     Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
-    
+
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
     Route::get('/payment/callback', 'PaymentController@handleGatewayCallback')->name('handle');
     Route::post('transactions/validate/username-or-email', 'TransactionsController@validateUsernameOrEmail')
@@ -43,6 +45,4 @@ Route::middleware(['auth'])->group (function() {
     Route::post('transactions/transfer-fund', 'TransactionsController@transferFund')->name('transactions.transferFund');
     Route::post('transactions/proof-of-payment', 'TransactionsController@uploadPOP')->name('transactions.proofOfPayment');
     Route::get('transactions/proof-of-payment/me', 'TransactionsController@meProofOfPayment')->name('transactions.me.proofOfPayment');
-    Route::put('transactions/proof-of-payment/{id}/reject', 'TransactionsController@rejectProofOfPayment')->name('transaction.reject.proofOfPayment');
-    Route::put('transactions/proof-of-payment/{id}/accept', 'TransactionsController@acceptProofOfPayment')->name('transaction.accept.proofOfPayment');
 });

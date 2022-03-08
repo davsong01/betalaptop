@@ -167,7 +167,7 @@ class TransactionsController extends Controller
 
     //user method
     public function meProofOfPayment(){
-        $proofs = ProofOfPayment::where('user_id', auth()->user()->id)->get();
+        $proofs = ProofOfPayment::where('user_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();
 
         return view('dash.users.pops.index', compact('proofs'));
     }
