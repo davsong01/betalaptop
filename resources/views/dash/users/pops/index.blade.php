@@ -19,6 +19,7 @@
                 <tr>
                   <th>#</th>
                   <th>preview</th>
+                  <th>Amount</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -29,6 +30,7 @@
                     <td>
                       <a href="{{\Storage::url($file->path) }}" title="{{$file->name}}"><img src="{{ preg_match('/(\.pdf)$/', $file->path) ? asset('board/assets/images/file.png') : asset('board/assets/images/image.png') }}" class="img" style="width: 50px; hieght: 50px;"/></a>
                     </td>
+                    <td>{{ $file->amount }}</td>
                     <td>
                       <span class="badge d-block badge-{{ ($file->status === 'pending') ? 'warning' : ($file->status === 'accepted' ? 'success' : 'danger')}}">{{  $file->status }}</span>
                     </td>
