@@ -18,18 +18,18 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach ($files as $file)
+                @foreach ($proofs as $proof)
                   <tr>
                     <td>{{ $loop->index + 1 }}</td>
                     <td>
-                      <a href="{{\Storage::url($file) }}" title="{{$file}}"><img src="{{\Storage::url($file) }}" class="img" style="width: 100px; hieght: 100px;"/></a></td>
+                      <a href="{{\Storage::url($proof->path) }}" title="{{$proof->name}}"><img src="{{ preg_match('/(\.pdf)$/', $proof->name) ? asset('board/assets/images/file.png') : asset('board/assets/images/image.png') }}" class="img" style="width: 50px; hieght: 50px;"/></a></td>
                     <td>
-                       <form method="POST" action="{{route('transaction.accept.proofOfPayment', ['id' => basename($file)])}}" class="inline-form d-inline">
+                       <form method="POST" action="{{route('transaction.accept.proofOfPayment', ['id' => $proof->name])}}" class="inline-form d-inline">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="btn btn-sm btn-warning" title="Accept proof of payment">Accept</button>
                       </form>
-                      <form method="POST" action="{{route('transaction.reject.proofOfPayment', ['id' => basename($file)])}}" class="inline-form d-inline">
+                      <form method="POST" action="{{route('transaction.reject.proofOfPayment', ['id' => $proof->name])}}" class="inline-form d-inline">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="btn btn-sm btn-danger" title="Reject proof of payment">Reject</button>
