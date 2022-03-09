@@ -8,6 +8,7 @@ use App\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\FunctionsTrait;
 
 class DownlineController extends Controller
@@ -114,6 +115,20 @@ class DownlineController extends Controller
         $this->sendEmail($user->name, $user->email, 'Welcome to '. env('APP_NAME'), $emailContent);
 
         return back()->with('message', 'Registration succesful, an email has been sent to '.$user->email);
+    }
+
+    public function validateEmail(Request $request)
+    {
+        $request->request->add(['type' =>  filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'email']);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|max:40|exists:users,' . $request->type,
+        ]);
+
+        if (!$validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => 'Email address already taken, try a new one'], 404);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'email address  ' . $request->email . ' is available']);
     }
 
     /**
