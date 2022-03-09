@@ -22,7 +22,7 @@
                         <div class="input-group mb-3">
                             <input type="email" placeholder="Enter email" value="{{ old('email') }}" required class="form-control" name="email" id="email">
                             <div class="input-group-append ">
-                                <span class="input-group-text"><i class="email-status"></i></span>
+                                <span class="input-group-text"><i class="fa fa-warning text-warning email-status"></i></span>
                             </div>
                             <div id="email-msg" class="d-block invalid-feedback"></div>
                         </div>
@@ -145,28 +145,29 @@
     </div>
     <script>
         $(document).ready(() => {
+            // Email validation
            $('form input[name="email"]').focusout((event) => {
                const element = event.target;
                jsLaravel(element.closest('form'), {action: "validate/email", method: 'post' })
                 .then(res => res.json())
                     .then(res => {
                         if (res.status === "success") {
-                            $('.email-status').removeClass('fa fa-times text-danger')
+                            $('.email-status').removeClass('fa fa-warning fa-times  text-warning text-danger')
                             .addClass('fa fa-check text-success');
                             $(element).attr('readonly', true);
                             $('#email-msg').removeClass('invalid-feedback')
                             .addClass('valid-feedback').text(res.message);
                         } else {
-                            $('.email-status').removeClass('fa fa-check text-success')
+                            $('.email-status').removeClass('fa fa-warning fa-check  text-warning text-success')
                             .addClass('fa fa-times text-danger');
-                            $(element).attr('readonly', false);;
+                            $(element).attr('readonly', false);
                             $('#email-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text(res.message);
                         }
                     }).catch(err => {
-                       $('.email-status').removeClass('fa fa-check text-success')
+                       $('.email-status').removeClass('fa fa-warning fa-check  text-warning text-success')
                             .addClass('fa fa-times text-danger');
-                            $(element).attr('readonly', false);;
+                            $(element).attr('readonly', false);
                             $('#email-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text('An error occurred, please try again');
                     })
