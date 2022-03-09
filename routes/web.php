@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group (function() {
     Route::resource('transactions', 'TransactionsController');
     Route::resource('wallet', 'WalletController');
     Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
+    Route::post('/downline/validate/email', 'DownlineController@validateEmail')->name('downline.validate.email');
     Route::resource('downline', 'DownlineController');
     Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
