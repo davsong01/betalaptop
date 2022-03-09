@@ -133,6 +133,20 @@ class DownlineController extends Controller
         return response()->json(['status' => 'success', 'message' => 'email address  ' . $request->email . ' is available']);
     }
 
+    public function validateUsername(Request $request)
+    {
+        $request->request->add(['type' =>  filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'username' : 'username']);
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:40|exists:users,' . $request->type,
+        ]);
+
+        if (!$validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => 'username already taken, try a new one'], 404);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'username ' . $request->username . ' is available']);
+    }
+
     /**
      * Display the specified resource.
      *
