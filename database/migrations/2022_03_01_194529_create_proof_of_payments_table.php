@@ -20,6 +20,7 @@ class CreateProofOfPaymentsTable extends Migration
             ->onDelete('SET NULL');
             $table->string('name');
             $table->string('path');
+            $table->unsignedInteger('amount');
             $table->enum('status', ['rejected', 'accepted', 'pending'])->default('pending');
             $table->softDeletes();
             $table->timestamps();

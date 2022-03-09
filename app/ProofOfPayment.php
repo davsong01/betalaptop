@@ -12,7 +12,7 @@ class ProofOfPayment extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'name', 'path', 'state'
+        'user_id', 'name', 'path', 'status', 'amount'
     ];
 
     /**

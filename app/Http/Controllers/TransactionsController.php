@@ -174,11 +174,12 @@ class TransactionsController extends Controller
 
     public function rejectProofOfPayment(string $id){
         $proof = ProofOfPayment::where('name', $id)->first();
-        if($this->isAdmin() && $proof && Storage::disk()->exists($proof->path)){
+        if($this->isAdmin() && $proof){
             $proof->status = 'rejected';
+            if(Storage::disk()->exists($proof->path)){
+                Storage::delete($proof->path);
+            }
             $proof->save();
-            Storage::delete($proof->path);
-            $proof->delete();
 
             //TODO: send a mail, to the user
             return redirect()->back()->with(['message' => 'rejected successfully']);
@@ -188,13 +189,14 @@ class TransactionsController extends Controller
 
     public function acceptProofOfPayment(string $id){
         $proof = ProofOfPayment::where('name', $id)->first();
-        if($this->isAdmin() && $proof && Storage::disk()->exists($proof->path)){
+        if($this->isAdmin() && $proof){
             $proof->status = 'accepted';
-            $proof->save();
-            Storage::delete($proof->path);
+            if(Storage::disk()->exists($proof->path)){
+                Storage::delete($proof->path);
+            }
 
             Transactions::create([
-                'user_id' => $proof->id,
+                'user_id' => $proof->user_id,
                 'amount' => $proof->amount,
                 'transaction_id' => $proof->name
             ]);
@@ -202,8 +204,9 @@ class TransactionsController extends Controller
                 'user_id' => $proof->user_id,
                 'type' => 'topup',
                 'amount' => +$proof->amount,
+                'transaction_id' => $proof->name
             ]);
-            $proof->delete();
+            $proof->save();
             //TODO: send a mail, to the user
             return redirect()->back()->with(['message' => 'accepted successfully']);
         }
