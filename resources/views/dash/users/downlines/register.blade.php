@@ -38,8 +38,9 @@
                         <div class="input-group mb-3">
                             <input type="text" placeholder="Enter username" name="username" class="form-control" required>
                             <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-times" style="color:red"></i></span>
+                                <span class="input-group-text"><i class="fa fa-warning text-warning username-status"></i></span>
                             </div>
+                             <div id="username-msg" class="d-block invalid-feedback"></div>
                         </div>
                     </div>
 
@@ -167,6 +168,34 @@
                             .addClass('fa fa-times text-danger');
                             $(element).attr('readonly', false);;
                             $('#email-msg').removeClass('valid-feedback')
+                            .addClass('invalid-feedback').text('An error occurred, please try again');
+                    })
+           })
+
+            // username validation
+           $('form input[name="username"]').focusout((event) => {
+               const element = event.target;
+               jsLaravel(element.closest('form'), {action: "validate/username", method: 'post' })
+                .then(res => res.json())
+                    .then(res => {
+                        if (res.status === "success") {
+                            $('.username-status').removeClass('fa fa-times text-warning text-danger')
+                            .addClass('fa fa-check text-success');
+                            $(element).attr('readonly', true);
+                            $('#username-msg').removeClass('invalid-feedback')
+                            .addClass('valid-feedback').text(res.message);
+                        } else {
+                            $('.username-status').removeClass('fa fa-check text-warning text-success')
+                            .addClass('fa fa-times text-danger');
+                            $(element).attr('readonly', false);
+                            $('#username-msg').removeClass('valid-feedback')
+                            .addClass('invalid-feedback').text(res.message);
+                        }
+                    }).catch(err => {
+                       $('.username-status').removeClass('fa fa-check text-success')
+                            .addClass('fa fa-times text-danger');
+                            $(element).attr('readonly', false);
+                            $('#username-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text('An error occurred, please try again');
                     })
            })
