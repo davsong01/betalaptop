@@ -20,10 +20,11 @@
                     <div class="col-md-12">
                         <label for"email">Email</label>
                         <div class="input-group mb-3">
-                            <input type="text" placeholder="Enter email" value="{{ old('email') }}" required class="form-control" name="email" id="email">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-check" style="color:green"></i></span>
+                            <input type="email" placeholder="Enter email" value="{{ old('email') }}" required class="form-control" name="email" id="email">
+                            <div class="input-group-append ">
+                                <span class="input-group-text"><i class="email-status"></i></span>
                             </div>
+                            <div id="email-msg" class="d-block invalid-feedback"></div>
                         </div>
                     </div>
                     <div class="input-group mb-3">
@@ -141,6 +142,36 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(() => {
+           $('form input[name="email"]').focusout((event) => {
+               const element = event.target;
+               jsLaravel(element.closest('form'), {action: "validate/email", method: 'post' })
+                .then(res => res.json())
+                    .then(res => {
+                        if (res.status === "success") {
+                            $('.email-status').removeClass('fa fa-times text-danger')
+                            .addClass('fa fa-check text-success');
+                            $(element).attr('readonly', true);
+                            $('#email-msg').removeClass('invalid-feedback')
+                            .addClass('valid-feedback').text(res.message);
+                        } else {
+                            $('.email-status').removeClass('fa fa-check text-success')
+                            .addClass('fa fa-times text-danger');
+                            $(element).attr('readonly', false);;
+                            $('#email-msg').removeClass('valid-feedback')
+                            .addClass('invalid-feedback').text(res.message);
+                        }
+                    }).catch(err => {
+                       $('.email-status').removeClass('fa fa-check text-success')
+                            .addClass('fa fa-times text-danger');
+                            $(element).attr('readonly', false);;
+                            $('#email-msg').removeClass('valid-feedback')
+                            .addClass('invalid-feedback').text('An error occurred, please try again');
+                    })
+           })
+        })
+    </script>
     <!-- Column -->
 </div>
 @endsection
