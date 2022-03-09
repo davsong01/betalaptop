@@ -27,7 +27,7 @@
                   <tr>
                     <td>{{ $loop->index + 1 }}</td>
                     <td>
-                      <a href="{{\Storage::url($file->path) }}" title="{{$file->name}}"><img src="{{\Storage::url($file->path) }}" class="img" style="width: 50px; hieght: 50px;"/></a>
+                      <a href="{{\Storage::url($file->path) }}" title="{{$file->name}}"><img src="{{ preg_match('/(\.pdf)$/', $file->path) ? asset('board/assets/images/file.png') : asset('board/assets/images/image.png') }}" class="img" style="width: 50px; hieght: 50px;"/></a>
                     </td>
                     <td>
                       <span class="badge d-block badge-{{ ($file->status === 'pending') ? 'warning' : ($file->status === 'accepted' ? 'success' : 'danger')}}">{{  $file->status }}</span>
