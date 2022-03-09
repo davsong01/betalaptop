@@ -121,27 +121,33 @@ class DownlineController extends Controller
 
     public function validateEmail(Request $request)
     {
-        $request->request->add(['type' =>  filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'email']);
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|max:40|exists:users,' . $request->type,
-        ]);
-
-        if (!$validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'Email address already taken, try a new one'], 404);
+        if (preg_match('/('. env('APP_DOMAIN') .')$/', strtolower($request->email))) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid email'], 404);
         }
 
-        return response()->json(['status' => 'success', 'message' => 'email address  ' . $request->email . ' is available']);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|min:3|unique:users,email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' =>  $validator->errors()->getMessages()['email'][0]], 404);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'email address ' . $request->email . ' is available']);
     }
 
     public function validateUsername(Request $request)
     {
-        $request->request->add(['type' =>  filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'username' : 'username']);
+        if (preg_match('/(admin)/', strtolower($request->username))) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid username'], 404);
+        }
+
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:40|exists:users,' . $request->type,
+            'username' => 'required|string|max:40|min:3|unique:users,username'
         ]);
 
-        if (!$validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'username already taken, try a new one'], 404);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' =>$validator->errors()->getMessages()['username'][0]], 404);
         }
 
         return response()->json(['status' => 'success', 'message' => 'username ' . $request->username . ' is available']);
