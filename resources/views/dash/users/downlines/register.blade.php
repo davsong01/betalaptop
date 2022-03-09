@@ -13,12 +13,12 @@
                    @csrf
                     <div class="input-group mb-3">
                         <div class="col-md-12">
-                            <label for"name">Full Name</label>
+                            <label for="name">Full Name</label>
                             <input type="text" placeholder="Enter name" class="form-control" name="name" required value="{{ old('name') }}">
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <label for"email">Email</label>
+                        <label for="email">Email</label>
                         <div class="input-group mb-3">
                             <input type="email" placeholder="Enter email" value="{{ old('email') }}" required class="form-control" name="email" id="email">
                             <div class="input-group-append ">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <label for"username">Username</label>
+                        <label for="username">Username</label>
                         <div class="input-group mb-3">
                             <input type="text" placeholder="Enter username" name="username" class="form-control" required>
                             <div class="input-group-append">
@@ -42,14 +42,14 @@
                             </div>
                         </div>
                     </div>
-                   
+
                     <div class="col-md-12">
-                        <label for"username">Password <span style="color:blue"> Leave blank to use default Password: <b>pass12345</b></span></label>
+                        <label for="username">Password <span style="color:blue"> Leave blank to use default Password: <b>pass12345</b></span></label>
                         <div class="input-group mb-3">
                             <input type="password" value="{{ old('password') }}" name="password" class="form-control">
                         </div>
                     </div>
-                                      
+
                     <div class="input-group mb-3">
                         <label class="col-sm-12">Select Position for this user | <small><i><a href="{{ route('binarytree', auth()->user()->id) }}" target="_blank">View your binary tree</a></i></small></label>
                         <div class="col-sm-12">
@@ -57,13 +57,13 @@
                                 <option value="">...Select...</option>
                                 @if($level > 0)
                                     @foreach($matrix->where('position', 1) as $mat)
-                                        @foreach($mat['left'] as $value=>$user) 
+                                        @foreach($mat['left'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach
-                                   
-                                        @foreach($mat['right'] as $value=>$user) 
+
+                                        @foreach($mat['right'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Right {{  $value }}">Level {{ $mat['position'] }}, Right {{  $value }}</option>
                                         @endif
@@ -72,13 +72,13 @@
                                 @endif
                                 @if($level > 1)
                                     @foreach($matrix->where('position', 2) as $mat)
-                                        @foreach($mat['left'] as $value=>$user) 
+                                        @foreach($mat['left'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach
-                                   
-                                        @foreach($mat['right'] as $value=>$user) 
+
+                                        @foreach($mat['right'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Right {{  $value }}">Level {{ $mat['position'] }}, Right {{  $value }}</option>
                                         @endif
@@ -87,13 +87,13 @@
                                 @endif
                                 @if($level > 2)
                                     @foreach($matrix->where('position', 3) as $mat)
-                                        @foreach($mat['left'] as $value=>$user) 
+                                        @foreach($mat['left'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach
-                                   
-                                        @foreach($mat['right'] as $value=>$user) 
+
+                                        @foreach($mat['right'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Right {{  $value }}">Level {{ $mat['position'] }}, Right {{  $value }}</option>
                                         @endif
@@ -102,13 +102,13 @@
                                 @endif
                                 @if($level > 3)
                                     @foreach($matrix->where('position', 4) as $mat)
-                                        @foreach($mat['left'] as $value=>$user) 
+                                        @foreach($mat['left'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach
-                                   
-                                        @foreach($mat['right'] as $value=>$user) 
+
+                                        @foreach($mat['right'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Right {{  $value }}">Level {{ $mat['position'] }}, Right {{  $value }}</option>
                                         @endif
@@ -117,13 +117,13 @@
                                 @endif
                                 @if($level > 4)
                                     @foreach($matrix->where('position', 5) as $mat)
-                                        @foreach($mat['left'] as $value=>$user) 
+                                        @foreach($mat['left'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach
-                                   
-                                        @foreach($mat['right'] as $value=>$user) 
+
+                                        @foreach($mat['right'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Right {{  $value }}">Level {{ $mat['position'] }}, Right {{  $value }}</option>
                                         @endif
