@@ -32,7 +32,7 @@ class DownlineController extends Controller
         });
 
         // $this->getUpline("Level 5, left 3", 1);
-        // dd($users);
+
         $i = 1;
         return view('dash.users.downlines.index', compact('users', 'i'));
     }
@@ -100,21 +100,23 @@ class DownlineController extends Controller
         unset($data['position']);
 
         $user = User::create($data);
+        // Update user matrix
+
+        $this->updateMatrix(auth()->user(), $request->position, $user->id);
 
         // Log resgistration email
-        $emailContent = "Dear "
-            .$user->name . ",<br><br>"
+        $emailContent = "Dear " .$user->name . ",<br><br>"
             . "Welcome to " . env('APP_NAME') . "<br><br>"
-            . "An account has been created for you <br><br>by: ". auth()->user()->username ."<br>"
+            . "An account has been created for you <br><br>
+                by: ". auth()->user()->username ."<br>"
             . " On" . $user->created_at->format('Y-m-d H:i:s')
-            . " <br><br>Your login details are: <br> Email: " . $user->email. "<br>Password: " . $request->password ?? "pass12345 <br><br><br>"
-            . "Kindly <a href ='/account'>login to your back office to start referring and earning</a> <br><br> Warm Regards <br><br>";
-
-            "Team" . env('APP_NAME');
+            . " <br><br>
+                Your login details are: <br> Email: " . $user->email. "<br>Password: " . $request->password ?? "pass12345 <br><br><br>"
+            . "Kindly <a href ='" . env('APP_URL') . "/wallet"."'>login to your back office to start referring and earning</a> <br><br> Warm Regards <br><br>";
 
         $this->sendEmail($user->name, $user->email, 'Welcome to '. env('APP_NAME'), $emailContent);
 
-        return back()->with('message', 'Registration succesful, an email has been sent to '.$user->email);
+        return back()->with('message', 'Registration successful, an email has been sent to '.$user->email);
     }
 
     public function validateEmail(Request $request)

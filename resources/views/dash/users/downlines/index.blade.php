@@ -13,6 +13,11 @@
                 <h4 class="card-title">My downlines</h4>
                 @if(auth()->user()->wallet() >= \App\Setting::first()->value('amount_per_slot')  )
                 <a href="{{ route('downline.create') }}" class="btn btn-success mb-10" >Register new user</a>
+                @else
+                    <div class="alert alert-warning" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <strong> <a href="{{ route('wallet.index') }}">Top up wallet with at least {!! \App\Setting::value('currency') !!}{{ number_format( \App\Setting::value('amount_per_slot') - auth()->user()->wallet()) }}</a> </strong> to register a new downline
+                    </div>
                 @endif
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">

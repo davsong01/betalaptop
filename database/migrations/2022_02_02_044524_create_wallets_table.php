@@ -22,6 +22,7 @@ class CreateWalletsTable extends Migration
             $table->enum('type', ['withdraw', 'topup', 'transfer']);
             $table->float('amount')->default(0);
             $table->bigInteger('recipient_id')->nullable();
+            $table->string('transaction_id');
             $table->timestamps();
         });
     }

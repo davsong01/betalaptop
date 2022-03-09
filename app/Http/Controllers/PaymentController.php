@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Paystack;
-use App\Transactions;
 use App\Wallet;
+use App\Transactions;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Traits\FunctionsTrait;
 
 class PaymentController extends Controller
 {
+    use FunctionsTrait;
     /**
      * Display a listing of the resource.
      *
@@ -143,10 +145,27 @@ class PaymentController extends Controller
                 'amount' => $amount,
                 ]
             );
-
+            
             // Update wallet
-            $this->topUpWallet(auth()->user()->id, $amount);
+            $this->topUpWallet(auth()->user()->id, $amount, $paymentDetails['data']['reference']);
+
+            // Create next level matrix
+            if( ($amount + auth()->user()->wallet()) >= \App\Setting::value('amount_per_slot')){
+                $this->createNextLevel(auth()->user());
+            }
+   
             // Log email
+            $name = auth()->user()->name;
+            $subject = 'Payment received';
+            $content = "Dear " . $name . ",<br><br>"
+            . "We have received your payment of " . \App\Setting::value('currency').number_format($amount) . "<br><br>"
+            . "Your transaction id is: " . $paymentDetails['data']['reference'] . "<br><br>
+                Kindly <a href ='" . env('APP_URL') . "/wallet"."'>login to your back office to view your wallet balance and history</a>"
+            . "<br><br> Warm Regards";
+            $recipient = auth()->user()->email;
+           
+            $this->sendEmail($name, $recipient, $subject, $content);
+         
             return redirect(route('wallet.index'))->with(['message' => 'Top up successful']);
         }
         return redirect(route('wallet.index'))->withErrors(['message' => 'An error occurred with your transaction']);
