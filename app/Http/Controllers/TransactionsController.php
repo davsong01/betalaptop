@@ -161,8 +161,8 @@ class TransactionsController extends Controller
 
     //admin method
     public function allProofOfPayment(){
-        $files = Storage::disk()->files('public/proof-of-payment');
-        return view('dash.admin.users.pop', compact('files'));
+       $proofs = ProofOfPayment::orderBy('created_at', 'DESC')->get();
+        return view('dash.admin.users.pop', compact('proofs'));
     }
 
     //user method
