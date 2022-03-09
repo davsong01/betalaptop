@@ -27,8 +27,8 @@
             throw new Error(`ElementMisMatched: Element type HTML${this.toPascalCase(element.tagName)}Element passed expected HTMLFormElement`)
           }
         }
-        const { method, mode, cache, credentials, headers, redirect, referrerPolicy, body } = options;
-        return fetch(element.getAttribute('action'), {
+        const { action, method, mode, cache, credentials, headers, redirect, referrerPolicy, body } = options;
+        return fetch(action ? action : element.getAttribute('action'), {
           method: method ? method : element.getAttribute('method') ? element.getAttribute('method') : 'POST',
           body: body ? body : form,
           ...(mode ? { mode } : {}),
