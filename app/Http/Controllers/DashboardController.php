@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -12,7 +13,7 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   public function index()
+    public function index()
     {
         return view('dash.index');
     }
@@ -26,17 +27,27 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-            'name' => 'string|max:30|required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'name' => 'required|string|max:30|required',
+            'username' =>  'required|not_regex:/(admin)/i|unique:users,username,' . $user->id,
+            'email' => 'required|email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8',
+            'phone' => 'nullable|min:9|unique:users,phone,' . $user->id,
+            'avatar' => 'nullable|mimetypes:image/*|max:1096'
         ]);
 
         $user = User::find($user->id);
-        if($user){
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->save();
+        if (!$user) {
+            redirect()->back()->withErrors(['message' => 'Unauthorized request']);
         }
-        return redirect()->back();
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->username = $request->username;
+        $user->phone = $request->phone ?: $user->phone;
+        $user->password = $request->password ? Hash::make($request->password) : $user->password;
+        $user->save();
+
+        return redirect()->back()->with('message', 'profile updated successfully');
     }
     /**
      * Show the form for creating a new resource.
