@@ -16,7 +16,7 @@
                 @else
                     <div class="alert alert-warning" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <strong> <a href="{{ route('wallet.index') }}">Top up wallet with at least {!! \App\Setting::value('currency') !!}{{ number_format( \App\Setting::value('amount_per_slot') - auth()->user()->wallet()) }}</a> </strong> to register a new downline
+                            <strong> <a href="{{ route('wallet.index') }}">Top up wallet with at least {!! \App\Setting::value('currency') !!}{{ number_format( (auth()->user()->wallet() >= 0 ) ? (\App\Setting::value('amount_per_slot') - auth()->user()->wallet()) : \App\Setting::value('amount_per_slot')) }}</a> </strong> to register a new downline
                     </div>
                 @endif
                 <div class="table-responsive">
@@ -29,8 +29,7 @@
                                 <th>Email</th>
                                 <th>Wallet</th>
                                 <th>Level</th>
-                                <th>Position</th>
-                                {{-- <td>Actions</td> --}}
+                                <th>Position index</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,21 +46,10 @@
                                     <td>{{ $user->name }}  <br> <i><b>{{ $user->username }}</b></i></td>
                                    
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ \App\Setting::first()->value('currency') }}{{ $user->wallet() }} <br> <small><i><a href="{{ route('wallethistory', $user->id) }}">View history</a></i></small></td>
+                                    <td>{{ \App\Setting::first()->value('currency') }}{{ number_format($user->wallet()) }}</td>
                                     <td>{{ $user->level() }}  <br> <small><i><a href="{{ route('binarytree', $user->id) }}">View binary tree</a></i></small></td>
                                     <td>{{ $user->position }}</td>
-                                    {{-- <td>
-                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a data-toggle="tooltip" title="Edit/View user" href="{{ route('users.edit', $user->id) }}" class="btn btn-primary"><span class="fa fa-edit"></span></a>
-                                            <form id="delete" onsubmit="return confirm('Are you sure you want to delete forever?');" action="{{ route('users.destroy', $user->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE') 
-                                                <button class="btn btn-danger" type="submit"><i class="fa fa-trash" ></i></button>
-                                            </form>  
-                                        </div>
-                                                   
-                                    </td> --}}
-                                
+
                                 </tr>
                             @endforeach
                         </tbody>

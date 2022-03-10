@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Traits;
 
+use App\User;
 use App\Emails;
 use App\Matrix;
 use App\Wallet;
@@ -209,7 +210,7 @@ trait FunctionsTrait {
 
     public function getUpline($node, $parent){
         $levelPosition = explode (",", $node);
-     
+        
         $level = (int) substr($levelPosition[0], -1);
         $side = (int) substr($levelPosition[1], -1);
         
@@ -365,6 +366,49 @@ trait FunctionsTrait {
         $level = $user->level();
          // Check if current level is filled before creating another level
         $open = $this->getOpenPositions($user->id, $level);
+        if(isset($open) && !empty($open)){
+            return;
+        }
+        
+        $nextLevel = $level + 1;
+        $length = 0;
+
+        switch($nextLevel){
+            case 1: $length = 1;
+                break;
+            case 2: $length = 2;
+                break;
+            case 3: $length = 4;
+                break;
+            case 4: $length = 8;
+                break;
+            case 5: $length = 16;
+                break;
+
+        }
+    
+        $array = [1 => 0];
+
+        for($i = 2; $i <= $length; $i++){
+            array_push($array, 0);
+        }
+        
+        // dd(json_encode($array));
+        $matrix = Matrix::create([
+            'user_id' => $user->id,
+            'position' => $nextLevel,
+            'left' => json_encode($array),
+            'right' => json_encode($array),
+        ]);
+        
+    }
+
+     public function createUplineNextLevel($id){
+        $user = User::findorFail($id);
+        $level = $user->level();
+         // Check if current level is filled before creating another level
+        $open = $this->getOpenPositions($user->id, $level);
+        
         if(isset($open) && !empty($open)){
             return;
         }

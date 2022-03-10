@@ -23,7 +23,6 @@ class DownlineController extends Controller
 
     public function index()
     {
-
         $users = User::whereUpline(auth()->user()->id)->orderBy('created_at', 'DESC')->get();
 
         $users->map(function ($users){
@@ -47,14 +46,21 @@ class DownlineController extends Controller
         if(auth()->user()->wallet() < \App\Setting::first()->value('amount_per_slot')){
             return back()->with('error', 'Insufficient funds in wallet');
         }
-        $matrix = Matrix::whereUserId(auth()->user()->id)->get();
 
+        // Create next level if user has enough and all point are filled.
+        if((auth()->user()->wallet()) >= \App\Setting::value('amount_per_slot')){
+            $this->createNextLevel(auth()->user());
+        }
+
+        $matrix = Matrix::whereUserId(auth()->user()->id)->get();
             $matrix->map(function($matrix){
                 $matrix['left'] = json_decode($matrix->left, true);
                 $matrix['right'] = json_decode($matrix->right, true);
 
                 return $matrix;
             });
+        
+        
         $level = $matrix->count();
         return view('dash.users.downlines.register', compact('matrix', 'level'));
 
@@ -104,6 +110,16 @@ class DownlineController extends Controller
 
         $this->updateMatrix(auth()->user(), $request->position, $user->id);
 
+        // Get direct upline and place new user in appropraite index
+        $newUpline = User::findOrFail($data['upline']);
+        $uplinePostion = $this->getLevel( $newUpline->id );
+        $this->createUplineNextLevel($newUpline->id );
+       
+        // Todo Work on updateMatrix for upline
+        // Level 2 - level 1, right 2 = nbetwen, remodify the getUplineIndex function to get position to place this new user in the upline's tree
+        $this->updateUplineMatrix($newUpline->id, $request->position, $user->id);
+        // Place in appropraite position
+        dd($data['upline'], $request->position,$uplinePostion);
         // Log resgistration email
         $emailContent = "Dear " .$user->name . ",<br><br>"
             . "Welcome to " . env('APP_NAME') . "<br><br>"
@@ -116,7 +132,7 @@ class DownlineController extends Controller
 
         $this->sendEmail($user->name, $user->email, 'Welcome to '. env('APP_NAME'), $emailContent);
 
-        return back()->with('message', 'Registration successful, an email has been sent to '.$user->email);
+        return redirect(route('downline.index'))->with('message', 'Registration successful, an email has been sent to '.$user->email);
     }
 
     public function validateEmail(Request $request)

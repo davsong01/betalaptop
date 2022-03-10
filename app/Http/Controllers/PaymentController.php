@@ -130,7 +130,7 @@ class PaymentController extends Controller
          * TODO: Remember to fix replay payload attack/hack
          */
         $paymentDetails = Paystack::getPaymentData();
-
+        
         $replay_payload = Transactions::where('transaction_id', $paymentDetails['data']['reference'])->first();
 
         if($paymentDetails['status'] === true && !$replay_payload){

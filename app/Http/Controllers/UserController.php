@@ -35,7 +35,6 @@ class UserController extends Controller
     }
 
     public function binaryTree($id){
-
         if($this->isAdmin()){
             $user = User::find($id);
             $matrix = Matrix::whereUserId($id)->get();
@@ -46,13 +45,18 @@ class UserController extends Controller
 
                 return $matrix;
             });
-           
 
         }else{
-            $user = auth()->user();
-            $level = NULL;
-            $matrix = Matrix::whereUserId(auth()->user()->id)->get();
+            $user = User::findorfail($id);
            
+            // Check if this 
+            if($user->id != auth()->user()->id && $user->upline != auth()->user()->id){
+                return back()->with('error', 'invalid user id');
+            }
+
+            $level = NULL;
+            $matrix = Matrix::whereUserId($user->id)->get();
+            
             $matrix->map(function($matrix){
                 $matrix['left'] = json_decode($matrix->left, true);
                 $matrix['right'] = json_decode($matrix->right, true);
