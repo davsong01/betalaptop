@@ -121,12 +121,9 @@ class DownlineController extends Controller
 
     public function validateEmail(Request $request)
     {
-        if (preg_match('/('. env('APP_DOMAIN') .')$/', strtolower($request->email))) {
-            return response()->json(['status' => 'error', 'message' => 'Invalid email'], 404);
-        }
-
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|min:3|unique:users,email'
+            'email' =>
+            'required|email|min:3|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
         ]);
 
         if ($validator->fails()) {
@@ -138,12 +135,8 @@ class DownlineController extends Controller
 
     public function validateUsername(Request $request)
     {
-        if (preg_match('/(admin)/', strtolower($request->username))) {
-            return response()->json(['status' => 'error', 'message' => 'Invalid username'], 404);
-        }
-
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:40|min:3|unique:users,username'
+            'username' => 'required|string|max:40|min:3|unique:users,username|not_regex:/(admin)/i'
         ]);
 
         if ($validator->fails()) {
