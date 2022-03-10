@@ -70,12 +70,13 @@ class DownlineController extends Controller
     {
         $data = $this->validate($request, [
             "name" => "required|string|min:3|max:30",
-            "email" => 'required|unique:users,email',
+            "email" => 'required|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
             "phone" => "required|string",
-            "username" => "required|unique:users,username",
-            "password" => "nullable",
+            "username" => "required|unique:users,username|not_regex:/(admin)/i",
+            "password" => "nullable|min:8",
             "position" => "required"
         ]);
+
         // Check if enough funds
         if(auth()->user()->wallet() < Setting::value('amount_per_slot')){
             return back()->with('error', 'Insufficient funds for tis process');
