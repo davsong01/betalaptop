@@ -28,8 +28,10 @@
             <button type="button" class="btn btn-sm btn-success my-2 mx-3" data-toggle="modal"
               data-target="#topupModal">Top Up
               wallet</button>
-            <button type="button" class="btn btn-sm btn-danger my-2 mx-3" data-toggle="modal"
-              data-target="#transferFundModal">Transfer Fund</button>
+              @if (!auth()->user()->wallet() <= 0)
+              <button type="button" class="btn btn-sm btn-danger my-2 mx-3" data-toggle="modal"
+                data-target="#transferFundModal">Transfer Fund</button>
+              @endif
             <button type="button" class="btn btn-sm btn-primary my-2 mx-3" data-toggle="modal"
               data-target="#uploadPOPModal">Upload offline payment</button>
           </div>
@@ -81,7 +83,7 @@
                             <div class="col-12">Bank: {{ \App\Setting::first()->value('official_bank') }}</div>
                           </div>
                         </div>
-                        <form method="POST" action="{{ route('transactions.proofOfPayment') }}" 
+                        <form method="POST" action="{{ route('transactions.proofOfPayment') }}"
                         enctype="multipart/form-data">
                         @csrf
                           <div class="my-3">
@@ -89,7 +91,7 @@
                             <div class="form-group">
                               <label for="proofOfPayment" class="form-label">Upload proof of payment</label> <br>
                               <div class="custom-file">
-                                
+
                                 <input type="file" class="form-control custom-file-input" id="validatedInputGroupCustomFile"
                                   accept="image/*,application/pdf" name="proofOfPayment" required>
                                 <label class="custom-file-label" for="validatedInputGroupCustomFile">Select POP

@@ -154,20 +154,17 @@
                         if (res.status === "success") {
                             $('.email-status').removeClass('fa fa-warning fa-times  text-warning text-danger')
                             .addClass('fa fa-check text-success');
-                            $(element).attr('readonly', true);
                             $('#email-msg').removeClass('invalid-feedback')
                             .addClass('valid-feedback').text(res.message);
                         } else {
                             $('.email-status').removeClass('fa fa-warning fa-check  text-warning text-success')
                             .addClass('fa fa-times text-danger');
-                            $(element).attr('readonly', false);
                             $('#email-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text(res.message);
                         }
                     }).catch(err => {
                        $('.email-status').removeClass('fa fa-warning fa-check  text-warning text-success')
                             .addClass('fa fa-times text-danger');
-                            $(element).attr('readonly', false);
                             $('#email-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text('An error occurred, please try again');
                     })
@@ -182,20 +179,17 @@
                         if (res.status === "success") {
                             $('.username-status').removeClass('fa fa-times text-warning text-danger')
                             .addClass('fa fa-check text-success');
-                            $(element).attr('readonly', true);
                             $('#username-msg').removeClass('invalid-feedback')
                             .addClass('valid-feedback').text(res.message);
                         } else {
                             $('.username-status').removeClass('fa fa-check text-warning text-success')
                             .addClass('fa fa-times text-danger');
-                            $(element).attr('readonly', false);
                             $('#username-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text(res.message);
                         }
                     }).catch(err => {
                        $('.username-status').removeClass('fa fa-check text-success')
                             .addClass('fa fa-times text-danger');
-                            $(element).attr('readonly', false);
                             $('#username-msg').removeClass('valid-feedback')
                             .addClass('invalid-feedback').text('An error occurred, please try again');
                     })

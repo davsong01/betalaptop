@@ -14,8 +14,10 @@
             <button type="button" class="btn btn-sm btn-success my-2 mx-3" data-toggle="modal"
               data-target="#topupModal">Top Up
               wallet</button>
-            <button type="button" class="btn btn-sm btn-danger my-2 mx-3" data-toggle="modal"
-              data-target="#transferFundModal">Transfer Fund</button>
+              @if (!auth()->user()->wallet() <= 0)
+              <button type="button" class="btn btn-sm btn-danger my-2 mx-3" data-toggle="modal"
+                data-target="#transferFundModal">Transfer Fund</button>
+              @endif
             <button type="button" class="btn btn-sm btn-primary my-2 mx-3" data-toggle="modal"
               data-target="#uploadPOPModal">Upload POP</button>
           </div>
