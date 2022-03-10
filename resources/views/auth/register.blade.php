@@ -39,7 +39,13 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label>Your Email<span>*</span></label>
-                                    <input type="text" name="email" placeholder="" value="{{ old('email') }}" required="required">
+                                    <input type="email" name="email" placeholder="" value="{{ old('email') }}" required="required">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Your username<span>*</span></label>
+                                    <input type="text" name="username" placeholder="" value="{{ old('username') }}" required="required">
                                 </div>
                             </div>
                             <div class="col-12">
