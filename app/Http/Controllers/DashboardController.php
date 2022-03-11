@@ -45,6 +45,13 @@ class DashboardController extends Controller
         $user->username = $request->username;
         $user->phone = $request->phone ?: $user->phone;
         $user->password = $request->password ? Hash::make($request->password) : $user->password;
+
+        if($request->has('avatar')){
+            if($user->avatar){
+                $this->deleteImage($user->avatar);
+            }
+            $user->avatar = $this->uploadImage($request->avatar,'site/assets/images/avatars', '400', '400');
+        }
         $user->save();
 
         return redirect()->back()->with('message', 'profile updated successfully');
