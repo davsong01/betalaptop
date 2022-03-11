@@ -30,8 +30,6 @@ class DownlineController extends Controller
             return $users;
         });
 
-        // $this->getUpline("Level 5, left 3", 1);
-
         $i = 1;
         return view('dash.users.downlines.index', compact('users', 'i'));
     }
@@ -59,7 +57,6 @@ class DownlineController extends Controller
 
                 return $matrix;
             });
-        
         
         $level = $matrix->count();
         return view('dash.users.downlines.register', compact('matrix', 'level'));
@@ -89,11 +86,14 @@ class DownlineController extends Controller
         }
 
         // Position must be in available positions
-        $avaliablePostions = $this->getOpenPositions(auth()->user()->id, auth()->user()->level());
-
-        if(!in_array($request->position, $avaliablePostions)){
+        $availablePositions = $this->getOpenPositions(auth()->user()->id, auth()->user()->level());
+        // dd(in_array($request->position, array_column($availablePostions, 'name'))), $availablePostions));
+      
+        if(!in_array($request->position,  $availablePositions)){
+            // dd(  $availablePositions, $request->position);
             return back()->with('error', 'Invalid Position selected for user');
         }
+       
         // Handle Password Change
         if(request()->has('password')){
             $data['password'] = Hash::make($request['password']);
@@ -101,7 +101,7 @@ class DownlineController extends Controller
 
         $data['upline'] = $this->getUpline($request->position, auth()->user()->id)['id'];
         $data['parent_id'] = auth()->user()->id;
-
+        
         // deduct amount
         $this->walletWithdraw(auth()->user()->id, Setting::value('amount_per_slot'));
         unset($data['position']);
@@ -115,12 +115,14 @@ class DownlineController extends Controller
         $newUpline = User::findOrFail($data['upline']);
         $uplinePostion = $this->getLevel( $newUpline->id );
         $this->createUplineNextLevel($newUpline->id );
-       
+        
         // Todo Work on updateMatrix for upline
         // Level 2 - level 1, right 2 = nbetwen, remodify the getUplineIndex function to get position to place this new user in the upline's tree
-        $this->updateUplineMatrix($newUpline->id, $request->position, $user->id);
+        if(auth()->user()->level() > 1){
+            // $this->updateUplineMatrix($newUpline->id, $request->position, $user->id);
+        }
         // Place in appropraite position
-        dd($data['upline'], $request->position,$uplinePostion);
+    
         // Log resgistration email
         $emailContent = "Dear " .$user->name . ",<br><br>"
             . "Welcome to " . env('APP_NAME') . "<br><br>"

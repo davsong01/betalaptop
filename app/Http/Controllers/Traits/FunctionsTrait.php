@@ -201,6 +201,7 @@ trait FunctionsTrait {
                 }
             }
         }
+      
         return $availablePos;
     }
 
@@ -403,7 +404,7 @@ trait FunctionsTrait {
         
     }
 
-     public function createUplineNextLevel($id){
+    public function createUplineNextLevel($id){
         $user = User::findorFail($id);
         $level = $user->level();
          // Check if current level is filled before creating another level
@@ -481,4 +482,42 @@ trait FunctionsTrait {
         }
         
     }
+
+    public function updateUplineMatrix($user, $index, $downline){
+        $userMatrix = Matrix::whereUserId($user->id)->wherePosition($user->level())->first();
+        
+        $levelPosition = explode (",", $index);
+        
+        $level = (int) substr($levelPosition[0], -1);
+        $side = (int) substr($levelPosition[1], -1);
+       
+        // If right
+        if (str_contains($levelPosition[1], 'right') || str_contains($levelPosition[1], 'Right')) {
+            // Check through
+            $right = json_decode($userMatrix->right, true);
+            foreach($right as $pos=>$value){
+                if($pos == $level){
+                    $right[$pos] = $downline;
+                }
+            }
+            $userMatrix->right = json_encode($right);
+            $userMatrix->save();
+        }
+
+        // If left
+        if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
+            // Check through
+            $left = json_decode($userMatrix->left, true);
+            foreach($left as $pos=>$value){
+                if($pos == $level){
+                    $left[$pos] = $downline;
+                }
+            }
+            $userMatrix->left = json_encode($left);
+            $userMatrix->save();
+        }
+        
+    }
+
+    
 }

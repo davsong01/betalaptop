@@ -64,7 +64,7 @@ class UserController extends Controller
                 return $matrix;
             });
         }
-
+        
         $level = $matrix->count();
         return view('dash.users.tree.binary_tree', compact('matrix', 'user', 'level'));
 
