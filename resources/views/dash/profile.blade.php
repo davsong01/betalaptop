@@ -75,7 +75,7 @@
                     <div class="form-group">
                         <label class="col-md-12 mb-0">Password</label>
                         <div class="col-md-12">
-                            <input type="password" name="password" value="password" class="form-control ps-0 form-control-line">
+                            <input type="password" name="password" class="form-control ps-0 form-control-line">
                         </div>
                     </div>
                     <div class="form-group">
