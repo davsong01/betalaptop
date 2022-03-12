@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="input-group mb-3">
-                        <label class="col-sm-12">Select Position for this user | <small><i><a href="{{ route('binarytree', auth()->user()->id) }}" target="_blank">View your binary tree</a></i></small></label>
+                        <label class="col-sm-12">Select Position for this user | <small><i><a href="{{ route('binarytree', auth()->user()->id) }}" target="_blank">View your binary tree </a></i></small></label>
                         <div class="col-sm-12">
                             <select class="form-control" name="position" id="position" required>
                                 <option value="">...Select...</option>
@@ -63,7 +63,7 @@
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach
-
+                                        
                                         @foreach($mat['right'] as $value=>$user)
                                         @if($user == 0)
                                             <option value="Level {{ $mat['position'] }}, Right {{  $value }}">Level {{ $mat['position'] }}, Right {{  $value }}</option>
@@ -74,7 +74,7 @@
                                 @if($level > 1)
                                     @foreach($matrix->where('position', 2) as $mat)
                                         @foreach($mat['left'] as $value=>$user)
-                                        @if($user == 0)
+                                        @if($user == '0')
                                             <option value="Level {{ $mat['position'] }}, Left {{  $value }}">Level {{ $mat['position'] }}, Left {{  $value }}</option>
                                         @endif
                                         @endforeach

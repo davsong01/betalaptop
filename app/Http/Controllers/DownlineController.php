@@ -51,14 +51,16 @@ class DownlineController extends Controller
         }
 
         $matrix = Matrix::whereUserId(auth()->user()->id)->get();
-            $matrix->map(function($matrix){
-                $matrix['left'] = json_decode($matrix->left, true);
-                $matrix['right'] = json_decode($matrix->right, true);
 
-                return $matrix;
-            });
-        
+        $matrix->map(function($matrix){
+            $matrix['left'] = json_decode($matrix->left, true);
+            $matrix['right'] = json_decode($matrix->right, true);
+
+            return $matrix;
+        });
+
         $level = $matrix->count();
+
         return view('dash.users.downlines.register', compact('matrix', 'level'));
 
     }
@@ -101,14 +103,14 @@ class DownlineController extends Controller
 
         $data['upline'] = $this->getUpline($request->position, auth()->user()->id)['id'];
         $data['parent_id'] = auth()->user()->id;
-        
+
         // deduct amount
         $this->walletWithdraw(auth()->user()->id, Setting::value('amount_per_slot'));
         unset($data['position']);
 
         $user = User::create($data);
         // Update user matrix
-
+        
         $this->updateMatrix(auth()->user(), $request->position, $user->id);
 
         // Get direct upline and place new user in appropraite index
