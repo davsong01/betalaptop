@@ -242,7 +242,30 @@ trait FunctionsTrait {
         
         return $upline;
     }
-    
+
+    /**
+     * Get all the users upline for user
+     * the user id for each instance is used as the key
+     *
+     * @param int $id user id of user to look for uplines
+     * @param array $arr array of passed users from recursion
+     *
+     * @return Collection
+     */
+    public function getUplines($id, $arr = [])
+    {
+        $user = User::find($id);
+        if ($user && $user->nextUpline) {
+            array_push($arr, $user);
+            return $this->getUplines($user->nextUpline->id, $arr);
+        } else if($user){
+            array_push($arr, $user);
+        }
+        return collect($arr)->keyBy(function ($item, $key) {
+            return $item->id;
+        });
+    }
+
     public function getIndex($details, $needle){
         foreach($details as $index=>$value){
             if($value === $needle){
