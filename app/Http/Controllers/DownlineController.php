@@ -24,7 +24,7 @@ class DownlineController extends Controller
     public function index()
     {
         $users = User::whereUpline(auth()->user()->id)->orderBy('created_at', 'DESC')->get();
-
+        
         $users->map(function ($users){
             $users['position'] = $this->getPosition($users->id, auth()->user()->id);
             return $users;

@@ -17,7 +17,7 @@
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('payments.index') }}" aria-expanded="false">
         <i class="me-3 fa fa-money" aria-hidden="true"></i><span
-            class="hide-menu">Online Payments</span></a>
+            class="hide-menu">Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('transactions.all.proofOfPayment') }}" aria-expanded="false">
