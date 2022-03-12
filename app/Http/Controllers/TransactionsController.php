@@ -213,23 +213,24 @@ class TransactionsController extends Controller
             if(Storage::disk()->exists($proof->path)){
                 Storage::delete($proof->path);
             }
-
-            Transactions::create([
+            $transaction_id = $this->generateTransactionId();
+           Transactions::create([
                 'user_id' => $proof->user_id,
                 'amount' => $proof->amount,
-                'transaction_id' => $proof->name
+                'transaction_id' =>  $transaction_id// Should this be proof name or geterated transaction id
             ]);
             $wallet = Wallet::create([
                 'user_id' => $proof->user_id,
                 'type' => 'topup',
                 'amount' => +$proof->amount,
-                'transaction_id' => $proof->name
+                'transaction_id' => $transaction_id
             ]);
             $proof->save();
 
             $emailContent = "Dear " .$proof->user->name . ",<br><br>"
             . "Your prrof of payment has been approved. <br><br>
             Please find details below: <br><br>
+            Transaction ID: ". $transaction_id ."<br>
             Amount: ".$proof->amount."<br>
             Date Uploaded: ". $proof->created_at."<br>
             Date Approved: ". now()."<br>

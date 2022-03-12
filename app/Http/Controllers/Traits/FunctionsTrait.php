@@ -522,5 +522,8 @@ trait FunctionsTrait {
         
     }
 
+    public function generateTransactionId(){
+        return substr(sha1(time()), 0, 25);
+    }
     
 }
