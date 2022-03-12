@@ -522,7 +522,7 @@ trait FunctionsTrait {
             // Check through
             $right = json_decode($userMatrix->right, true);
             foreach($right as $pos=>$value){
-                if($pos == $level){
+                if($pos == $side){
                     $right[$pos] = $downline;
                 }
             }
