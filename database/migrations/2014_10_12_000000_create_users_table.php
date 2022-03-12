@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->foreign('upline')->references('id')->on('users')
             ->onDelete('SET NULL');
             $table->integer('parent_id')->nullable();
+            $table->json('uplines')->nullable();
             // $table->integer('sponsor_id')->nullable();
             $table->integer('direct_downlines')->nullable();
             // $table->integer('level')->nullable();
@@ -32,7 +33,7 @@ class CreateUsersTable extends Migration
             // $table->integer('five')->nullable();
             // $table->integer('six')->nullable();
             $table->string('avatar')->nullable();
-        
+
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('enrolled_by')->nullable();
