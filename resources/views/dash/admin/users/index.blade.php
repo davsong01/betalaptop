@@ -40,7 +40,6 @@
                                         @endif
                                     </td>
                                     <td>{{ $user->name }}  <br> <i><b>{{ $user->username }}</b></i></td>
-                                   
                                     <td>{{ $user->email }}</td>
                                     <td>{{ \App\Setting::first()->value('currency') }}{{ $user->wallet() }} <br> <small><i><a href="{{ route('wallethistory', $user->id) }}">View history</a></i></small></td>
                                     <td>{{ $user->level() }}  <br> <small><i><a href="{{ route('binarytree', $user->id) }}">View binary tree</a></i></small></td>
@@ -53,10 +52,8 @@
                                                 @method('DELETE') 
                                                 <button class="btn btn-danger" type="submit"><i class="fa fa-trash" ></i></button>
                                             </form>  
-                                        </div>
-                                                   
+                                        </div>      
                                     </td> --}}
-                                
                                 </tr>
                             @endforeach
                         </tbody>

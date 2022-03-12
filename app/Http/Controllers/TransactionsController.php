@@ -10,6 +10,7 @@ use App\ProofOfPayment;
 use App\Wallet;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
 class TransactionsController extends Controller
 {
     /**
@@ -17,6 +18,12 @@ class TransactionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    use FunctionsTrait;
+
+    public function __construct(){
+        $this->email = \App\Setting::value('official_email');
+    }
+    
     public function index()
     {
         $walletTrans = $this->getWalletHistory(auth()->user()->id);
@@ -155,7 +162,14 @@ class TransactionsController extends Controller
             'name' =>  basename($path),
             'amount' => $request->amount
         ]);
-        //TODO: send a mail, to the admin
+
+        $emailContent = "Dear admin,<br><br> A new proof of payment has been uploaded, find details below:"
+            . "Name: " . auth()->user()->name . "<br><br>"
+            . "Amount: " .$request->amount. "<br><br>
+            Kindly <a href ='" . env('APP_URL') . "/transactions/proof-of-payment/all"."'>login to your back office to approve payment</a> <br><br> Warm Regards <br><br>";
+
+        $this->sendEmail('Admin',  $this->email, 'New Pop Uploaded ', $emailContent);
+
         return redirect(route('transactions.me.proofOfPayment'))->with(['message' => 'uploaded successfully']);
     }
 
@@ -181,7 +195,12 @@ class TransactionsController extends Controller
             }
             $proof->save();
 
-            //TODO: send a mail, to the user
+            $emailContent = "Dear " .$proof->user->name . ",<br><br>"
+                . "Your proof of payment could not be verified and it has been rejected. <br><br>
+                Kindly <a href ='" . env('APP_URL') . "/transactions/proof-of-payment/me"."'>login to upload a valid proof of payment and delete the rejected one</a> <br><br> Warm Regards <br><br>";
+
+                $this->sendEmail($proof->user->name, $proof->user->email, 'Proof of payment was rejected', $emailContent);
+
             return redirect()->back()->with(['message' => 'rejected successfully']);
         }
         return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits or unauthorized to perform this action']);
@@ -194,20 +213,32 @@ class TransactionsController extends Controller
             if(Storage::disk()->exists($proof->path)){
                 Storage::delete($proof->path);
             }
-
-            Transactions::create([
+            $transaction_id = $this->generateTransactionId();
+           Transactions::create([
                 'user_id' => $proof->user_id,
                 'amount' => $proof->amount,
-                'transaction_id' => $proof->name
+                'transaction_id' =>  $transaction_id// Should this be proof name or geterated transaction id
             ]);
-            Wallet::create([
+            $wallet = Wallet::create([
                 'user_id' => $proof->user_id,
                 'type' => 'topup',
                 'amount' => +$proof->amount,
-                'transaction_id' => $proof->name
+                'transaction_id' => $transaction_id
             ]);
             $proof->save();
-            //TODO: send a mail, to the user
+
+            $emailContent = "Dear " .$proof->user->name . ",<br><br>"
+            . "Your prrof of payment has been approved. <br><br>
+            Please find details below: <br><br>
+            Transaction ID: ". $transaction_id ."<br>
+            Amount: ".$proof->amount."<br>
+            Date Uploaded: ". $proof->created_at."<br>
+            Date Approved: ". now()."<br>
+            Wallet balance: ". $proof->user-> wallet() ."
+            <br><br> Warm Regards <br><br>";
+
+            $this->sendEmail($proof->user->name, $proof->user->email, 'Proof of payment was approved', $emailContent);
+
             return redirect()->back()->with(['message' => 'accepted successfully']);
         }
         return redirect()->back()->withErrors(['message' => 'An error occurred, check if file exits or unauthorized to perform this action']);
