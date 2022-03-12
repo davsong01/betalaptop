@@ -101,7 +101,14 @@ class DownlineController extends Controller
 
         $data['upline'] = $this->getUpline($request->position, auth()->user()->id)['id'];
         $data['parent_id'] = auth()->user()->id;
-        
+        // get uplines eloquently from trait
+        $data['uplines'] = $this->getUplines(auth()->user()->id)->keys(); // this should pass immediate upline
+        foreach  ($data['uplines'] as $key => $value) {
+           $this->createUplineNextLevel($value);
+        }
+
+        // make next level for chains of uplines
+
         // deduct amount
         $this->walletWithdraw(auth()->user()->id, Setting::value('amount_per_slot'));
         unset($data['position']);
