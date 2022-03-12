@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Controllers\Traits\FunctionsTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use  \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -51,4 +52,13 @@ class User extends Authenticatable
         return $user;
     }
 
+    /**
+     * Get the user upline User
+     *
+     * @return BelongsTo
+     */
+    public function nextUpline(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'upline');
+    }
 }

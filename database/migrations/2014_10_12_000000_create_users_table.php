@@ -19,7 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->integer('role')->default('2'); //user=2, manager=4,admin=1,staff=3
             $table->string('phone')->nullable();
-            $table->integer('upline')->nullable();
+            $table->unsignedBigInteger('upline')->nullable();
+            $table->foreign('upline')->references('id')->on('users')
+            ->onDelete('SET NULL');
             $table->integer('parent_id')->nullable();
             // $table->integer('sponsor_id')->nullable();
             $table->integer('direct_downlines')->nullable();
