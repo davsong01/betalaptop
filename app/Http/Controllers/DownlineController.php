@@ -103,8 +103,7 @@ class DownlineController extends Controller
 
         $data['upline'] = $this->getUpline($request->position, auth()->user()->id)['id'];
         $data['parent_id'] = auth()->user()->id;
-        // get uplines eloquently from trait
-        $data['uplines'] = $this->getUplines(auth()->user()->id)->keys(); // this should pass immediate upline
+        $data['uplines'] = $this->getUplines($data['upline'])->keys();
         foreach  ($data['uplines'] as $key => $value) {
            $this->createUplineNextLevel($value);
         }
