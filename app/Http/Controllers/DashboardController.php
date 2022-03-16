@@ -6,6 +6,11 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Traits\FunctionsTrait;
+use App\Matrix;
+use App\ProofOfPayment;
+use App\Transactions;
+use App\Wallet;
+
 class DashboardController extends Controller
 {
     use FunctionsTrait;
@@ -16,6 +21,15 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->role === 1){
+            $total_users = User::all()->count();
+            $total_wallet = Wallet::all()->sum('amount');
+            $total_topups = Wallet::where('type','topup')->count();
+            $total_transfers = Wallet::where('type', 'transfer')->count();
+            $total_pops = ProofOfPayment::all()->count();
+            $top_users = Matrix::select('user_id')->with('user')->groupBy('user_id')->get()->take(5);
+            return view('dash.admin.index', compact('total_users', 'total_wallet', 'total_topups', 'total_transfers', 'total_pops', 'top_users'));
+        }
         $current_balance = $this->getWallet(auth()->user()->id);
         $num_of_downlines = User::whereJsonContains('uplines', auth()->user()->id)->count();
         $level = $this->getLevel(auth()->user()->id);
