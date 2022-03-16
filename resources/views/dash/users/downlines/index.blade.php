@@ -9,7 +9,13 @@
         <div class="card">
             <div class="card-body">
                 <!-- column -->
-               
+                <div class="text-end">
+                    <h2 class="font-light mb-0">
+                        <i class="{{ $current_balance > 0 ? 'ti-arrow-up text-success' : 'ti-arrow-down text-danger' }}"></i>
+                        {!! \App\Setting::first()->value('currency') !!} {{ number_format($current_balance ?? 0) }}
+                    </h2>
+                    <span class="text-muted">current wallet</span>
+                </div>
                 <h4 class="card-title">My downlines</h4>
                 @if(auth()->user()->wallet() >= \App\Setting::first()->value('amount_per_slot')  )
                 <a href="{{ route('downline.create') }}" class="btn btn-success mb-10" >Register new user</a>
@@ -44,7 +50,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $user->name }}  <br> <i><b>{{ $user->username }}</b></i></td>
-                                   
+
                                     <td>{{ $user->email }}</td>
                                     <td>{{ \App\Setting::first()->value('currency') }}{{ number_format($user->wallet()) }}</td>
                                     <td>{{ $user->level() }}  <br> <small><i><a href="{{ route('binarytree', $user->id) }}">View binary tree</a></i></small></td>
