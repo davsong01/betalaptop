@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Controllers\Traits\FunctionsTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use  \Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -60,5 +61,15 @@ class User extends Authenticatable
     public function nextUpline(): BelongsTo
     {
         return $this->belongsTo(User::class, 'upline');
+    }
+
+    /**
+     * Get the user matrices
+     *
+     * @return HasMany
+     */
+    public function matrices(): HasMany
+    {
+        return $this->hasMany(Matrix::class);
     }
 }
