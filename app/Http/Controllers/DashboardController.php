@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use App\Http\Controllers\Traits\FunctionsTrait;
 class DashboardController extends Controller
 {
+    use FunctionsTrait;
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +16,11 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dash.index');
+        $current_balance = $this->getWallet(auth()->user()->id);
+        $num_of_downlines = User::whereJsonContains('uplines', auth()->user()->id)->count();
+        $level = $this->getLevel(auth()->user()->id);
+        $transactions = $this->getWalletHistory(auth()->user()->id)->take(5);
+        return view('dash.index', compact('current_balance', 'num_of_downlines', 'level', 'transactions'));
     }
 
     public function profile()
