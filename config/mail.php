@@ -133,4 +133,18 @@ return [
 
     'log_channel' => env('MAIL_LOG_CHANNEL'),
 
+    /**
+     * This specify a global "from" address
+     *  This address will be used if no other "from" address is specified
+     * within the mailable class:
+     */
+    'from' => ['address' => env('MAIL_FROM_ADDRESS'), 'name' => env('MAIL_FROM_NAME')],
+
+    /**
+     * This specify a global "reply_to" address
+     *  This address will be used if no other "reply_to" address is specified
+     * within the mailable class:
+     */
+    'reply_to' => ['address' => env('MAIL_REPLY_TO_ADDRESS'), 'name' => env('MAIL_FROM_NAME')],
+
 ];
