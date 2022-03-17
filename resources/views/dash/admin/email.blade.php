@@ -22,6 +22,7 @@
                   <th>#</th>
                   <th>Name</th>
                   <th>Recipient</th>
+                  <th>Subject</th>
                   <th>Content</th>
                   <th>Date</th>
                   <th>Action</th>
@@ -33,6 +34,7 @@
                     <td>{{ $loop->index + 1 }}</td>
                     <td>{{ $email->name }}</td>
                     <td>{{ $email->recipient }}</td>
+                    <td>{{ $email->subject }}</td>
                     <td>{!! $email->content !!}</td>
                     <td title="{{ $email->created_at }}">{{ $email->created_at->diffForHumans() }}</td>
                     <td>

@@ -44,8 +44,8 @@ class EmailCron extends Mailable
      */
     public function build()
     {
-        $this->subject = $this->template === 'raw' ? 'New Notification' : ( $this->template === 'register' ? 'register' : 'Payment Notification');
+        $this->subject = $this->resource->subject;
         $resource = $this->resource;
-        return $this->markdown('emails.'.$this->template, compact('resource'));
+        return $this->markdown('emails.raw', compact('resource'));
     }
 }
