@@ -51,7 +51,7 @@ class User extends Authenticatable
         $user = User::find($id);
         return $user;
     }
-
+    
     /**
      * Get the user upline User
      *

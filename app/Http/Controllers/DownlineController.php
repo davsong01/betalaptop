@@ -23,15 +23,10 @@ class DownlineController extends Controller
 
     public function index()
     {
-        $users = User::whereUpline(auth()->user()->id)->orderBy('created_at', 'DESC')->get();
-        
-        $users->map(function ($users){
-            $users['position'] = $this->getPosition($users->id, auth()->user()->id);
-            return $users;
-        });
-
         $i = 1;
-        return view('dash.users.downlines.index', compact('users', 'i'));
+        $downlines = $this->getDownlinesWithPosition(auth()->user()->id);
+        
+        return view('dash.users.downlines.index', compact('downlines', 'i'));
     }
 
     /**
@@ -89,10 +84,8 @@ class DownlineController extends Controller
 
         // Position must be in available positions
         $availablePositions = $this->getOpenPositions(auth()->user()->id, auth()->user()->level());
-        // dd(in_array($request->position, array_column($availablePostions, 'name'))), $availablePostions));
 
         if(!in_array($request->position,  $availablePositions)){
-            // dd(  $availablePositions, $request->position);
             return back()->with('error', 'Invalid Position selected for user');
         }
 
@@ -103,11 +96,16 @@ class DownlineController extends Controller
 
         $data['upline'] = $this->getUpline($request->position, auth()->user()->id)['id'];
         $data['parent_id'] = auth()->user()->id;
-        $data['uplines'] = $this->getUplines($data['upline'])->keys();
-        foreach  ($data['uplines'] as $key => $value) {
-           $this->createUplineNextLevel($value);
+        $uplines = $this->getUplines($data['upline']);
+        $data['uplines'] = $uplines->keys();
+        // dd($uplines);
+
+        foreach  ($data['uplines'] as $user) {
+            $this->createUplineNextLevel($user);
         }
 
+        // $this->updateAllUplines([$data['uplines'], $user->id]);
+        
         // make next level for chains of uplines
 
         // deduct amount
@@ -116,7 +114,6 @@ class DownlineController extends Controller
 
         $user = User::create($data);
         // Update user matrix
-
         $this->updateMatrix(auth()->user(), $request->position, $user->id);
 
         // Get direct upline and place new user in appropraite index

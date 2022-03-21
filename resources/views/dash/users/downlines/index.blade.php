@@ -16,7 +16,7 @@
                 @else
                     <div class="alert alert-warning" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <strong> <a href="{{ route('wallet.index') }}">Top up wallet with at least {!! \App\Setting::value('currency') !!}{{ number_format( (auth()->user()->wallet() >= 0 ) ? (\App\Setting::value('amount_per_slot') - auth()->user()->wallet()) : \App\Setting::value('amount_per_slot')) }}</a> </strong> to register a new downline
+                            <strong> <a href="{{ route('wallet.index') }}" target="_blank">Top up wallet with at least {!! \App\Setting::value('currency') !!}{{ number_format( (auth()->user()->wallet() >= 0 ) ? (\App\Setting::value('amount_per_slot') - auth()->user()->wallet()) : \App\Setting::value('amount_per_slot')) }}</a> </strong> to register a new downline
                     </div>
                 @endif
                 <div class="table-responsive">
@@ -33,7 +33,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($users->sortBy('position') as $user)
+                            @foreach($downlines as $downline)
+                            @foreach($downline['details'] as $user)
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td>
+                                    @if($user['avatar'])
+                                        <img src="{{ asset($user['avatar'])}}" alt="user" class="rounded-circle" width="40" >
+                                    @else
+                                        <img src="{{ asset('site/assets/images/avatars/d2.png') }}" class="rounded-circle" width="40">
+                                    @endif
+                                </td>
+                                <td>{{ $user['name'] }}  <br> <i><b>{{ $user['username'] }}</b></i></td>
+                                   
+                                <td>{{ $user['email'] }}</td>
+                                <td>{{ \App\Setting::first()->value('currency') }}{{ number_format($user['wallet']) }}</td>
+                                <td>{{ $user['level'] }}  <br> <small><i><a href="{{ route('binarytree', $user['id']) }}">View binary tree</a></i></small></td>
+                                <td>{{ $user['index'] }}</td>
+                            </tr>
+                            @endforeach
+                            @endforeach
+                            {{-- @foreach($downlines->sortBy('position') as $user)
                                 <tr>
                                     <td>{{ $i++ }}</td>
                                     <td>
@@ -51,7 +71,7 @@
                                     <td>{{ $user->position }}</td>
 
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>

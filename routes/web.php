@@ -13,6 +13,7 @@
 
 // Route::get('/', );
 Route::get('/', 'HomeController@index')->name('shop');
+Route::get('/test', 'HomeController@test')->name('shop');
 
 Auth::routes();
 // Admin only routes

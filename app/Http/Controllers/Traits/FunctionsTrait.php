@@ -175,12 +175,10 @@ trait FunctionsTrait {
                 $position = 'Level '.$matrix->position. ', right '.$search;
                 }
             }
-
+            
             return $position;
         }
 
-        // Search through all Right matrices for parent
-        //  dd($parentMatrix, $parent);
     }
 
     public function getOpenPositions($id, $level){
@@ -237,12 +235,51 @@ trait FunctionsTrait {
         // If left
         if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
             $upline = $this->getUplineIndex($upperLevelDetails->left, $upperLevel, $level, $side, 'left');
-            
         }
         
         return $upline;
     }
 
+    public function getDownlinesWithPosition($id){
+        $downlines = Matrix::whereUserId($id)->get();   
+               
+        $downlines->map(function($downlines){
+            $details = [];
+            foreach(json_decode($downlines->left) as $key=>$left){
+               if($left != 0){
+                    $user = User::findOrFail($left);
+                    array_push($details, [
+                        'avatar'=>$user->avatar,
+                        'id'=>$user->id,
+                        'wallet'=>$user->wallet(),
+                        'level'=>$user->level(),
+                        'name'=>$user->name,
+                        'username'=>$user->username,
+                        'email'=>$user->email,
+                        'index' => 'Level '. $downlines['position'] .', '.'Left ' . $key,
+                    ]);
+               }
+            }
+            foreach(json_decode($downlines->right) as $key=>$right){
+               if($right != 0){
+                   $user = User::findOrFail($right);
+                    array_push($details, [
+                        'avatar'=>$user->avatar,
+                        'id'=>$user->id,
+                        'wallet'=>$user->wallet(),
+                        'level'=>$user->level(),
+                        'name'=>$user->name,
+                        'username'=>$user->username,
+                        'email'=>$user->email,
+                        'index' => 'Level '. $downlines['position'] .', '.'Right ' . $key,
+                    ]);
+               }
+            }
+            $downlines['details'] = $details;
+        });
+ 
+        return $downlines;
+    }
     /**
      * Get all the users upline for user
      * the user id for each instance is used as the key
@@ -264,6 +301,10 @@ trait FunctionsTrait {
         return collect($arr)->keyBy(function ($item, $key) {
             return $item->id;
         });
+    }
+
+    public function updateAllUplines($user, $index){
+        dd($user, $index);
     }
 
     public function getIndex($details, $needle){
@@ -374,16 +415,16 @@ trait FunctionsTrait {
         return true;
     }
 
-    public function saveContactForm($type, $name, $email, $phone, $message ){
-        EmailContact::create([
-            'user_id' => $user_id,
-            'type' => $type,
-            'name' => $name,
-            'email' => $email,
-            'phone' => $phone,
-            'message' => $message
-        ]);
-    }
+    // public function saveContactForm($type, $name, $email, $phone, $message ){
+    //     EmailContact::create([
+    //         'user_id' => $user_id,
+    //         'type' => $type,
+    //         'name' => $name,
+    //         'email' => $email,
+    //         'phone' => $phone,
+    //         'message' => $message
+    //     ]);
+    // }
 
     public function createNextLevel($user){
        
@@ -459,14 +500,15 @@ trait FunctionsTrait {
         for($i = 2; $i <= $length; $i++){
             array_push($array, 0);
         }
-        
-        // dd(json_encode($array));
+
         $matrix = Matrix::create([
             'user_id' => $user->id,
             'position' => $nextLevel,
             'left' => json_encode($array),
             'right' => json_encode($array),
         ]);
+
+
         
     }
 
