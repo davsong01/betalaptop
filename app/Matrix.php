@@ -12,4 +12,12 @@ class Matrix extends Model
         'left',
         'right'
     ];
+
+    /**
+     * Get the matrices owner
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

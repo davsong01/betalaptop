@@ -25,8 +25,10 @@ class DownlineController extends Controller
     {
         $i = 1;
         $downlines = $this->getDownlinesWithPosition(auth()->user()->id);
+        $current_balance = $this->getWallet(auth()->user()->id);
         
-        return view('dash.users.downlines.index', compact('downlines', 'i'));
+        return view('dash.users.downlines.index', compact('downlines', 'i', 'current_balance'));
+
     }
 
     /**

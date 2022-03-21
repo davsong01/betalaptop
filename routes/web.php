@@ -21,6 +21,9 @@ Auth::routes();
 Route::middleware(['auth', 'isAdmin'])->group (function() {
     Route::resource('users', 'UserController');
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
+    Route::get('pending-mails', 'EmailController@index')->name('pending.mails');
+    Route::post('retry/pending/mails', 'EmailController@retryAll')->name('retry.pending.mails');
+    Route::post('retry/single/{id}/mail', 'EmailController@retrySingle')->name('retry.single.pending.mail');
     Route::resource('settings', 'SettingController');
     Route::get('transactions/proof-of-payment/all', 'TransactionsController@allProofOfPayment')->name('transactions.all.proofOfPayment');
     Route::put('transactions/proof-of-payment/{id}/reject', 'TransactionsController@rejectProofOfPayment')->name('transaction.reject.proofOfPayment');

@@ -25,6 +25,11 @@
             class="hide-menu">Pending Payments</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+        href="{{ route('pending.mails') }}" aria-expanded="false">
+        <i class="me-3 fa fa-envelope" aria-hidden="true"></i><span
+            class="hide-menu">Pending Emails</span></a>
+</li>
+<li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
         href="{{ route('settings.index') }}" aria-expanded="false">
         <i class="me-3 fa fa-cog" aria-hidden="true"></i><span
             class="hide-menu">Settings</span></a>
