@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\FunctionsTrait;
+use Illuminate\Support\Arr;
 
 class DownlineController extends Controller
 {
@@ -70,6 +71,7 @@ class DownlineController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($userMatrix = Matrix::whereUserId(auth()->user()->id)->latest()->first());
         $data = $this->validate($request, [
             "name" => "required|string|min:3|max:30",
             "email" => 'required|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
@@ -123,6 +125,22 @@ class DownlineController extends Controller
         $uplinePostion = $this->getLevel( $newUpline->id );
         $this->createUplineNextLevel($newUpline->id );
 
+        // remove parent
+        $filteredUplines = $data['uplines']->filter(function ($value, $key) {
+            return $value <> auth()->user()->id;
+        });
+        
+        foreach($filteredUplines as $u=>$value){
+            $up = User::find($value);
+            $this->updateUplineMatrix($up, $request->position, $user->id, $u );
+        }
+        
+        // dd($filtered, $data['upline'], $data['uplines']);
+         // foreach ($data['uplines'] as $upline) {
+        //     $up = User::find($upline);
+        //     // Create new level and update accordingly
+        //     $this->updateUplineMatrix($user, $request->position, $user->id);
+        // }
         // Todo Work on updateMatrix for upline
         // Level 2 - level 1, right 2 = nbetwen, remodify the getUplineIndex function to get position to place this new user in the upline's tree
         if(auth()->user()->level() > 1){

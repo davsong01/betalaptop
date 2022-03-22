@@ -240,6 +240,15 @@ trait FunctionsTrait {
         return $upline;
     }
 
+    public function getDownlines(){
+        $downlines = [];
+        foreach($this->getDownlinesWithPosition(auth()->user()->id) as $downline){
+            foreach($downline->details as $details){
+                    $downlines[] = $details;
+            }
+        }
+        return $downlines;
+    }
     public function getDownlinesWithPosition($id){
         $downlines = Matrix::whereUserId($id)->get();   
                
@@ -409,6 +418,161 @@ trait FunctionsTrait {
         // Get index and value from potential
     }
 
+     public function getOtherUplineIndex($level, $node, $position){  
+         // Position = request position
+         // Node = User position in uplines array
+         // Level = upline level
+        //  if level = 1, and position = 3, index = 2
+        if($position > $level){
+            $index = $position + 1;
+        }else{
+            $index = $position;
+        }
+
+        if($index > $level){
+            $index = $level;
+        }
+
+        return $index;
+        // switch ($level) {
+        //     case 1:
+        //         if($this->nBetween($position, 2, 1)){
+        //             $index = $position;
+        //         }
+        //         if($this->nBetween($position, 4, 3)){
+        //             $index = $position;
+        //         } 
+        //         if($this->nBetween($position, 4, 3)){
+        //             $index = $position;
+        //         } 
+        //         break;
+
+        //     case 2:
+        //         //  if($this->nBetween($position, 2, 1)){
+        //         //     $index = $position;
+        //         // }
+        //         if($position > $level){
+        //             $index = $position + 1;
+        //         }else{
+        //             $index = $position;
+        //         }
+        //         if($this->nBetween($side, 4, 3)){
+        //             $index = 2;
+        //         }
+              
+        //         break;
+
+        //     case 3:
+        //         if($this->nBetween($position, 2, 1)){
+        //             $index = $position;
+        //         }
+
+        //         if($this->nBetween($side, 4, 3)){
+        //             $index = 2;
+        //         }
+
+        //         if($this->nBetween($side, 6, 5)){
+        //             $index = 3;
+        //         }
+
+        //         if($this->nBetween($side, 8, 7)){
+        //             $index = 4;
+        //         }
+
+        //         break;
+
+        //     case 4:
+        //         if($this->nBetween($position, 2, 1)){
+        //             $index = $position;
+        //         }
+
+
+        //         if($this->nBetween($side, 4, 3)){
+        //             $index = 2;
+        //         }
+
+        //         if($this->nBetween($side, 6, 5)){
+        //             $index = 3;
+        //         }
+
+        //         if($this->nBetween($side, 8, 7)){
+        //             $index = 4;
+        //         }
+
+        //         if($this->nBetween($side, 10, 9)){
+        //             $index = 5;
+        //         }
+
+        //         if($this->nBetween($side, 12, 11)){
+        //             $index = 6;
+        //         }
+
+        //         if($this->nBetween($side, 14, 13)){
+        //             $index = 7;
+        //         }
+
+        //         if($this->nBetween($side, 16, 15)){
+        //             $index = 8;
+        //         }
+
+        //         break;
+
+        //     case 5:
+        //         if($this->nBetween($position, 2, 1)){
+        //             $index = $position;
+        //         }
+
+
+        //         if($this->nBetween($side, 4, 3)){
+        //             $index = 2;
+        //         }
+
+        //         if($this->nBetween($side, 6, 5)){
+        //             $index = 3;
+        //         }
+
+        //         if($this->nBetween($side, 8, 7)){
+        //             $index = 4;
+        //         }
+
+        //         if($this->nBetween($side, 10, 9)){
+        //             $index = 5;
+        //         }
+
+        //         if($this->nBetween($side, 12, 11)){
+        //             $index = 6;
+        //         }
+
+        //         if($this->nBetween($side, 14, 13)){
+        //             $index = 7;
+        //         }
+
+        //         if($this->nBetween($side, 16, 15)){
+        //             $index = 8;
+        //         }
+
+        //         break;
+                
+        //     default:
+
+        //         break;
+        // }
+
+        // foreach($potential as $key=>$value){
+        //     if($key === $index){
+        //         // dd($key, $value);
+        //         $realIndex['level'] = $upperLevel;
+        //         $realIndex['side'] = $hand;
+        //         $realIndex['index'] = $key;
+        //         $realIndex['id'] = $value;
+        //     }
+        // }
+        
+        // return $realIndex;
+        // Get index and value from potential
+    }
+    
+
     public function nBetween($varToCheck, $high, $low) {
         if($varToCheck < $low) return false;
         if($varToCheck > $high) return false;
@@ -514,7 +678,7 @@ trait FunctionsTrait {
 
     public function updateMatrix($user, $index, $downline){
         $userMatrix = Matrix::whereUserId($user->id)->wherePosition($user->level())->first();
-
+       
         $levelPosition = explode (",", $index);
         
         $level = (int) substr($levelPosition[0], -1);       
@@ -551,20 +715,25 @@ trait FunctionsTrait {
         
     }
 
-    public function updateUplineMatrix($user, $index, $downline){
-        $userMatrix = Matrix::whereUserId($user->id)->wherePosition($user->level())->first();
+    public function updateUplineMatrix($user, $index, $downline, $node){
+        $userMatrix = Matrix::whereUserId($user->id)->latest()->first();
         
         $levelPosition = explode (",", $index);
         
-        $level = (int) substr($levelPosition[0], -1);
+        $level = $userMatrix->position;
+        $position = (int) substr($levelPosition[0], -1);
+        
         $side = (int) substr($levelPosition[1], -1);
-       
+        
+        // $side = (int) ($level - $node);
+        $position = $this->getOtherUplineIndex($level, $node, $side);
+
         // If right
         if (str_contains($levelPosition[1], 'right') || str_contains($levelPosition[1], 'Right')) {
             // Check through
             $right = json_decode($userMatrix->right, true);
             foreach($right as $pos=>$value){
-                if($pos == $side){
+                if($pos == $position){
                     $right[$pos] = $downline;
                 }
             }
@@ -577,14 +746,14 @@ trait FunctionsTrait {
             // Check through
             $left = json_decode($userMatrix->left, true);
             foreach($left as $pos=>$value){
-                if($pos == $level){
+                if($pos == $position){
                     $left[$pos] = $downline;
                 }
             }
             $userMatrix->left = json_encode($left);
             $userMatrix->save();
         }
-        
+
     }
 
     public function generateTransactionId(){
