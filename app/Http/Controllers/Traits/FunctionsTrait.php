@@ -419,10 +419,6 @@ trait FunctionsTrait {
     }
 
      public function getOtherUplineIndex($level, $node, $position){  
-         // Position = request position
-         // Node = User position in uplines array
-         // Level = upline level
-        //  if level = 1, and position = 3, index = 2
         if($position > $level){
             $index = $position + 1;
         }else{
@@ -434,142 +430,7 @@ trait FunctionsTrait {
         }
 
         return $index;
-        // switch ($level) {
-        //     case 1:
-        //         if($this->nBetween($position, 2, 1)){
-        //             $index = $position;
-        //         }
-        //         if($this->nBetween($position, 4, 3)){
-        //             $index = $position;
-        //         } 
-        //         if($this->nBetween($position, 4, 3)){
-        //             $index = $position;
-        //         } 
-        //         break;
-
-        //     case 2:
-        //         //  if($this->nBetween($position, 2, 1)){
-        //         //     $index = $position;
-        //         // }
-        //         if($position > $level){
-        //             $index = $position + 1;
-        //         }else{
-        //             $index = $position;
-        //         }
-        //         if($this->nBetween($side, 4, 3)){
-        //             $index = 2;
-        //         }
-              
-        //         break;
-
-        //     case 3:
-        //         if($this->nBetween($position, 2, 1)){
-        //             $index = $position;
-        //         }
-
-        //         if($this->nBetween($side, 4, 3)){
-        //             $index = 2;
-        //         }
-
-        //         if($this->nBetween($side, 6, 5)){
-        //             $index = 3;
-        //         }
-
-        //         if($this->nBetween($side, 8, 7)){
-        //             $index = 4;
-        //         }
-
-        //         break;
-
-        //     case 4:
-        //         if($this->nBetween($position, 2, 1)){
-        //             $index = $position;
-        //         }
-
-
-        //         if($this->nBetween($side, 4, 3)){
-        //             $index = 2;
-        //         }
-
-        //         if($this->nBetween($side, 6, 5)){
-        //             $index = 3;
-        //         }
-
-        //         if($this->nBetween($side, 8, 7)){
-        //             $index = 4;
-        //         }
-
-        //         if($this->nBetween($side, 10, 9)){
-        //             $index = 5;
-        //         }
-
-        //         if($this->nBetween($side, 12, 11)){
-        //             $index = 6;
-        //         }
-
-        //         if($this->nBetween($side, 14, 13)){
-        //             $index = 7;
-        //         }
-
-        //         if($this->nBetween($side, 16, 15)){
-        //             $index = 8;
-        //         }
-
-        //         break;
-
-        //     case 5:
-        //         if($this->nBetween($position, 2, 1)){
-        //             $index = $position;
-        //         }
-
-
-        //         if($this->nBetween($side, 4, 3)){
-        //             $index = 2;
-        //         }
-
-        //         if($this->nBetween($side, 6, 5)){
-        //             $index = 3;
-        //         }
-
-        //         if($this->nBetween($side, 8, 7)){
-        //             $index = 4;
-        //         }
-
-        //         if($this->nBetween($side, 10, 9)){
-        //             $index = 5;
-        //         }
-
-        //         if($this->nBetween($side, 12, 11)){
-        //             $index = 6;
-        //         }
-
-        //         if($this->nBetween($side, 14, 13)){
-        //             $index = 7;
-        //         }
-
-        //         if($this->nBetween($side, 16, 15)){
-        //             $index = 8;
-        //         }
-
-        //         break;
-                
-        //     default:
-
-        //         break;
-        // }
-
-        // foreach($potential as $key=>$value){
-        //     if($key === $index){
-        //         // dd($key, $value);
-        //         $realIndex['level'] = $upperLevel;
-        //         $realIndex['side'] = $hand;
-        //         $realIndex['index'] = $key;
-        //         $realIndex['id'] = $value;
-        //     }
-        // }
-        
-        // return $realIndex;
-        // Get index and value from potential
+       
     }
     
 
@@ -671,9 +532,7 @@ trait FunctionsTrait {
             'left' => json_encode($array),
             'right' => json_encode($array),
         ]);
-
-
-        
+    
     }
 
     public function updateMatrix($user, $index, $downline){
