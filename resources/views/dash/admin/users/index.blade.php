@@ -9,10 +9,10 @@
         <div class="card">
             <div class="card-body">
                 <!-- column -->
-               
+
                 <h4 class="card-title">All Users</h4>
                 @if(auth()->user()->wallet() >= \App\Setting::first()->value('amount_per_slot')  )
-                <a href="{{ route('downline.create') }}" class="btn btn-success mb-10" >Register new user</a>
+                <a href="{{ route('users.create') }}" class="btn btn-success mb-10" >Register new user</a>
                 @endif
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -49,10 +49,10 @@
                                             <a data-toggle="tooltip" title="Edit/View user" href="{{ route('users.edit', $user->id) }}" class="btn btn-primary"><span class="fa fa-edit"></span></a>
                                             <form id="delete" onsubmit="return confirm('Are you sure you want to delete forever?');" action="{{ route('users.destroy', $user->id) }}" method="POST">
                                                 @csrf
-                                                @method('DELETE') 
+                                                @method('DELETE')
                                                 <button class="btn btn-danger" type="submit"><i class="fa fa-trash" ></i></button>
-                                            </form>  
-                                        </div>      
+                                            </form>
+                                        </div>
                                     </td> --}}
                                 </tr>
                             @endforeach
