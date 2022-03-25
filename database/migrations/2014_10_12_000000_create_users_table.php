@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->integer('parent_id')->nullable();
             $table->json('uplines')->nullable();
             // $table->integer('sponsor_id')->nullable();
-            $table->integer('direct_downlines')->nullable();
+            // $table->integer('direct_downlines')->nullable();
             // $table->integer('level')->nullable();
             // $table->integer('two')->nullable();
             // $table->integer('three')->nullable();

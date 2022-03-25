@@ -1,5 +1,5 @@
 @extends('layouts.dash.app')
-@section('page-title', 'Online Transactions')
+@section('page-title', 'Payments')
 @section('active')
 <li class="breadcrumb-item active" aria-current="page">Online Transactions</li>
 @endsection
@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-body">
                 <!-- column -->
-                <h4 class="card-title">All Online Transactions</h4>
+                <h4 class="card-title">All payments</h4>
                 <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
                         <thead>
@@ -20,6 +20,7 @@
                                 <th>Username</th>
                                 <th>Amount</th>
                                 <th>Trnx Id</th>
+                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,6 +39,7 @@
                                     <td>{{ $transaction->user->username }}</td>
                                     <td>{!! \App\Setting::first()->value('currency') !!}{{ $transaction->amount}}</td>
                                     <td>{{ $transaction->transaction_id }}</td>
+                                    <td>{{ ucfirst($transaction->type) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

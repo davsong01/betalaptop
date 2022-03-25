@@ -48,9 +48,16 @@ class UserController extends Controller
 
         }else{
             $user = User::findorfail($id);
+            $heirachy = [];
+           
+            foreach($this->getDownlines() as $downline){
+                $heirachy[] = $downline['id'];
+            }
+           
+            $check = $user->whereIn('id', $heirachy)->first();
            
             // Check if this 
-            if($user->id != auth()->user()->id && $user->upline != auth()->user()->id){
+            if($user->id != auth()->user()->id && !in_array($user->id, $heirachy)){
                 return back()->with('error', 'invalid user id');
             }
 

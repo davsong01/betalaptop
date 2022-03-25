@@ -13,6 +13,7 @@
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Username</th>
                   <th>preview</th>
                   <th>Amount</th>
                   <th>Action</th>
@@ -22,9 +23,11 @@
                 @foreach ($proofs as $proof)
                   <tr>
                     <td>{{ $loop->index + 1 }}</td>
+                    <td>{{ $proof->user->username}}</td>
+
                     <td>
                       <a href="{{\Storage::url($proof->path) }}" title="{{$proof->name}}"><img src="{{ preg_match('/(\.pdf)$/', $proof->name) ? asset('board/assets/images/file.png') : asset('board/assets/images/image.png') }}" class="img" style="width: 50px; hieght: 50px;"/></a></td>
-                      <td>{{$proof->amount}}</td>
+                      <td>{{ \App\Setting::value('currency').number_format($proof->amount)}}</td>
                     <td>
                       @if ($proof->status === 'pending')
                          <form method="POST" action="{{route('transaction.accept.proofOfPayment', ['id' => $proof->name])}}" class="inline-form d-inline">

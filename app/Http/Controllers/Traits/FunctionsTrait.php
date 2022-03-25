@@ -175,12 +175,10 @@ trait FunctionsTrait {
                 $position = 'Level '.$matrix->position. ', right '.$search;
                 }
             }
-
+            
             return $position;
         }
 
-        // Search through all Right matrices for parent
-        //  dd($parentMatrix, $parent);
     }
 
     public function getOpenPositions($id, $level){
@@ -237,12 +235,60 @@ trait FunctionsTrait {
         // If left
         if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
             $upline = $this->getUplineIndex($upperLevelDetails->left, $upperLevel, $level, $side, 'left');
-            
         }
         
         return $upline;
     }
 
+    public function getDownlines(){
+        $downlines = [];
+        foreach($this->getDownlinesWithPosition(auth()->user()->id) as $downline){
+            foreach($downline->details as $details){
+                    $downlines[] = $details;
+            }
+        }
+        return $downlines;
+    }
+    public function getDownlinesWithPosition($id){
+        $downlines = Matrix::whereUserId($id)->get();   
+               
+        $downlines->map(function($downlines){
+            $details = [];
+            foreach(json_decode($downlines->left) as $key=>$left){
+               if($left != 0){
+                    $user = User::findOrFail($left);
+                    array_push($details, [
+                        'avatar'=>$user->avatar,
+                        'id'=>$user->id,
+                        'wallet'=>$user->wallet(),
+                        'level'=>$user->level(),
+                        'name'=>$user->name,
+                        'username'=>$user->username,
+                        'email'=>$user->email,
+                        'index' => 'Level '. $downlines['position'] .', '.'Left ' . $key,
+                    ]);
+               }
+            }
+            foreach(json_decode($downlines->right) as $key=>$right){
+               if($right != 0){
+                   $user = User::findOrFail($right);
+                    array_push($details, [
+                        'avatar'=>$user->avatar,
+                        'id'=>$user->id,
+                        'wallet'=>$user->wallet(),
+                        'level'=>$user->level(),
+                        'name'=>$user->name,
+                        'username'=>$user->username,
+                        'email'=>$user->email,
+                        'index' => 'Level '. $downlines['position'] .', '.'Right ' . $key,
+                    ]);
+               }
+            }
+            $downlines['details'] = $details;
+        });
+ 
+        return $downlines;
+    }
     /**
      * Get all the users upline for user
      * the user id for each instance is used as the key
@@ -264,6 +310,10 @@ trait FunctionsTrait {
         return collect($arr)->keyBy(function ($item, $key) {
             return $item->id;
         });
+    }
+
+    public function updateAllUplines($user, $index){
+        dd($user, $index);
     }
 
     public function getIndex($details, $needle){
@@ -368,22 +418,38 @@ trait FunctionsTrait {
         // Get index and value from potential
     }
 
+     public function getOtherUplineIndex($level, $node, $position){  
+        if($position > $level){
+            $index = $position + 1;
+        }else{
+            $index = $position;
+        }
+
+        if($index > $level){
+            $index = $level;
+        }
+
+        return $index;
+       
+    }
+    
+
     public function nBetween($varToCheck, $high, $low) {
         if($varToCheck < $low) return false;
         if($varToCheck > $high) return false;
         return true;
     }
 
-    public function saveContactForm($type, $name, $email, $phone, $message ){
-        EmailContact::create([
-            'user_id' => $user_id,
-            'type' => $type,
-            'name' => $name,
-            'email' => $email,
-            'phone' => $phone,
-            'message' => $message
-        ]);
-    }
+    // public function saveContactForm($type, $name, $email, $phone, $message ){
+    //     EmailContact::create([
+    //         'user_id' => $user_id,
+    //         'type' => $type,
+    //         'name' => $name,
+    //         'email' => $email,
+    //         'phone' => $phone,
+    //         'message' => $message
+    //     ]);
+    // }
 
     public function createNextLevel($user){
        
@@ -459,20 +525,19 @@ trait FunctionsTrait {
         for($i = 2; $i <= $length; $i++){
             array_push($array, 0);
         }
-        
-        // dd(json_encode($array));
+
         $matrix = Matrix::create([
             'user_id' => $user->id,
             'position' => $nextLevel,
             'left' => json_encode($array),
             'right' => json_encode($array),
         ]);
-        
+    
     }
 
     public function updateMatrix($user, $index, $downline){
         $userMatrix = Matrix::whereUserId($user->id)->wherePosition($user->level())->first();
-
+       
         $levelPosition = explode (",", $index);
         
         $level = (int) substr($levelPosition[0], -1);       
@@ -509,20 +574,25 @@ trait FunctionsTrait {
         
     }
 
-    public function updateUplineMatrix($user, $index, $downline){
-        $userMatrix = Matrix::whereUserId($user->id)->wherePosition($user->level())->first();
+    public function updateUplineMatrix($user, $index, $downline, $node){
+        $userMatrix = Matrix::whereUserId($user->id)->latest()->first();
         
         $levelPosition = explode (",", $index);
         
-        $level = (int) substr($levelPosition[0], -1);
+        $level = $userMatrix->position;
+        $position = (int) substr($levelPosition[0], -1);
+        
         $side = (int) substr($levelPosition[1], -1);
-       
+        
+        // $side = (int) ($level - $node);
+        $position = $this->getOtherUplineIndex($level, $node, $side);
+
         // If right
         if (str_contains($levelPosition[1], 'right') || str_contains($levelPosition[1], 'Right')) {
             // Check through
             $right = json_decode($userMatrix->right, true);
             foreach($right as $pos=>$value){
-                if($pos == $level){
+                if($pos == $position){
                     $right[$pos] = $downline;
                 }
             }
@@ -535,14 +605,14 @@ trait FunctionsTrait {
             // Check through
             $left = json_decode($userMatrix->left, true);
             foreach($left as $pos=>$value){
-                if($pos == $level){
+                if($pos == $position){
                     $left[$pos] = $downline;
                 }
             }
             $userMatrix->left = json_encode($left);
             $userMatrix->save();
         }
-        
+
     }
 
     public function generateTransactionId(){

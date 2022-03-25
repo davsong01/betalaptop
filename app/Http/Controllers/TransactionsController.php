@@ -22,6 +22,7 @@ class TransactionsController extends Controller
 
     public function __construct(){
         $this->email = \App\Setting::value('official_email');
+        $this->currency = \App\Setting::value('currency');
     }
     
     public function index()
@@ -165,7 +166,7 @@ class TransactionsController extends Controller
 
         $emailContent = "Dear admin,<br><br> A new proof of payment has been uploaded, find details below:"
             . "Name: " . auth()->user()->name . "<br><br>"
-            . "Amount: " .$request->amount. "<br><br>
+            . "Amount: " .$this->currency.number_format($request->amount). "<br><br>
             Kindly <a href ='" . env('APP_URL') . "/transactions/proof-of-payment/all"."'>login to your back office to approve payment</a> <br><br> Warm Regards <br><br>";
 
         $this->sendEmail('Admin',  $this->email, 'New Pop Uploaded ', $emailContent);
@@ -217,8 +218,10 @@ class TransactionsController extends Controller
            Transactions::create([
                 'user_id' => $proof->user_id,
                 'amount' => $proof->amount,
-                'transaction_id' =>  $transaction_id// Should this be proof name or geterated transaction id
+                'transaction_id' =>  $transaction_id,
+                'type' => 'pop',
             ]);
+
             $wallet = Wallet::create([
                 'user_id' => $proof->user_id,
                 'type' => 'topup',
@@ -228,13 +231,13 @@ class TransactionsController extends Controller
             $proof->save();
 
             $emailContent = "Dear " .$proof->user->name . ",<br><br>"
-            . "Your prrof of payment has been approved. <br><br>
+            . "Your proof of payment has been approved. <br><br>
             Please find details below: <br><br>
             Transaction ID: ". $transaction_id ."<br>
-            Amount: ".$proof->amount."<br>
+            Amount: ".$this->currency . number_format($proof->amount)."<br>
             Date Uploaded: ". $proof->created_at."<br>
-            Date Approved: ". now()."<br>
-            Wallet balance: ". $proof->user-> wallet() ."
+            Date Approved: ". $wallet->updated_at ."<br>
+            Wallet balance: ". $this->currency . number_format($proof->user->wallet()) ."
             <br><br> Warm Regards <br><br>";
 
             $this->sendEmail($proof->user->name, $proof->user->email, 'Proof of payment was approved', $emailContent);
