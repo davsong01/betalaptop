@@ -19,6 +19,8 @@ Auth::routes();
 // Admin only routes
 
 Route::middleware(['auth', 'isAdmin'])->group (function() {
+    Route::post('/users/validate/email', 'UserController@validateEmail')->name('users.validate.email');
+    Route::post('/users/validate/username', 'UserController@validateUsername')->name('users.validate.username');
     Route::resource('users', 'UserController');
     Route::get('wallethistory/{id}', 'UserController@getWalletHistory')->name('wallethistory');
     Route::get('pending-mails', 'EmailController@index')->name('pending.mails');

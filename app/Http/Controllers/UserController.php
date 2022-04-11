@@ -8,7 +8,7 @@ use App\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Traits\FunctionsTrait;
-
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -84,7 +84,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('dash.admin.users.create');
     }
 
     /**
@@ -95,7 +95,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate($request, [
+            "name" => "required|string|min:3|max:30",
+            "email" => 'required|unique:users,email',
+            "phone" => "required|string",
+            "username" => "required|unique:users,username",
+            "password" => "nullable|min:8",
+        ]);
+        $data['password'] = $data['password'] ? Hash::make($data['password']) : Hash::make('passAdmin');
+        User::create($data);
+
+        return redirect()->back()->with('message', 'User created successfully');
     }
 
     /**
@@ -175,7 +185,35 @@ class UserController extends Controller
         return back()->with('message', 'Delete successful');
     }
 
-    private function validation($request){
+    public function validateEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' =>
+            'required|email|min:3|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' =>  $validator->errors()->getMessages()['email'][0]], 404);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'email address ' . $request->email . ' is available']);
+    }
+
+    public function validateUsername(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:40|min:3|unique:users,username|not_regex:/(admin)/i'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->getMessages()['username'][0]], 404);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'username ' . $request->username . ' is available']);
+    }
+
+    private function validation($request)
+    {
         $v = $this->validate($request, [
             'name' => 'required',
             'phone' => 'required',
