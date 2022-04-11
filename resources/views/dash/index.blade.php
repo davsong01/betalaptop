@@ -28,7 +28,7 @@
       <div class="col-sm-12">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Current Balance</h4>
+            <h4 class="card-title">Wallet Balance</h4>
             <div class="text-end">
               <h2 class="font-light mb-0">
                 <i class="{{ $current_balance > 0 ? 'ti-arrow-up text-success' : 'ti-arrow-down text-danger' }}"></i>

@@ -51,6 +51,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-12 mb-0">Amount per slot</label>
+                        <div class="col-md-12">
+                            <input type="text" name="amount_per_slot" value="{{ old('amount_per_slot') ?? $setting->amount_per_slot }}" class="form-control ps-0 form-control-line">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-6 mb-0">Change Logo</label> <br>
                         @component('components.logo')
                             @slot('width')

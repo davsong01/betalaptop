@@ -73,10 +73,16 @@ class DownlineController extends Controller
     {
         // dd($userMatrix = Matrix::whereUserId(auth()->user()->id)->latest()->first());
         $data = $this->validate($request, [
+            // "name" => "required|string|min:3|max:30",
+            // "email" => 'required|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
+            // "phone" => "required|string",
+            // "username" => "required|unique:users,username|not_regex:/(admin)/i",
+            // "password" => "nullable|min:8",
+            // "position" => "required"
             "name" => "required|string|min:3|max:30",
-            "email" => 'required|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
+            "email" => 'required',
             "phone" => "required|string",
-            "username" => "required|unique:users,username|not_regex:/(admin)/i",
+            "username" => "required",
             "password" => "nullable|min:8",
             "position" => "required"
         ]);
@@ -89,9 +95,9 @@ class DownlineController extends Controller
         // Position must be in available positions
         $availablePositions = $this->getOpenPositions(auth()->user()->id, auth()->user()->level());
 
-        if(!in_array($request->position,  $availablePositions)){
-            return back()->with('error', 'Invalid Position selected for user');
-        }
+        // if(!in_array($request->position,  $availablePositions)){
+        //     return back()->with('error', 'Invalid Position selected for user');
+        // } remember
 
         // Handle Password Change
         if(request()->has('password')){
@@ -117,23 +123,43 @@ class DownlineController extends Controller
         unset($data['position']);
 
         $user = User::create($data);
-        // Update user matrix
+        // $user = User::find(1307);
+        // Update parent matrix
         $this->updateMatrix(auth()->user(), $request->position, $user->id);
 
         // Get direct upline and place new user in appropraite index
         $newUpline = User::findOrFail($data['upline']);
         $uplinePostion = $this->getLevel( $newUpline->id );
         $this->createUplineNextLevel($newUpline->id );
-
+        
         // remove parent
         $filteredUplines = $data['uplines']->filter(function ($value, $key) {
             return $value <> auth()->user()->id;
         });
         
+        // $filtered = collect([
+        //     0 => 1278,
+        //     1 => 1291
+        // ]);
+
+        //  $filtered = collect([
+        //     0 => 1291,
+        //     1 => 1278
+        // ]);
+      
         foreach($filteredUplines as $u=>$value){
-            $up = User::find($value);
-            $this->updateUplineMatrix($up, $request->position, $user->id, $u );
+            // $up = User::find($value);
+            // $this->updateUplineMatrix($up, $request->position, $user->id);
+           
+            $this->updateUplineMatrix($value, $request->position, $user->id);
         }
+
+        // $data['upline'] = $this->getUpline('Level 3, Left 2', auth()->user()->id)['id'];
+        // $uplines = $this->getUplines($data['upline']);
+        
+        // $uplines = $uplines->keys();
+     
+       
         
         // dd($filtered, $data['upline'], $data['uplines']);
          // foreach ($data['uplines'] as $upline) {
@@ -143,9 +169,9 @@ class DownlineController extends Controller
         // }
         // Todo Work on updateMatrix for upline
         // Level 2 - level 1, right 2 = nbetwen, remodify the getUplineIndex function to get position to place this new user in the upline's tree
-        if(auth()->user()->level() > 1){
-            // $this->updateUplineMatrix($newUpline->id, $request->position, $user->id);
-        }
+        // if(auth()->user()->level() > 1){
+        //     // $this->updateUplineMatrix($newUpline->id, $request->position, $user->id);
+        // }
         // Place in appropraite position
 
         // Log resgistration email

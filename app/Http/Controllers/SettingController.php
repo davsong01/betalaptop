@@ -82,7 +82,8 @@ class SettingController extends Controller
             'official_bank' => 'required',
             'official_account_name' => 'required',
             'official_account_number' => 'required',
-            'currency' => 'required'
+            'currency' => 'required',
+            'amount_per_slot' => 'required',
         ]);
 
        

@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Admin',
             'username' => 'admin',
             'email' => 'admin@beta.com',
-            'role' => 'admin',
+            'role' => 2,
             'phone' => '08180010243',
             'avatar' => 'site/assets/images/avatars/1.png',
             'email_verified_at' => now(),

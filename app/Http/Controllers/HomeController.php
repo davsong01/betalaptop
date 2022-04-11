@@ -24,7 +24,23 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     
-     public function test(){
+    public function test(){
+        $data['upline'] = $this->getUpline('Level 3, Left 2', auth()->user()->id)['id'];
+        $uplines = $this->getUplines($data['upline']);
+        
+        // $uplines = $uplines->keys();
+      
+         // remove parent
+        $filteredUplines =  $uplines->filter(function ($value, $key) {
+            return $key <> auth()->user()->id;
+        });
+       
+        foreach($filteredUplines as $u=>$value){
+            $this->updateUplineMatrix($value, 'Level 2, Left 1', 1218);
+        }
+
+        dd($filteredUplines);
+        // End
         $data['uplines'] = $this->getUplines(1079);
         dd($data['uplines']);
         foreach($data['uplines'] as $user){
@@ -32,9 +48,10 @@ class HomeController extends Controller
         }
 
         // $this->updateAllUplines([$data['uplines'], $user->id]);
-     }
-     public function index(){
-         
-         return view('shop.index');
-     }
+    }
+    
+    public function index(){
+        
+        return view('shop.index');
+    }
 }

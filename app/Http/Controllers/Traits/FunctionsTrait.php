@@ -6,6 +6,7 @@ use App\User;
 use App\Emails;
 use App\Matrix;
 use App\Wallet;
+use Illuminate\Support\Str;
 use App\Mail\NotificationEmail;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
@@ -418,22 +419,6 @@ trait FunctionsTrait {
         // Get index and value from potential
     }
 
-     public function getOtherUplineIndex($level, $node, $position){  
-        if($position > $level){
-            $index = $position + 1;
-        }else{
-            $index = $position;
-        }
-
-        if($index > $level){
-            $index = $level;
-        }
-
-        return $index;
-       
-    }
-    
-
     public function nBetween($varToCheck, $high, $low) {
         if($varToCheck < $low) return false;
         if($varToCheck > $high) return false;
@@ -574,45 +559,214 @@ trait FunctionsTrait {
         
     }
 
-    public function updateUplineMatrix($user, $index, $downline, $node){
-        $userMatrix = Matrix::whereUserId($user->id)->latest()->first();
+    public function updateUplineMatrix($user, $index, $downline){
+        
+        $directUplineMatrix = Matrix::whereUserId($user)->latest()->first();
+        
+        if(!isset($directUplineMatrix)){
+            return;
+        }
+        // Update direct Upline with the user->upline
+        // Maybe create new position here
+        $parentMatrix = Matrix::whereUserId(auth()->user()->id)->latest()->first();
         
         $levelPosition = explode (",", $index);
+       
+        $requestSide = $this->getSideFromRequest($levelPosition);
+        $requestLevel = $this->getLevelFromRequest($levelPosition);
+        $requestIndex = $this->getIndexFromRequest($levelPosition);
         
-        $level = $userMatrix->position;
-        $position = (int) substr($levelPosition[0], -1);
+        $thisUserLevel = $directUplineMatrix->position;
         
-        $side = (int) substr($levelPosition[1], -1);
-        
-        // $side = (int) ($level - $node);
-        $position = $this->getOtherUplineIndex($level, $node, $side);
+        $this->getSpace($user, $thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix);
 
-        // If right
-        if (str_contains($levelPosition[1], 'right') || str_contains($levelPosition[1], 'Right')) {
-            // Check through
-            $right = json_decode($userMatrix->right, true);
-            foreach($right as $pos=>$value){
-                if($pos == $position){
-                    $right[$pos] = $downline;
-                }
-            }
-            $userMatrix->right = json_encode($right);
-            $userMatrix->save();
+        return;
+        // dd($space);
+        // // If right
+        // if ($position['side'] == 'Right') {
+        //     // Check through
+        //     $right = json_decode($userMatrix->right, true);
+        //     foreach($right as $pos=>$value){
+        //         if($pos == $position['pos'] && $value == 0){
+        //             $right[$pos] = $downline;
+        //         }
+        //     }
+        //    $directUplineMatrix->right = json_encode($right);
+        //    $directUplineMatrix->save();
+        // }
+        
+        // // If left
+        // if ($position['side'] == 'Left') {
+        //     // Check through
+        //     $left = json_decode($userMatrix->left, true);
+        //     foreach($left as $pos=>$value){
+        //         if($pos == $position['pos'] && $value == 0){
+        //             $left[$pos] = $downline;
+        //         }
+        //     }
+        //    $directUplineMatrix->left = json_encode($left);
+        //    $directUplineMatrix->save();
+        // }
+       
+    }
+
+    public function getSideFromRequest($index){
+        $leftOrRight = Str::lower($index[1]);
+
+        if (str_contains($leftOrRight, 'left')){
+            $side = 'left';
         }
 
-        // If left
-        if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
-            // Check through
-            $left = json_decode($userMatrix->left, true);
-            foreach($left as $pos=>$value){
-                if($pos == $position){
-                    $left[$pos] = $downline;
-                }
-            }
-            $userMatrix->left = json_encode($left);
-            $userMatrix->save();
+        if (str_contains($leftOrRight, 'right')){
+            $side = 'right';
         }
 
+        return $side;
+    }
+
+    public function getLevelFromRequest($index){
+        $position = (int) substr($index[0], -1);
+        return $position;
+    }
+
+    public function getIndexFromRequest($index){
+        $leftOrRight = $index[1];
+        $index = (int) substr($index[1], -1);
+        return $index;
+    }
+
+    public function getSpace($user, $thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix){  
+      
+        // Problem is we need to know which leg and index to put the incoming downline in this particular upline matrix, we call it space
+        // dd($directUplineMatrix->user_id);
+        $index = $this->getPositionInParentMatrix( $parentMatrix->user_id, $user); // Child, Parent
+        
+        $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
+        
+        // if request index == 3 
+        // if 
+        // Default index
+        // $space = [
+        //     'side' => NULL,
+        //     'pos' => NULL,
+        // ];
+        // dd($thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix);
+        switch ($requestLevel) {
+            case 2:
+                $this->updateUpline($directUplineMatrix, $sideToUpdate, $downline, $requestIndex);
+                break;
+            case 3:
+
+                if($this->nBetween($requestIndex, 2, 1)  && $index['level'] == $requestLevel - 1){
+                    $this->updateUpline($directUplineMatrix, $sideToUpdate, $downline);
+                }else{
+                   $this->updateOtherUpline($directUplineMatrix, $requestSide, $downline, $requestIndex);
+                }
+                
+        
+        
+                if($this->nBetween($requestIndex, 4, 3) && $index['level'] == $requestLevel - 1 && $index['position'] == 2){
+                    $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
+                    $this->updateUpline($directUplineMatrix, $sideToUpdate,$downline);
+                }
+
+                if($this->nBetween($requestIndex, 6, 5) && $index['level'] == $requestLevel - 1 && $index['position'] == 3){
+                    $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
+                    $this->updateUpline($directUplineMatrix, $sideToUpdate,$downline);
+                }
+
+                if($this->nBetween($requestIndex, 8, 7) && $index['level'] == $requestLevel - 1 && $index['position'] == 4){
+                    $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
+                    $this->updateUpline($directUplineMatrix, $sideToUpdate,$downline);
+                }
+
+                break;
+            default:
+                # code...
+                break;
+        }
+       
+    }
+    
+    private function resolveRequestIndex($requestIndex){
+        if($requestIndex % 2 == 1){
+            $side = 'left';
+        }else $side = 'right';
+
+        return $side;
+    }
+
+    private function updateUpline($directUplineMatrix, $sideToUpdate, $downline, $requestIndex = NULL){
+        $toUpdate = json_decode($directUplineMatrix->$sideToUpdate, true);
+            foreach($toUpdate as $up=>$value){
+                if($directUplineMatrix->position == $up && $value == 0){
+                    $toUpdate[$up] = $downline;
+                }
+               
+                $directUplineMatrix->$sideToUpdate = json_encode($toUpdate);
+                $directUplineMatrix->save();
+            }
+    }
+
+    private function updateOtherUpline($directUplineMatrix, $sideToUpdate, $downline, $requestIndex){
+       
+        $toUpdate = json_decode($directUplineMatrix->$sideToUpdate, true);
+            foreach($toUpdate as $up=>$value){
+                if($requestIndex == $up && $value == 0){
+                    $toUpdate[$up] = $downline;
+                }
+                $directUplineMatrix->$sideToUpdate = json_encode($toUpdate);
+                $directUplineMatrix->save();
+            }
+
+
+    }
+
+    public function getPositionInParentMatrix( $parent, $child){
+        $position = [
+            'id' => NULL,
+            'level' => NULL,
+            'position' => NULL,
+            'left' => NULL,
+            'parent' => NULL
+        ];
+        // Loop through all parent instances to get
+     
+        $parentMatrix = Matrix::whereUserId($parent)->get();
+      
+        if($parentMatrix){
+             // Search through all left matrices for parent
+            foreach($parentMatrix as $matrix){
+                $left = json_decode($matrix->left, true);
+                $search = array_search($child, $left);
+                if($search){
+                    $position = [
+                        'child' => $child,
+                        'level' => $matrix->position,
+                        'position' => $search,
+                        'side' => 'left',
+                        'parent' => $matrix,
+                    ];
+                }
+                
+            }
+
+            foreach($parentMatrix as $matrix){
+                $right = json_decode($matrix->right, true);
+                $search = array_search($child, $right);
+                if($search){
+                    $position = [
+                        'child' => $child,
+                        'level' => $matrix->position,
+                        'position' => $search,
+                        'side' => 'right',
+                        'parent' => $matrix,
+                    ];
+                }
+            }
+        }
+
+        return $position;
     }
 
     public function generateTransactionId(){
