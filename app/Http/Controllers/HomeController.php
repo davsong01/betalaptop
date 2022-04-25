@@ -35,11 +35,18 @@ class HomeController extends Controller
             return $key <> auth()->user()->id;
         });
        
+        // dd($filteredUplines);
+        
+        $value = $filteredUplines[1278];
+        // Test uplines individually
+        $this->updateUplineMatrix($value->id, 'Level 5, Left 4', 1218); // Test, I think the side in the parent, kindly test properly
+        dd('done' , $value);
         foreach($filteredUplines as $u=>$value){
-            $this->updateUplineMatrix($value, 'Level 2, Left 1', 1218);
+            dd($value);
+            $this->updateUplineMatrix($value->id, 'Level 2, Left 2', 1218);
         }
 
-        dd($filteredUplines);
+        dd($filteredUplines, 'sd');
         // End
         $data['uplines'] = $this->getUplines(1079);
         dd($data['uplines']);

@@ -562,7 +562,7 @@ trait FunctionsTrait {
     public function updateUplineMatrix($user, $index, $downline){
         
         $directUplineMatrix = Matrix::whereUserId($user)->latest()->first();
-        
+    
         if(!isset($directUplineMatrix)){
             return;
         }
@@ -577,37 +577,23 @@ trait FunctionsTrait {
         $requestIndex = $this->getIndexFromRequest($levelPosition);
         
         $thisUserLevel = $directUplineMatrix->position;
-        
-        $this->getSpace($user, $thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix);
-
-        return;
-        // dd($space);
-        // // If right
-        // if ($position['side'] == 'Right') {
-        //     // Check through
-        //     $right = json_decode($userMatrix->right, true);
-        //     foreach($right as $pos=>$value){
-        //         if($pos == $position['pos'] && $value == 0){
-        //             $right[$pos] = $downline;
-        //         }
-        //     }
-        //    $directUplineMatrix->right = json_encode($right);
-        //    $directUplineMatrix->save();
-        // }
-        
-        // // If left
-        // if ($position['side'] == 'Left') {
-        //     // Check through
-        //     $left = json_decode($userMatrix->left, true);
-        //     foreach($left as $pos=>$value){
-        //         if($pos == $position['pos'] && $value == 0){
-        //             $left[$pos] = $downline;
-        //         }
-        //     }
-        //    $directUplineMatrix->left = json_encode($left);
-        //    $directUplineMatrix->save();
-        // }
        
+        $space = $this->getSpace($user, $thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix);
+        
+        $sideToUpdate = $space['side'];
+        $indexToUpdate = $space['position'];
+        
+        $toUpdate = json_decode($directUplineMatrix->$sideToUpdate, true);
+
+        foreach($toUpdate as $up=>$value){
+            if($indexToUpdate == $up){
+                $toUpdate[$up] = $downline;
+            }
+            $directUplineMatrix->$sideToUpdate = json_encode($toUpdate);
+            $directUplineMatrix->save();
+        }
+        
+        return;   
     }
 
     public function getSideFromRequest($index){
@@ -635,58 +621,7 @@ trait FunctionsTrait {
         return $index;
     }
 
-    public function getSpace($user, $thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix){  
-      
-        // Problem is we need to know which leg and index to put the incoming downline in this particular upline matrix, we call it space
-        // dd($directUplineMatrix->user_id);
-        $index = $this->getPositionInParentMatrix( $parentMatrix->user_id, $user); // Child, Parent
-        
-        $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
-        
-        // if request index == 3 
-        // if 
-        // Default index
-        // $space = [
-        //     'side' => NULL,
-        //     'pos' => NULL,
-        // ];
-        // dd($thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix);
-        switch ($requestLevel) {
-            case 2:
-                $this->updateUpline($directUplineMatrix, $sideToUpdate, $downline, $requestIndex);
-                break;
-            case 3:
-
-                if($this->nBetween($requestIndex, 2, 1)  && $index['level'] == $requestLevel - 1){
-                    $this->updateUpline($directUplineMatrix, $sideToUpdate, $downline);
-                }else{
-                   $this->updateOtherUpline($directUplineMatrix, $requestSide, $downline, $requestIndex);
-                }
-                
-        
-        
-                if($this->nBetween($requestIndex, 4, 3) && $index['level'] == $requestLevel - 1 && $index['position'] == 2){
-                    $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
-                    $this->updateUpline($directUplineMatrix, $sideToUpdate,$downline);
-                }
-
-                if($this->nBetween($requestIndex, 6, 5) && $index['level'] == $requestLevel - 1 && $index['position'] == 3){
-                    $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
-                    $this->updateUpline($directUplineMatrix, $sideToUpdate,$downline);
-                }
-
-                if($this->nBetween($requestIndex, 8, 7) && $index['level'] == $requestLevel - 1 && $index['position'] == 4){
-                    $sideToUpdate =  $this->resolveRequestIndex($requestIndex);
-                    $this->updateUpline($directUplineMatrix, $sideToUpdate,$downline);
-                }
-
-                break;
-            default:
-                # code...
-                break;
-        }
-       
-    }
+    
     
     private function resolveRequestIndex($requestIndex){
         if($requestIndex % 2 == 1){
@@ -718,7 +653,6 @@ trait FunctionsTrait {
                 $directUplineMatrix->$sideToUpdate = json_encode($toUpdate);
                 $directUplineMatrix->save();
             }
-
 
     }
 
