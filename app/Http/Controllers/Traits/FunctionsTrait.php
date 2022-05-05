@@ -210,13 +210,16 @@ trait FunctionsTrait {
 
     public function getUpline($node, $parent){
         $levelPosition = explode (",", $node);
-        
-        $level = (int) substr($levelPosition[0], -1);
-        $side = (int) substr($levelPosition[1], -1);
-        
-        $upperLevel = $level - 1;
+       
+        $level = (int) preg_replace('/[^0-9]/','',$levelPosition[0]);
+       
+        // $side = (int) substr($levelPosition[1], -1);
+        $side = (int) preg_replace('/[^0-9]/','',$levelPosition[1]);
 
+        $upperLevel = $level - 1;
+       
         $upperLevelDetails = Matrix::whereUserId($parent)->wherePosition($upperLevel)->first();
+      
         if(is_null($upperLevelDetails)){
             $upline = [
                 "level" => 1,
@@ -237,7 +240,7 @@ trait FunctionsTrait {
         if (str_contains($levelPosition[1], 'left') || str_contains($levelPosition[1], 'Left')) {
             $upline = $this->getUplineIndex($upperLevelDetails->left, $upperLevel, $level, $side, 'left');
         }
-        
+       
         return $upline;
     }
 
@@ -397,10 +400,46 @@ trait FunctionsTrait {
                 if($this->nBetween($side, 16, 15)){
                     $index = 8;
                 }
+                
 
                 break;
                 
-            default:
+            case 5:
+                if($this->nBetween($side, 2, 1)){
+                    $index = 1;
+                }
+
+                if($this->nBetween($side, 4, 3)){
+                    $index = 2;
+                }
+
+                if($this->nBetween($side, 6, 5)){
+                    $index = 3;
+                }
+
+                if($this->nBetween($side, 8, 7)){
+                    $index = 4;
+                }
+
+                if($this->nBetween($side, 10, 9)){
+                    $index = 5;
+                }
+
+                if($this->nBetween($side, 12, 11)){
+                    $index = 6;
+                }
+
+                if($this->nBetween($side, 14, 13)){
+                    $index = 7;
+                }
+
+                if($this->nBetween($side, 16, 15)){
+                    $index = 8;
+                }
+                
+                break;
+
+                default:
 
                 break;
         }
@@ -562,12 +601,13 @@ trait FunctionsTrait {
     public function updateUplineMatrix($user, $index, $downline){
         
         $directUplineMatrix = Matrix::whereUserId($user)->latest()->first();
-    
+        
         if(!isset($directUplineMatrix)){
             return;
         }
         // Update direct Upline with the user->upline
         // Maybe create new position here
+
         $parentMatrix = Matrix::whereUserId(auth()->user()->id)->latest()->first();
         
         $levelPosition = explode (",", $index);
@@ -579,7 +619,7 @@ trait FunctionsTrait {
         $thisUserLevel = $directUplineMatrix->position;
        
         $space = $this->getSpace($user, $thisUserLevel, $requestLevel, $downline, $parentMatrix, $requestSide, $requestIndex, $directUplineMatrix);
-        
+       
         $sideToUpdate = $space['side'];
         $indexToUpdate = $space['position'];
         
@@ -611,13 +651,16 @@ trait FunctionsTrait {
     }
 
     public function getLevelFromRequest($index){
-        $position = (int) substr($index[0], -1);
+        $position = (int) preg_replace('/[^0-9]/','',$index[0]);
+
         return $position;
     }
 
     public function getIndexFromRequest($index){
         $leftOrRight = $index[1];
-        $index = (int) substr($index[1], -1);
+        // $index = (int) substr($index[1], -1);
+        $index = (int) preg_replace('/[^0-9]/','',$index[1]);
+        
         return $index;
     }
 

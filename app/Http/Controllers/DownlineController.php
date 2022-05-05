@@ -95,9 +95,9 @@ class DownlineController extends Controller
         // Position must be in available positions
         $availablePositions = $this->getOpenPositions(auth()->user()->id, auth()->user()->level());
 
-        // if(!in_array($request->position,  $availablePositions)){
-        //     return back()->with('error', 'Invalid Position selected for user');
-        // } remember
+        if(!in_array($request->position,  $availablePositions)){
+            return back()->with('error', 'Invalid Position selected for user');
+        }
 
         // Handle Password Change
         if(request()->has('password')){
@@ -146,11 +146,9 @@ class DownlineController extends Controller
         //     0 => 1291,
         //     1 => 1278
         // ]);
-      
+          
+        print_r($filteredUplines);
         foreach($filteredUplines as $u=>$value){
-            // $up = User::find($value);
-            // $this->updateUplineMatrix($up, $request->position, $user->id);
-           
             $this->updateUplineMatrix($value, $request->position, $user->id);
         }
 
@@ -159,7 +157,7 @@ class DownlineController extends Controller
         
         // $uplines = $uplines->keys();
      
-       
+       dd('done');
         
         // dd($filtered, $data['upline'], $data['uplines']);
          // foreach ($data['uplines'] as $upline) {

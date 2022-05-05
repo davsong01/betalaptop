@@ -25,21 +25,26 @@ class HomeController extends Controller
      */
     
     public function test(){
-        $data['upline'] = $this->getUpline('Level 3, Left 2', auth()->user()->id)['id'];
-        $uplines = $this->getUplines($data['upline']);
+        // $data['upline'] = $this->getUpline('Level 3, Left 2', auth()->user()->id)['id'];
+        // $uplines = $this->getUplines($data['upline']);
         
         // $uplines = $uplines->keys();
       
          // remove parent
-        $filteredUplines =  $uplines->filter(function ($value, $key) {
-            return $key <> auth()->user()->id;
-        });
+        // $filteredUplines =  $uplines->filter(function ($value, $key) {
+        //     return $key <> auth()->user()->id;
+        // });
        
         // dd($filteredUplines);
         
-        $value = $filteredUplines[1278];
+        $value =[2]; //  1350 [1] => 1341 [2] => 1323 [3] => 1315
+
+        foreach($value as $v){
+         
+            $this->updateUplineMatrix($v, 'Level 5, Left 10', 1368); // Test, I think the side in the parent, kindly test properly
+           
+        }
         // Test uplines individually
-        $this->updateUplineMatrix($value->id, 'Level 5, Left 4', 1218); // Test, I think the side in the parent, kindly test properly
         dd('done' , $value);
         foreach($filteredUplines as $u=>$value){
             dd($value);
