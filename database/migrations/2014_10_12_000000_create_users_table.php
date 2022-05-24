@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -22,6 +23,14 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('upline')->nullable();
             $table->foreign('upline')->references('id')->on('users')
             ->onDelete('SET NULL');
+            $table->unsignedBigInteger('parent')->nullable(); // [null, null]
+            $table->foreign('parent')->references('id')->on('users')
+           ->onDelete('set null');
+            $table->unsignedBigInteger('sibling')->nullable();
+            $table->foreign('sibling')->references('id')->on('users')
+           ->onDelete('set null');
+            $table->json('children')->nullable();
+            $table->integer('level')->default(1)->nullable();
             $table->integer('parent_id')->nullable();
             $table->json('uplines')->nullable();
             // $table->integer('sponsor_id')->nullable();

@@ -33,6 +33,10 @@ Route::middleware(['auth', 'isAdmin'])->group (function() {
 
 });
 
+Route::resource('/matrix', 'MatrixPositioningController')->parameters([
+    'matrix' => 'user'
+])->middleware(['auth' ]);
+
 // General Authenticated routes
 Route::middleware(['auth'])->group (function() {
     Route::get('/account', 'DashboardController@index')->name('account');

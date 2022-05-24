@@ -750,4 +750,37 @@ trait FunctionsTrait {
         return substr(sha1(time()), 0, 25);
     }
     
+
+    /**
+     * Handle matrix positioning
+     * @param int $parentId newly created user parent id
+     * @param int $parentLevel authenticated user current level
+     * @param 0|1 $position position to place the newly created user instance
+     * @param App\User $child newly created user model
+     */
+    public function positioning(int $parentId, int $level, int $position, User $child){
+        define('LEFT', 0);
+        define('RIGHT', 1);
+
+        $authUser = User::find((auth()->user())->id);
+        $children = $authUser->children ?: [null, null];
+       $siblingId = null;
+
+        // Handle auth as the immediate parent
+        if(empty($authUser->children) || empty($authUser->children[LEFT]) || empty($authUser->children[RIGHT])){
+            if (empty($authUser->children)) {
+                $children = $position === LEFT ? [$child->id, null] : [null, $child->id];
+                $child->forceFill([
+                    'parent' => $parentId,
+                ])->save();
+            } else {
+                if (empty($authUser->children[LEFT])) {
+                    $children =  [$child->id, $authUser->children[RIGHT]];
+                    $siblingId = $authUser->children[RIGHT];
+                } else if (empty($authUser->children[RIGHT])) {
+                    $children = [$child->id, $authUser->children[LEFT]];
+                    $siblingId = $authUser->children[LEFT];
+                }
+            }
+
 }
