@@ -762,25 +762,36 @@ trait FunctionsTrait {
         define('LEFT', 0);
         define('RIGHT', 1);
 
-        $authUser = User::find((auth()->user())->id);
-        $children = $authUser->children ?: [null, null];
+        $parent = User::find($parentId);
+        $children = $parent->children ?: [];
        $siblingId = null;
 
         // Handle auth as the immediate parent
-        if(empty($authUser->children) || empty($authUser->children[LEFT]) || empty($authUser->children[RIGHT])){
-            if (empty($authUser->children)) {
+        if(empty($parent->children) || empty($parent->children[LEFT]) || empty($parent->children[RIGHT])){
+            if (empty($parent->children)) {
                 $children = $position === LEFT ? [$child->id, null] : [null, $child->id];
-                $child->forceFill([
-                    'parent' => $parentId,
-                ])->save();
             } else {
-                if (empty($authUser->children[LEFT])) {
-                    $children =  [$child->id, $authUser->children[RIGHT]];
-                    $siblingId = $authUser->children[RIGHT];
-                } else if (empty($authUser->children[RIGHT])) {
-                    $children = [$child->id, $authUser->children[LEFT]];
-                    $siblingId = $authUser->children[LEFT];
+                if (empty($parent->children[LEFT])) {
+                    $children =  [$child->id, $parent->children[RIGHT]];
+                    $siblingId = $parent->children[RIGHT];
+                } else if (empty($parent->children[RIGHT])) {
+                    $children = [$child->id, $parent->children[LEFT]];
+                    $siblingId = $parent->children[LEFT];
                 }
             }
+        }
 
+        $child->forceFill([
+            'parent' => $parentId,
+            'sibling' => $siblingId,
+        ])->save();
+        if($siblingId){
+            User::find($siblingId)->forceFill([
+                'sibling' => $child->id,
+            ])->save();
+        }
+        $parent->forceFill([
+            'children' => $children,
+        ])->save();
+    }
 }
