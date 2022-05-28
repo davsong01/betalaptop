@@ -84,7 +84,8 @@ class MatrixPositioningController extends Controller
      */
     public function update(Request $request, $id)
     {
-       $validator = Validator::make($request->all(), [
+
+        $request->validate([
             "name" => "required|string|min:3|max:30",
             "email" => 'required|unique:users,email',
             "phone" => "required|string",
@@ -92,27 +93,29 @@ class MatrixPositioningController extends Controller
             "password" => "nullable|min:8",
             "positioning" => [
                 "required",
-                "regex:/^(\d+::\d+::(0|1))$/i", //parentId::parentLevel::childPosition
+                "regex:/^(\d+::\d+)$/i", //parentId::parentLevel
             ],
         ]);
 
-        if($validator->fails()){
-            return $validator->errors();
-        }
-        $user = User::create([
-            "name" => $request->name,
-            "email" => $request->email,
-            "phone" => $request->phone,
-            "username" => $request->username,
-            "password" => Hash::make($request->password?: 'pass12345'),
+        [$parentId, $parentLevel] = explode('::', $request->positioning);
+         $childPosition = $request->childPosition ? 1 : 0;
+
+        $attributes = array_merge($request->only([
+            'name', 'email', 'phone', 'username'
+        ]), [
+            'password' => Hash::make($request->password ?: 'pass12345'),
+            'parent' => $parentId
         ]);
-        [$parentId, $parentLevel, $childPosition] = explode('::', $request->positioning);
+
+        $user = User::create($attributes);
+
         $failed = $this->positioning($parentId, $parentLevel, $childPosition, $user);
         if($failed){
             $user->delete();
-            return response()->json($failed);
+            // return response()->json($failed);
+            return  back()->with('error', 'Failed');
         }
-        return $user;
+        return back()->with('message', 'Down-line registration successfully'); // return $user;
     }
 
     /**
