@@ -253,6 +253,7 @@ trait FunctionsTrait {
         }
         return $downlines;
     }
+
     public function getDownlinesWithPosition($id){
         $downlines = Matrix::whereUserId($id)->get();   
                
@@ -663,8 +664,6 @@ trait FunctionsTrait {
         
         return $index;
     }
-
-    
     
     private function resolveRequestIndex($requestIndex){
         if($requestIndex % 2 == 1){
@@ -782,5 +781,6 @@ trait FunctionsTrait {
                     $siblingId = $authUser->children[LEFT];
                 }
             }
-
+        }
+    }
 }
