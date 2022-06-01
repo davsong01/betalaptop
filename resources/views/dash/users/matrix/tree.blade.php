@@ -101,7 +101,7 @@
                   <p class="indicator">{{ $user->username }}</p>
                 </td>
               </tr>
-              {{-- Level 1 --}}
+
               <tr>
                 @foreach ($matrices as $matrix)
                   <td valign="top" align="center" width="400" height="45" colspan="32">
@@ -113,97 +113,73 @@
                   </td>
                 @endforeach
               </tr>
-              @php
-                if ($matrices->count()) {
-                    $left = collect(optional($matrices[0])->children) ?? collect([]);
-                    $right = collect(optional($matrices[1])->children) ?? collect([]);
-                }
-              @endphp
-              {{-- Level 2 --}}
-              @if ($left || $right)
+
+              {{-- Level 2 mapping --}}
+              @if ($matrices->filter(fn($item) => $item !== null)->isNotEmpty())
+                @php $level3 = collect([]); @endphp
                 <tr>
-                  {{-- Level 2 start left --}}
-                  @foreach ($left as $matrix)
-                    <td valign="top" align="center" width="200" height="40" colspan="16">
-                      @if ($loop->index === 0)
-                      @include('dash.users.matrix.tree.left')
+                  @foreach ($matrices as $mat)
+                    @if ($mat)
+                      @foreach (collect(optional($mat)['children']) as $matrix)
+                        @php
+                          $level3->push(optional($matrix)['children']);
+                        @endphp
+                        <td valign="top" align="center" width="200" height="40" colspan="16">
+                          @if ($loop->index === 0)
+                            @include('dash.users.matrix.tree.left')
+                          @else
+                            @include('dash.users.matrix.tree.right')
+                          @endif
+                        </td>
+                      @endforeach
                     @else
-                      @include('dash.users.matrix.tree.right')
+                      @php
+                        $level3->push([]);
+                      @endphp
+                      @php $matrix = null; @endphp
+                      <td valign="top" align="center" width="200" height="40" colspan="16">
+                        @include('dash.users.matrix.tree.left')
+                      </td>
+                      <td valign="top" align="center" width="200" height="40" colspan="16">
+                        @include('dash.users.matrix.tree.right')
+                      </td>
                     @endif
-                    </td>
                   @endforeach
-
-                  {{-- Level 2 end left --}}
-
-                  {{-- Level 2 start right --}}
-                  @foreach ($right as $matrix)
-                    <td valign="top" width="200" align="center" height="40" colspan="16">
-                      @if ($loop->index === 0)
-                      @include('dash.users.matrix.tree.left')
-                    @else
-                      @include('dash.users.matrix.tree.right')
-                    @endif
-                    </td>
-                  @endforeach
-                  {{-- Level 2 end right --}}
                 </tr>
               @endif
-              {{-- // Level 2 --}}
+              {{-- // Level 2 mapping --}}
 
-              {{-- Level 3 --}}
-              @php
-                if ($left->count() || $right->count()) {
-                    $level3LeftLeft = collect(optional($left[0])["children"]) ?? collect([]);
-                    $level3LeftRight = collect(optional($left[1])["children"]) ?? collect([]);
-
-                    $level3RightLeft = collect(optional($right[0])["children"]) ?? collect([]);
-                    $level3RightRight = collect(optional($right[1])["children"]) ?? collect([]);
-                }
-              @endphp
-              <tr>
-
-                {{-- Level 3 start --}}
-                @foreach ($level3LeftLeft as $matrix)
-                  <td valign="top" align="center" width="400" height="45" colspan="8">
-                      @if ($loop->index === 0)
-                      @include('dash.users.matrix.tree.left')
+              {{-- Level 3 mapping --}}
+              @if ($level3->filter(fn($item) => $item !== null)->isNotEmpty())
+                <tr>
+                  @foreach ($level3 as $paired)
+                    @if ($paired)
+                      @foreach ($paired as $matrix)
+                        <td valign="top" align="center" width="400" height="45" colspan="8">
+                          @if ($loop->index === 0)
+                            @include('dash.users.matrix.tree.left')
+                          @else
+                            @include('dash.users.matrix.tree.right')
+                          @endif
+                        </td>
+                        <script>
+                          console.log(@json($matrix));
+                        </script>
+                      @endforeach
                     @else
-                      @include('dash.users.matrix.tree.right')
+                      @php $matrix = null; @endphp
+                      <td valign="top" align="center" width="200" height="40" colspan="8">
+                        @include('dash.users.matrix.tree.left')
+                      </td>
+                      <td valign="top" align="center" width="200" height="40" colspan="8">
+                        @include('dash.users.matrix.tree.right')
+                      </td>
                     @endif
-                  </td>
-                @endforeach
+                  @endforeach
+                </tr>
+              @endif
+              {{-- // Level 3 mapping --}}
 
-                @foreach ($level3LeftRight as $matrix)
-                  <td valign="top" align="center" width="400" height="45" colspan="8">
-                       @if ($loop->index === 0)
-                      @include('dash.users.matrix.tree.left')
-                    @else
-                      @include('dash.users.matrix.tree.right')
-                    @endif
-                  </td>
-                @endforeach
-
-                @foreach ($level3RightLeft as $matrix)
-                  <td valign="top" align="center" width="400" height="45" colspan="8">
-                      @if ($loop->index === 0)
-                      @include('dash.users.matrix.tree.left')
-                    @else
-                      @include('dash.users.matrix.tree.right')
-                    @endif
-                  </td>
-                @endforeach
-
-                @foreach ($level3RightRight as $matrix)
-                  <td valign="top" align="center" width="400" height="45" colspan="8">
-                       @if ($loop->index === 0)
-                      @include('dash.users.matrix.tree.left')
-                    @else
-                      @include('dash.users.matrix.tree.right')
-                    @endif
-                  </td>
-                @endforeach
-              </tr>
-              {{-- // Level 3 --}}
             </tbody>
           </table>
         </div>
