@@ -81,9 +81,17 @@
             </div>
             <div class="input-group mb-3">
               <div class="col-sm-12">
-                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="childPosition" name="childPosition">
-                  <label class="custom-control-label" for="childPosition">User position Left</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="childPosition" value="0" id="chilPositionLeft" required>
+                  <label class="form-check-label" for="chilPositionLeft">
+                   Left position
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="childPosition" id="childPositionRight" value="1">
+                  <label class="form-check-label" for="childPositionRight">
+                    Right position
+                  </label>
                 </div>
               </div>
             </div>
