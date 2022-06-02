@@ -34,6 +34,7 @@ class MatrixPositioningController extends Controller
     {
         $user = User::find(auth()->user()->id);
         $matrices = $this->matrices($user);
+       
         return view('dash.users.matrix.create', [
             'matrices' => $matrices->toArray(),
         ]);
@@ -58,6 +59,7 @@ class MatrixPositioningController extends Controller
      */
     public function show(User $user)
     {
+        dd($this->reverseSmall($user->id));
         return view('dash.users.matrix.tree', [
             'user' => $user,
             'matrices' => $this->matrices($user)
@@ -153,6 +155,20 @@ class MatrixPositioningController extends Controller
                 }
             });
         }
+        
         return $matrices;
+    }
+
+    public function reverseSmall($id){
+        $children = User::select('id', 'username', 'avatar', 'upline')->whereUpline($id)->get()->toArray();
+        // dd($children, $id);
+
+        foreach($children as $child){
+            if(User::select('id', 'username', 'passport')->whereUpline($child['id'])->count() > 0){
+                $children[] = $this->reverseSmall($child['id']);
+            }
+        }
+
+        return array_merge($children);
     }
 }
