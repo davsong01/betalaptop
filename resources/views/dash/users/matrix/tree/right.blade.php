@@ -1,7 +1,8 @@
 @if(optional($matrix)->id || optional($matrix)["id"])
 @php $matrix = (object) $matrix @endphp
 <span class="details">
-  <a href="{{ route('binarytree', optional($matrix)->id) }}">
+    <a href="{{ '/matrix/'.optional($matrix)->id }}">
+
     <img border="0" class="rounded-circle tree-image"
       src="{{ asset(optional($matrix)->avatar ?: 'site/assets/images/avatars/d2.png') }}"></a>
   <br>

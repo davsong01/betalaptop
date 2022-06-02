@@ -53,7 +53,7 @@
             class="hide-menu">My Downlines</span></a>
 </li>
 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-        href="{{ route('binarytree', auth()->user()->id) }}" aria-expanded="false">
+        href="{{ '/matrix/'.auth()->user()->id }}" aria-expanded="false">
         <i class="me-3 fa fa-tree" aria-hidden="true"></i><span
             class="hide-menu">Binary Tree</span></a>
 </li>

@@ -104,7 +104,7 @@
 
               <tr>
                 @foreach ($matrices as $matrix)
-                  <td valign="top" align="center" width="400" height="45" colspan="32">
+                  <td valign="top" align="center" width="50%" height="45" colspan="32">
                     @if ($loop->index === 0)
                       @include('dash.users.matrix.tree.left')
                     @else
@@ -124,7 +124,7 @@
                         @php
                           $level3->push(optional($matrix)['children']);
                         @endphp
-                        <td valign="top" align="center" width="200" height="40" colspan="16">
+                        <td valign="top" align="center" width="25%" height="40" colspan="16">
                           @if ($loop->index === 0)
                             @include('dash.users.matrix.tree.left')
                           @else
@@ -137,10 +137,10 @@
                         $level3->push([]);
                       @endphp
                       @php $matrix = null; @endphp
-                      <td valign="top" align="center" width="200" height="40" colspan="16">
+                      <td valign="top" align="center" width="200" height="40" colspan="8">
                         @include('dash.users.matrix.tree.left')
                       </td>
-                      <td valign="top" align="center" width="200" height="40" colspan="16">
+                      <td valign="top" align="center" width="200" height="40" colspan="8">
                         @include('dash.users.matrix.tree.right')
                       </td>
                     @endif
@@ -179,7 +179,7 @@
                 </tr>
               @endif
               {{-- // Level 3 mapping --}}
-
+              
             </tbody>
           </table>
         </div>
