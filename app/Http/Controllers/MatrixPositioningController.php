@@ -93,6 +93,7 @@ class MatrixPositioningController extends Controller
             "phone" => "required|string",
             "username" => "required|unique:users,username",
             "password" => "nullable|min:8",
+            "childPosition" => "required|in:0,1", // 0|1
             "positioning" => [
                 "required",
                 "regex:/^(\d+::\d+)$/i", //parentId::parentLevel
@@ -100,7 +101,7 @@ class MatrixPositioningController extends Controller
         ]);
 
         [$parentId, $parentLevel] = explode('::', $request->positioning);
-         $childPosition = $request->childPosition ? 1 : 0;
+         $childPosition = intval($request->childPosition);
 
         $attributes = array_merge($request->only([
             'name', 'email', 'phone', 'username'

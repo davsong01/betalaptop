@@ -56,33 +56,42 @@
               </div>
             </div>
             <div class="input-group mb-3">
-              <label class="col-sm-12">Select level for this user | <small><i><a href="#" target="_blank">View
+              <label class="col-sm-12">Select parent username | <small><i><a href="#" target="_blank">View
                       your binary tree </a></i></small></label>
               <div class="col-sm-12">
                 <select class="form-control" name="positioning" id="positioning" required>
                   <option value="">...Select...</option>
                   @php
-                    function mat($parentId, $parentLevel, $matrices) {
-                      $matrices = collect($matrices);
-                      foreach ($matrices as $index => $matrix):
-                       if($index === $matrices->keys()->last() && $matrices->filter(fn($item) => $item === null)->isNotEmpty() ):
-                          echo "<option value='$parentId::$parentLevel'>level $parentLevel</option>";
-                        endif;
-                        if(optional($matrix)['children']):
-                          mat($matrix['id'], $parentLevel + 1, $matrix['children']);
-                        endif;
-                      endforeach;
+                    function mat($parentId, $parentLevel, $matrices, $username)
+                    {
+                        $matrices = collect($matrices);
+                        foreach ($matrices as $index => $matrix):
+                            if ($index === $matrices->keys()->last() && $matrices->filter(fn($item) => $item === null)->isNotEmpty()):
+                              echo "<option value='$parentId::$parentLevel'>$username</option>";
+                            endif;
+                            if (optional($matrix)['children']):
+                                mat($matrix['id'], $parentLevel + 1, $matrix['children'], optional($matrix)['username']);
+                            endif;
+                        endforeach;
                     }
-                    mat(auth()->id(), 1, $matrices);
+                    mat(auth()->id(), 1, $matrices, auth()->user()->username);
                   @endphp
                 </select>
               </div>
             </div>
             <div class="input-group mb-3">
               <div class="col-sm-12">
-                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="childPosition" name="childPosition">
-                  <label class="custom-control-label" for="childPosition">User position Left</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="childPosition" value="0" id="chilPositionLeft" required>
+                  <label class="form-check-label" for="chilPositionLeft">
+                   Left position
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="childPosition" id="childPositionRight" value="1">
+                  <label class="form-check-label" for="childPositionRight">
+                    Right position
+                  </label>
                 </div>
               </div>
             </div>
