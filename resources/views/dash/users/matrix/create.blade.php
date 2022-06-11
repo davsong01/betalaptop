@@ -64,13 +64,12 @@
                   @php
                     function mat($parentId, $parentLevel, $matrices, $username)
                     {
-                        $matrices = collect($matrices);
-                        foreach ($matrices as $index => $matrix):
-                            if ($index === $matrices->keys()->last() && $matrices->filter(fn($item) => $item === null)->isNotEmpty()):
+                        foreach ($matrices as $index => $user):
+                            if ($index === $matrices->keys()->last() && $matrices->filter(fn($item) => !$item->exists)->isNotEmpty()):
                               echo "<option value='$parentId::$parentLevel'>$username</option>";
                             endif;
-                            if (optional($matrix)['children']):
-                                mat($matrix['id'], $parentLevel + 1, $matrix['children'], optional($matrix)['username']);
+                            if ($user->mapping):
+                                mat($user->id, $parentLevel + 1, $user->mapping, $user->username);
                             endif;
                         endforeach;
                     }
