@@ -172,4 +172,27 @@ class MatrixPositioningController extends Controller
 
         return array_merge($children);
     }
+
+    public function validateEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' =>
+            'required|email|min:3|unique:users,email|not_regex:/(' . preg_quote(env('APP_DOMAIN')) . ')$/i',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' =>  $validator->errors()->getMessages()['email'][0]], 403);
+        }
+        return response()->json(['status' => 'success', 'message' => 'email address ' . $request->email . ' is available']);
+    }
+
+    public function validateUsername(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:40|min:3|unique:users,username|not_regex:/(admin)/i'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->getMessages()['username'][0]], 403);
+        }
+        return response()->json(['status' => 'success', 'message' => 'username ' . $request->username . ' is available']);
+    }
 }
