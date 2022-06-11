@@ -101,9 +101,16 @@
                   <p class="indicator">{{ $user->username }}</p>
                 </td>
               </tr>
-
-              <tr>
+              {{-- Level 1 mapping --}}
+               <tr>
+                  @php
+                $emptyUsers = [new \App\User, new \App\User];
+                $level2 = [];
+                @endphp
                 @foreach ($matrices as $matrix)
+                  @php
+                    $level2 = array_merge($level2, Arr::flatten($matrix->mapping ?? $emptyUsers));
+                  @endphp
                   <td valign="top" align="center" width="50%" height="45" colspan="32">
                     @if ($loop->index === 0)
                       @include('dash.users.matrix.tree.left')
@@ -112,74 +119,89 @@
                     @endif
                   </td>
                 @endforeach
+                 <script>console.log('level 1 ', @json($matrices))</script>
               </tr>
+              {{-- // Level 1 mapping --}}
 
-              {{-- Level 2 mapping --}}
-              @if ($matrices->filter(fn($item) => $item !== null)->isNotEmpty())
-                @php $level3 = collect([]); @endphp
+              {{-- // Level 2 mapping --}}
+              @if (isset($level2) && collect($level2)->filter(fn($user) => $user->exists)->isNotEmpty())
+                @php
+                $level3 = [];
+                @endphp
                 <tr>
-                  @foreach ($matrices as $mat)
-                    @if ($mat)
-                      @foreach (collect(optional($mat)['children']) as $matrix)
-                        @php
-                          $level3->push(optional($matrix)['children']);
+                  @foreach ($level2 as $matrix)
+                       @php
+                        $level3 = array_merge($level3, Arr::flatten($matrix->mapping ?? $emptyUsers));
                         @endphp
-                        <td valign="top" align="center" width="25%" height="40" colspan="16">
+                      <td valign="top" align="center" width="25%" height="40" colspan="16">
                           @if ($loop->index === 0)
                             @include('dash.users.matrix.tree.left')
                           @else
                             @include('dash.users.matrix.tree.right')
                           @endif
                         </td>
-                      @endforeach
-                    @else
-                      @php
-                        $level3->push([]);
-                      @endphp
-                      @php $matrix = null; @endphp
-                      <td valign="top" align="center" width="200" height="40" colspan="8">
-                        @include('dash.users.matrix.tree.left')
-                      </td>
-                      <td valign="top" align="center" width="200" height="40" colspan="8">
-                        @include('dash.users.matrix.tree.right')
-                      </td>
-                    @endif
                   @endforeach
+                  <script>console.log('level 2 ', @json($level2))</script>
                 </tr>
               @endif
               {{-- // Level 2 mapping --}}
 
-              {{-- Level 3 mapping --}}
-              @if ($level3->filter(fn($item) => $item !== null)->isNotEmpty())
+              {{-- // Level 3 mapping --}}
+              @if (isset($level3) && collect($level3)->filter(fn($user) => $user->exists)->isNotEmpty())
+                @php $level4 = [] @endphp
                 <tr>
-                  @foreach ($level3 as $paired)
-                    @if ($paired)
-                      @foreach ($paired as $matrix)
-                        <td valign="top" align="center" width="400" height="45" colspan="8">
+                  @foreach ($level3 as $matrix)
+                    @php
+                        $level4 = array_merge($level4, Arr::flatten($matrix->mapping ?? $emptyUsers));
+                        @endphp
+                      <td valign="top" align="center" width="400" height="45" colspan="8">
                           @if ($loop->index === 0)
                             @include('dash.users.matrix.tree.left')
                           @else
                             @include('dash.users.matrix.tree.right')
                           @endif
                         </td>
-                        <script>
-                          console.log(@json($matrix));
-                        </script>
-                      @endforeach
-                    @else
-                      @php $matrix = null; @endphp
-                      <td valign="top" align="center" width="200" height="40" colspan="8">
-                        @include('dash.users.matrix.tree.left')
-                      </td>
-                      <td valign="top" align="center" width="200" height="40" colspan="8">
-                        @include('dash.users.matrix.tree.right')
-                      </td>
-                    @endif
                   @endforeach
                 </tr>
+                 <script>console.log('level 3 ', @json($level3))</script>
               @endif
               {{-- // Level 3 mapping --}}
-              
+
+              {{--  Level 4 mapping --}}
+              @if (isset($level4) && collect($level4)->filter(fn($user) => $user->exists)->isNotEmpty())
+              @php $level5 = [] @endphp
+                <tr>
+                  @foreach ($level4 as $matrix)
+                   @php $level5 = array_merge($level5, Arr::flatten($matrix->mapping ?? $emptyUsers)); @endphp
+                      <td valign="top" align="center" width="400" height="45" colspan="4">
+                          @if ($loop->index === 0)
+                            @include('dash.users.matrix.tree.left')
+                          @else
+                            @include('dash.users.matrix.tree.right')
+                          @endif
+                        </td>
+                  @endforeach
+                  <script>console.log('level 4 ', @json($level4))</script>
+                </tr>
+              @endif
+              {{-- // Level 4 mapping --}}
+
+              {{--  Level 5 mapping --}}
+              @if (isset($level5) && collect($level5)->filter(fn($user) => $user->exists)->isNotEmpty())
+                <tr>
+                  @foreach ($level5 as $matrix)
+                      <td valign="top" align="center" width="400" height="45" colspan="2">
+                          @if ($loop->index === 0)
+                            @include('dash.users.matrix.tree.left')
+                          @else
+                            @include('dash.users.matrix.tree.right')
+                          @endif
+                        </td>
+                  @endforeach
+                  <script>console.log('level 5 ', @json($level5))</script>
+                </tr>
+              @endif
+              {{-- // Level 5 mapping --}}
             </tbody>
           </table>
         </div>

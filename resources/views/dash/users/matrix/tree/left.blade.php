@@ -1,11 +1,10 @@
-@if (optional($matrix)->id || optional($matrix)["id"])
-@php $matrix = (object) $matrix @endphp
+@if ($matrix->exists)
   <span class="details">
-    <a href="{{ '/matrix/'.optional($matrix)->id }}">
+    <a href="{{ '/matrix/'.$matrix->id }}">
       <img border="0" class="rounded-circle tree-image"
-        src="{{ asset(optional($matrix)->avatar ?: 'site/assets/images/avatars/d2.png') }}"></a>
+        src="{{ asset($matrix->avatar ?: 'site/assets/images/avatars/d2.png') }}"></a>
     <br>
-    <p class="indicator">{{ optional($matrix)->username }}</p>
+    <p class="indicator">{{ $matrix->username }}</p>
   </span>
 @else
   <span class="details">
