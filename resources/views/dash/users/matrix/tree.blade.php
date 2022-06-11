@@ -119,7 +119,6 @@
                     @endif
                   </td>
                 @endforeach
-                 <script>console.log('level 1 ', @json($matrices))</script>
               </tr>
               {{-- // Level 1 mapping --}}
 
@@ -141,7 +140,6 @@
                           @endif
                         </td>
                   @endforeach
-                  <script>console.log('level 2 ', @json($level2))</script>
                 </tr>
               @endif
               {{-- // Level 2 mapping --}}
@@ -163,7 +161,6 @@
                         </td>
                   @endforeach
                 </tr>
-                 <script>console.log('level 3 ', @json($level3))</script>
               @endif
               {{-- // Level 3 mapping --}}
 
@@ -181,7 +178,6 @@
                           @endif
                         </td>
                   @endforeach
-                  <script>console.log('level 4 ', @json($level4))</script>
                 </tr>
               @endif
               {{-- // Level 4 mapping --}}
@@ -198,7 +194,6 @@
                           @endif
                         </td>
                   @endforeach
-                  <script>console.log('level 5 ', @json($level5))</script>
                 </tr>
               @endif
               {{-- // Level 5 mapping --}}

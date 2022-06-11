@@ -59,7 +59,6 @@ class MatrixPositioningController extends Controller
      */
     public function show(User $user)
     {
-        // dd($this->matrices($user));
         return view('dash.users.matrix.tree', [
             'user' => $user,
             'matrices' => $this->matrices($user)
