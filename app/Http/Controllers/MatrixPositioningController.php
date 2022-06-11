@@ -34,9 +34,9 @@ class MatrixPositioningController extends Controller
     {
         $user = User::find(auth()->user()->id);
         $matrices = $this->matrices($user);
-       
+
         return view('dash.users.matrix.create', [
-            'matrices' => $matrices->toArray(),
+            'matrices' => $matrices,
         ]);
     }
 
@@ -59,7 +59,7 @@ class MatrixPositioningController extends Controller
      */
     public function show(User $user)
     {
-       
+        // dd($this->matrices($user));
         return view('dash.users.matrix.tree', [
             'user' => $user,
             'matrices' => $this->matrices($user)
@@ -136,27 +136,27 @@ class MatrixPositioningController extends Controller
      *
      */
     private function matrices(User $user){
-        if (empty($user->children)) {
-            $matrices = collect([null, null]);
+        if (empty($user->children) || collect($user->children)->filter(fn($item) => $item === null)->count() > 1) {
+            $matrices = collect([new User, new User]);
         } else {
             $matrices = User::whereIn('id', collect($user->children))->select(['id', 'sibling', 'parent', 'email', 'username', 'children'])->get();
             if (empty($user->children[self::LEFT]) || !$matrices->contains($user->children[self::LEFT])) {
-                $matrices->prepend(null);
+                $matrices->prepend(new User);
             } else if (empty($user->children[self::RIGHT]) || !$matrices->contains($user->children[self::RIGHT])) {
-                $matrices->push(null);
+                $matrices->push(new User);
             }
             $matrices->map(function ($item, $key) use($matrices) {
 
                 if (!empty($item->children)) {
-                    $matrices[$key]->children = collect($this->matrices($item))->map(fn( $i) => $i ? (object) $i : $i );
+                    $matrices[$key]->mapping = $this->matrices($item);
                 } else {
                     if (optional($item)->exists) {
-                        $matrices[$key]->children = collect([null, null]);
+                        $matrices[$key]->mapping = collect([new User, new User]);
                     }
                 }
             });
         }
-        
+
         return $matrices;
     }
 
