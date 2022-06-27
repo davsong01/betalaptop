@@ -33,13 +33,6 @@ Route::middleware(['auth', 'isAdmin'])->group (function() {
 
 });
 
-Route::any('/matrix/validate/email', 'MatrixPositioningController@validateEmail')->name('matrix.validate.email');
-Route::any('/matrix/validate/username', 'MatrixPositioningController@validateUsername')->name('matrix.validate.username');
-Route::any('/matrix/available-positions/{id}', 'MatrixPositioningController@availablePosition')->name('matrix.available.positions');
-Route::get('/matrix/validate/token/{id}', 'MatrixPositioningController@edit')->name('matrix.validate.username');
-Route::resource('/matrix', 'MatrixPositioningController')->parameters([
-    'matrix' => 'user'
-])->middleware(['auth' ]);
 
 // General Authenticated routes
 Route::middleware(['auth'])->group (function() {
@@ -51,7 +44,7 @@ Route::middleware(['auth'])->group (function() {
     Route::get('payments', 'PaymentController@allTransactions')->name('payments.index');
     Route::post('/downline/validate/email', 'DownlineController@validateEmail')->name('downline.validate.email');
     Route::post('/downline/validate/username', 'DownlineController@validateUsername')->name('downline.validate.username');
-    Route::resource('downline', 'DownlineController');
+    // Route::resource('downline', 'DownlineController');
     Route::get('binarytree/{id}', 'UserController@binaryTree')->name('binarytree');
 
     Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
@@ -61,4 +54,12 @@ Route::middleware(['auth'])->group (function() {
     Route::post('transactions/transfer-fund', 'TransactionsController@transferFund')->name('transactions.transferFund');
     Route::post('transactions/proof-of-payment', 'TransactionsController@uploadPOP')->name('transactions.proofOfPayment');
     Route::get('transactions/proof-of-payment/me', 'TransactionsController@meProofOfPayment')->name('transactions.me.proofOfPayment');
+
+    Route::any('/matrix/validate/email', 'MatrixPositioningController@validateEmail')->name('matrix.validate.email');
+    Route::any('/matrix/validate/username', 'MatrixPositioningController@validateUsername')->name('matrix.validate.username');
+    Route::any('/matrix/available-positions/{id}', 'MatrixPositioningController@availablePosition')->name('matrix.available.positions');
+    Route::get('/matrix/validate/token/{id}', 'MatrixPositioningController@edit')->name('matrix.validate.username');
+    Route::resource('/downline', 'MatrixPositioningController')->parameters([
+        'downline' => 'user'
+    ]);
 });

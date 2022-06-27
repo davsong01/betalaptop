@@ -22,7 +22,11 @@ class MatrixPositioningController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::find(auth()->user()->id);
+        $matrices = $this->matrices($user);
+        $current_balance = $this->getWallet($user->id);
+
+        return view('dash.users.matrix.index', compact('matrices', 'current_balance'));
     }
 
     /**
@@ -32,6 +36,10 @@ class MatrixPositioningController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->wallet() < \App\Setting::first()->value('amount_per_slot')) {
+            return redirect()->route('downline.index')->with('error', 'Insufficient funds in wallet');
+        }
+
         $user = User::find(auth()->user()->id);
         $matrices = $this->matrices($user);
 
@@ -73,7 +81,7 @@ class MatrixPositioningController extends Controller
      */
     public function edit($id)
     {
-        return csrf_token();
+        // return csrf_token();
     }
 
     /**
