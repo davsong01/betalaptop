@@ -35,6 +35,7 @@ Route::middleware(['auth', 'isAdmin'])->group (function() {
 
 Route::any('/matrix/validate/email', 'MatrixPositioningController@validateEmail')->name('matrix.validate.email');
 Route::any('/matrix/validate/username', 'MatrixPositioningController@validateUsername')->name('matrix.validate.username');
+Route::any('/matrix/available-positions/{id}', 'MatrixPositioningController@availablePosition')->name('matrix.available.positions');
 Route::get('/matrix/validate/token/{id}', 'MatrixPositioningController@edit')->name('matrix.validate.username');
 Route::resource('/matrix', 'MatrixPositioningController')->parameters([
     'matrix' => 'user'

@@ -66,7 +66,7 @@
                     {
                         foreach ($matrices as $index => $user):
                             if ($index === $matrices->keys()->last() && $matrices->filter(fn($item) => !$item->exists)->isNotEmpty()):
-                              echo "<option value='$parentId::$parentLevel'>$username</option>";
+                              echo "<option value='$parentId::$parentLevel' id='$user->id'>$username</option>";
                             endif;
                             if ($user->mapping):
                                 mat($user->id, $parentLevel + 1, $user->mapping, $user->username);
@@ -81,7 +81,7 @@
             <div class="input-group mb-3">
               <div class="col-sm-12">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="childPosition" value="0" id="chilPositionLeft" required>
+                  <input class="form-check-input" type="radio" name="childPosition" value="0" id="childPositionLeft" required>
                   <label class="form-check-label" for="chilPositionLeft">
                    Left position
                   </label>
@@ -159,6 +159,28 @@
               .addClass('fa fa-times text-danger');
             $('#username-msg').removeClass('valid-feedback')
               .addClass('invalid-feedback').text('An error occurred, please try again');
+          })
+      })
+
+      $('form select#positioning').change(function(event) {
+        const element = event.target;
+        const id = element.value?.split('::')[0];
+        jsLaravel(element.closest('form'), {
+            action: `available-positions/${id}`,
+            method: 'post'
+          })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status === "success") {
+              console.log(res.data);
+              if(!res.data[0]){
+                 $("#childPositionLeft").attr("checked", true)
+              }else{
+                 $("#childPositionRight").attr("checked", true)
+              }
+            }
+          }).catch(err => {
+           console.log(err);
           })
       })
     })

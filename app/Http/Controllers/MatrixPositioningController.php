@@ -194,4 +194,12 @@ class MatrixPositioningController extends Controller
         }
         return response()->json(['status' => 'success', 'message' => 'username ' . $request->username . ' is available']);
     }
+
+    public function availablePosition($id) {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User does not exists'], 403);
+        }
+        return response()->json(['status' => 'success', 'data'=> $user->children ?? [], 'message' => 'User successfully retrieved' ]);
+    }
 }
